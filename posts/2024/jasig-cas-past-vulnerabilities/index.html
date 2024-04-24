@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="vi-vn">
+<head>
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title> Jasig CAS past vulnerabilities research | devme4f blogs</title>
+  <link rel = 'canonical' href = 'https://devme4f.github.io/posts/2024/jasig-cas-past-vulnerabilities/'>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta property="og:title" content="Jasig CAS past vulnerabilities research" />
+<meta property="og:description" content="Preface CAS là một ứng dụng Enterprise Single Sign-On open source khá phổ biến được sử dụng bởi nhiều doanh nghiệp lớn. CAS hỗ trợ nhiều giao thức xác thực như CAS (tương tự kerberos), SAML, Oauth, OpenID cũng như có tính tùy biến cao nên được nhiều bên lựa chọn.
+CAS ban đầu được phát triển với tên Jasig CAS có package name là org.jasig.cas nhưng từ 2012 thì Jasig hợp nhất với Sakai Foundation tạo nên Apereo Foundation." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://devme4f.github.io/posts/2024/jasig-cas-past-vulnerabilities/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-03-27T17:05:40+07:00" />
+<meta property="article:modified_time" content="2024-03-27T17:05:40+07:00" />
+
+  <meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Jasig CAS past vulnerabilities research"/>
+<meta name="twitter:description" content="Preface CAS là một ứng dụng Enterprise Single Sign-On open source khá phổ biến được sử dụng bởi nhiều doanh nghiệp lớn. CAS hỗ trợ nhiều giao thức xác thực như CAS (tương tự kerberos), SAML, Oauth, OpenID cũng như có tính tùy biến cao nên được nhiều bên lựa chọn.
+CAS ban đầu được phát triển với tên Jasig CAS có package name là org.jasig.cas nhưng từ 2012 thì Jasig hợp nhất với Sakai Foundation tạo nên Apereo Foundation."/>
+
+  
+  
+    
+  
+  
+  <link rel="stylesheet" href="https://devme4f.github.io/css/styles.a7dd5af4c7ef9f93fb31b1147bb343d14667fd6cdafa7ae17de8d923a2f6a282b9db99fd91500efb76d5de5a5603d29fb153733d9bfac95b534e595d0ab745a7.css" integrity="sha512-p91a9Mfvn5P7MbEUe7ND0UZn/Wza&#43;nrhfejZI6L2ooK525n9kVAO&#43;3bV3lpWA9KfsVNzPZv6yVtTTlldCrdFpw=="> 
+
+  
+  
+  
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+<link rel="icon" type="image/png" href="https://devme4f.github.io/images/favicon.ico" />
+
+  
+  
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+  <div class="content index py4">
+
+  <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;" aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Archives</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="/about">About</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li>
+          <a class="icon" href=" https://devme4f.github.io/posts/2024/tetctf-2024_j4v4-censored/" aria-label="Previous">
+            <i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i>
+          </a>
+        </li>
+        
+        
+        <li>
+          <a class="icon" href="https://devme4f.github.io/posts/2024/spring-web-flow-past-vulnerabilities/" aria-label="Next">
+            <i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i>
+          </a>
+        </li>
+        
+        <li>
+          <a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+            <i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i>
+          </a>
+        </li>
+        <li>
+          <a class="icon" href="#" aria-label="Share">
+            <i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i>
+          </a>
+        </li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjasig-cas-past-vulnerabilities%2f" aria-label="Facebook">
+      <i class="fab fa-facebook " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjasig-cas-past-vulnerabilities%2f&text=Jasig%20CAS%20past%20vulnerabilities%20research" aria-label="Twitter">
+      <i class="fab fa-twitter " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjasig-cas-past-vulnerabilities%2f&title=Jasig%20CAS%20past%20vulnerabilities%20research" aria-label="Linkedin">
+      <i class="fab fa-linkedin " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjasig-cas-past-vulnerabilities%2f&is_video=false&description=Jasig%20CAS%20past%20vulnerabilities%20research" aria-label="Pinterest">
+      <i class="fab fa-pinterest " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=Jasig%20CAS%20past%20vulnerabilities%20research&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjasig-cas-past-vulnerabilities%2f" aria-label="Email">
+      <i class="fas fa-envelope " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjasig-cas-past-vulnerabilities%2f&title=Jasig%20CAS%20past%20vulnerabilities%20research" aria-label="Pocket">
+      <i class="fab fa-get-pocket " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjasig-cas-past-vulnerabilities%2f&title=Jasig%20CAS%20past%20vulnerabilities%20research" aria-label="reddit">
+      <i class="fab fa-reddit " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjasig-cas-past-vulnerabilities%2f&name=Jasig%20CAS%20past%20vulnerabilities%20research&description=Preface%20CAS%20l%c3%a0%20m%e1%bb%99t%20%e1%bb%a9ng%20d%e1%bb%a5ng%20Enterprise%20Single%20Sign-On%20open%20source%20kh%c3%a1%20ph%e1%bb%95%20bi%e1%ba%bfn%20%c4%91%c6%b0%e1%bb%a3c%20s%e1%bb%ad%20d%e1%bb%a5ng%20b%e1%bb%9fi%20nhi%e1%bb%81u%20doanh%20nghi%e1%bb%87p%20l%e1%bb%9bn.%20CAS%20h%e1%bb%97%20tr%e1%bb%a3%20nhi%e1%bb%81u%20giao%20th%e1%bb%a9c%20x%c3%a1c%20th%e1%bb%b1c%20nh%c6%b0%20CAS%20%28t%c6%b0%c6%a1ng%20t%e1%bb%b1%20kerberos%29%2c%20SAML%2c%20Oauth%2c%20OpenID%20c%c5%a9ng%20nh%c6%b0%20c%c3%b3%20t%c3%adnh%20t%c3%b9y%20bi%e1%ba%bfn%20cao%20n%c3%aan%20%c4%91%c6%b0%e1%bb%a3c%20nhi%e1%bb%81u%20b%c3%aan%20l%e1%bb%b1a%20ch%e1%bb%8dn.%0aCAS%20ban%20%c4%91%e1%ba%a7u%20%c4%91%c6%b0%e1%bb%a3c%20ph%c3%a1t%20tri%e1%bb%83n%20v%e1%bb%9bi%20t%c3%aan%20Jasig%20CAS%20c%c3%b3%20package%20name%20l%c3%a0%20org.jasig.cas%20nh%c6%b0ng%20t%e1%bb%ab%202012%20th%c3%ac%20Jasig%20h%e1%bb%a3p%20nh%e1%ba%a5t%20v%e1%bb%9bi%20Sakai%20Foundation%20t%e1%ba%a1o%20n%c3%aan%20Apereo%20Foundation." aria-label="Tumblr">
+      <i class="fab fa-tumblr " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjasig-cas-past-vulnerabilities%2f&t=Jasig%20CAS%20past%20vulnerabilities%20research" aria-label="Hacker News">
+      <i class="fab fa-hacker-news " aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+    
+    <div id="toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#preface">Preface</a></li>
+    <li><a href="#cas---41x416-deserialization-vulnerability-exploiting-default-key">cas - 4.1.x~4.1.6 deserialization vulnerability (exploiting default key)</a></li>
+    <li><a href="#cas---41742x-deserialization-vulnerability-need-to-know-encryption-key-and-signature-key">cas - 4.1.7~4.2.x deserialization vulnerability (need to know encryption key and signature key)</a></li>
+    <li><a href="#cas---4x416-padding-oracle-cbc-deserialization-vulnerability">cas - 4.x~4.1.6 Padding Oracle CBC deserialization vulnerability</a>
+      <ul>
+        <li><a href="#cas--417">cas &gt;= 4.1.7</a></li>
+      </ul>
+    </li>
+    <li><a href="#cas-42x425-administrative-endpoints-exposed">cas 4.2.x~4.2.5 administrative endpoints exposed</a>
+      <ul>
+        <li><a href="#bonus-easy-rce">bonus easy RCE</a></li>
+        <li><a href="#a-critical-vulnerability">a critical vulnerability</a></li>
+      </ul>
+    </li>
+    <li><a href="#spring-web-flow-data-binding-expression-vulnerability">Spring Web flow Data Binding Expression Vulnerability</a></li>
+    <li><a href="#cas-client-core---3111360-xml-external-entity-injection">cas-client-core - (3.1.11,3.6.0] xml external entity injection</a>
+      <ul>
+        <li><a href="#analysis">analysis</a></li>
+        <li><a href="#poc">POC</a></li>
+        <li><a href="#refs">refs</a></li>
+      </ul>
+    </li>
+    <li><a href="#bonus">bonus</a>
+      <ul>
+        <li><a href="#cas-version-detect">cas version detect</a></li>
+        <li><a href="#default-credentials">default credentials</a></li>
+      </ul>
+    </li>
+    <li><a href="#refs-1">refs</a></li>
+  </ul>
+</nav>
+    </div>
+    
+  </span>
+</div>
+
+
+  <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+      <h1 class="posttitle" itemprop="name headline">
+        Jasig CAS past vulnerabilities research
+      </h1>
+      <div class="meta">
+        
+        <div class="postdate">
+          
+          <time datetime="2024-03-27 17:05:40 &#43;0700 &#43;07" itemprop="datePublished">2024-03-27</time>
+          
+        </div>
+        
+        
+        
+        
+        <div class="article-tag">
+            <i class="fas fa-tag"></i>
+            
+            
+            <a class="tag-link" href="/tags/research" rel="tag">research</a>
+            
+             ,  
+            <a class="tag-link" href="/tags/cve" rel="tag">cve</a>
+            
+        </div>
+        
+      </div>
+    </header>
+
+  
+    
+    <div class="content" itemprop="articleBody">
+      <p><img src="/images/2024/Jasig-CAS-past-vulnerabilities/theme.png" alt="theme"></p>
+<h2 id="preface">Preface</h2>
+<p>CAS là một ứng dụng Enterprise Single Sign-On open source khá phổ biến được sử dụng bởi nhiều doanh nghiệp lớn. CAS hỗ trợ nhiều giao thức xác thực như CAS (tương tự kerberos), SAML, Oauth, OpenID cũng như có tính tùy biến cao nên được nhiều bên lựa chọn.</p>
+<p>CAS ban đầu được phát triển với tên <code>Jasig CAS</code> có package name là <a href="https://mvnrepository.com/artifact/org.jasig.cas">org.jasig.cas</a> nhưng từ 2012 thì Jasig hợp nhất với Sakai Foundation tạo nên Apereo Foundation. Từ đó CAS có tên <code>Apereo CAS</code> và cũng đổi luôn package name thành <a href="https://mvnrepository.com/artifact/org.apereo.cas">org.apereo.cas</a> từ <a href="https://github.com/apereo/cas/releases/tag/v5.0.0">version 5.0</a> và vẫn được tích cực maintain cho đến ngày nay. Dù <code>Jasig CAS</code> EOL từ 2012 nhưng vẫn có một số library tiếp tục được maintain và sử dụng cho đến nay nên mình vẫn sẽ chia ra 2 tên / package như trên.</p>
+<p>Bài viết này sẽ đi vào tìm hiểu CAS / một số lỗ hổng tiêu biểu trong quá khứ / quá trình sử dụng dụng mà có thể cấu hình sai nhắm giúp người đọc (và mình) có cái nhìn tổng quan khi pentest product này. CAS có release vulnerability disclosure blog tại <a href="https://apereo.github.io/">đây</a> tuy nhiên các lỗ hổng ít khi được đánh CVE gây khó khăn trong quá trình theo dõi.</p>
+<p>Ban đầu mình định gộp chung phân tích hết lỗ hổng vào 1 bài nhưng do quá dài nên đây chỉ là part 1, tập trung vào <code>Jasig CAS</code>, part 2 sẽ phân tích các lỗ hổng trên <code>Apereo CAS</code>.</p>
+<h2 id="cas---41x416-deserialization-vulnerability-exploiting-default-key">cas - 4.1.x~4.1.6 deserialization vulnerability (exploiting default key)</h2>
+<ul>
+<li><strong>advisory</strong>: <a href="https://apereo.github.io/2016/04/08/commonsvulndisc/">https://apereo.github.io/2016/04/08/commonsvulndisc/</a></li>
+<li><strong>version</strong>: <code>4.1.x~4.1.6</code></li>
+</ul>
+<p>CAS utilize <code>spring-webflow</code> để quản lý luồng xác thực của ứng dụng. Từ version <a href="https://github.com/apereo/cas/releases/tag/v4.1.0">4.1.0</a> CAS dùng <a href="https://github.com/apereo/spring-webflow-client-repo">spring-webflow-client-repo</a> để custom lại webflow chuyển giá trị <a href="https://github.com/apereo/cas/pull/345">webflow conversaional state</a> từ lưu ở server về lưu ở client dưới dạng 1 parameter tên là <code>execution</code>. Để dễ hiểu thì giá trị này như là viewstate trong <code>ASP.NET</code> lưu trữ serialized object và cũng tương tự ASP.NET thì <code>spring-webflow-client</code> có thực hiện encrypt serialized object này để tránh bị sửa đổi.</p>
+<p>Class <code>org.jasig.spring.webflow.plugin.EncryptedTranscoder</code> nhận nhiệm vụ này với method <code>.encode()</code> gọi <code>.writeObject()</code> và encrypt outputStream:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/EncryptedTranscoder.png" alt="EncryptedTranscoder"></p>
+<p>Method <code>.decode()</code> decrypt inputStream và gọi <code>.readObject()</code>:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/EncryptedTranscoder2.png" alt="EncryptedTranscoder2"></p>
+<p>Vấn đề là khi khởi tạo <code>CipherBean</code> là <code>BufferedBlockCipherBean</code> với thuật toán AES mã hóa đối xứng xài default key là <code>changeit</code>:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/changeit.png" alt="changeit"></p>
+<p>Hơn cả CAS thường được cài đặt dưới dạng <a href="https://apereo.github.io/cas/7.0.x/installation/WAR-Overlay-Installation.html">WAR Overlay</a> với configuration default <code>EncryptedTranscoder</code> vẫn dùng <code>BufferedBlockCipherBean</code> default key này:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/BufferedBlockCipherBean.png" alt="BufferedBlockCipherBean"></p>
+<p>Giá trị <code>cas.webflow</code> trên thường sẽ được set ở file <code>cas.properties</code> và mặc định thì nó cũng không được set :D. Vậy chốt lại thì ứng dụng nào xài default configuration của CAS mà không set lại webfow key thì có thể dùng default key <code>changeit</code> để encrypt và exploit deserialize qua webflow state.</p>
+<p>Giá trị của parameter <code>execution</code> sẽ có dạng <code>[UUID]_[BASE64-AES-serialized-object]</code>:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/execution.png" alt="execution">
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/execution_parameter.png" alt="execution_parameter"></p>
+<p>Luồng gọi đến sink <code>EncryptedTranscoder.decode()</code> cũng không có gì hay ho, các factory, repository tương ứng được cấu hình ở <a href="https://github.com/apereo/spring-webflow-client-repo?tab=readme-ov-file#usage">cas-servlet.xml</a> rồi, sau đây là call stack:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>FlowHandlerAdapter.<span style="color:#a6e22e">handle</span>()
+</span></span><span style="display:flex;"><span>FlowExecutorImpl.<span style="color:#a6e22e">resumeExecution</span>()
+</span></span><span style="display:flex;"><span>ClientFlowExecutionRepository.<span style="color:#a6e22e">getFlowExecution</span>()
+</span></span><span style="display:flex;"><span>EncryptedTranscoder.<span style="color:#a6e22e">decode</span>()
+</span></span><span style="display:flex;"><span>AbstractCipherBean.<span style="color:#a6e22e">decrypt</span>()
+</span></span><span style="display:flex;"><span>ObjectInputStream.<span style="color:#a6e22e">readObject</span>()
+</span></span></code></pre></div><p>PoC URLDNS chain, phần encrypt thì cứ lấy luôn method <code>encode()</code> của thằng <code>EncryptedTranscoder</code> là được: <a href="https://gist.github.com/devme4f/177fcc11685a50b72aed0a1efd4d0fbe">https://gist.github.com/devme4f/177fcc11685a50b72aed0a1efd4d0fbe</a></p>
+<p><img src="/images/2024/Jasig-CAS-past-vulnerabilities/exploit_default_key.png" alt="exploit_default_key">
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/received_exploit_default_key.png" alt="received_exploit_default_key"></p>
+<p>.</p>
+<p>Ngoài webflow key được set default thì TGC secret key cũng được set default tại <code>cas.properties</code>, dùng key này có thể sign ticket mong muốn:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/default_TGC.png" alt="default_TGC"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-properties" data-lang="properties"><span style="display:flex;"><span><span style="color:#a6e22e">tgc.encryption.key</span><span style="color:#f92672">=</span><span style="color:#e6db74">1PbwSbnHeinpkZOSZjuSJ8yYpUrInm5aaV18J2Ar4rM</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">tgc.signing.key</span><span style="color:#f92672">=</span><span style="color:#e6db74">szxK-5_eJjs-aUj-64MpUZ-GPPzGLhYPLGl0wrYjYNVAGva2P0lLe6UGKGM7k8dWxsOVGutZWgvmY3l5oVPO3w</span>
+</span></span></code></pre></div><h2 id="cas---41742x-deserialization-vulnerability-need-to-know-encryption-key-and-signature-key">cas - 4.1.7~4.2.x deserialization vulnerability (need to know encryption key and signature key)</h2>
+<p>Bản fix <code>4.1.7</code> <code>EncryptedTranscoder</code> không còn dùng <code>BufferedBlockCipherBean</code> với defautl key nữa mà dùng <code>CasWebflowCipherBean</code> không set default key:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/CasWebflowCipherBean.png" alt="CasWebflowCipherBean"></p>
+<p>Nếu vẫn dùng configuration này mà không set webflow key, CAS sẽ tự generate random secret key, có thể thấy ở CAS log:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/generate.png" alt="generate"></p>
+<p>Nên trong trường hợp có được cặp webflow key này, ta lại có thể exploit deserialization.</p>
+<p>PoC <code>4.1.7~4.2.x</code>: <a href="https://gist.github.com/devme4f/707bed738d82ae57212a0ddaf2ccfe86">https://gist.github.com/devme4f/707bed738d82ae57212a0ddaf2ccfe86</a>
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/exploit_leaks_key.png" alt="exploit_leaks_key">
+Request:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/req_exploit_leaks_key.png" alt="req_exploit_leaks_key">
+Received:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/Received_exploit_leaks_key.png" alt="Received_exploit_leaks_key"></p>
+<h2 id="cas---4x416-padding-oracle-cbc-deserialization-vulnerability">cas - 4.x~4.1.6 Padding Oracle CBC deserialization vulnerability</h2>
+<p>Trong trường hợp đã tự set encryption key, vẫn có thể tấn công deserialize qua Padding Oracle CBC do <code>BufferedBlockCipherBean</code> dùng thuật toán AES-CBC, mình up lại ảnh:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/AES-CBC.png" alt="AES-CBC"></p>
+<p>Về phần này mình sẽ viết một bài riêng để tránh bài quá dài, về poc có thể tham khảo script sau: <a href="https://github.com/threedr3am/learnjavabug/tree/master/cas/CAS4PaddingOracleCBC">https://github.com/threedr3am/learnjavabug/tree/master/cas/CAS4PaddingOracleCBC</a></p>
+<p>Script thực hiện tấn công padding oracle để encrypt lại serialized object, bản chất padding oracle vẫn là brute force từng ký tự trong khối do đó nếu payload quá lớn sẽ tốn rất nhiều tài nguyên nên như PoC trên payload sẽ deserialize qua JRMP để hạn chế độ dài phải encrypt.</p>
+<h3 id="cas--417">cas &gt;= 4.1.7</h3>
+<p><a href="#cas---41742x-deserialization-vulnerability-need-to-know-encryption-key-and-signature-key">Như đã đề cập</a>, bản fix không còn dùng <code>BufferedBlockCipherBean</code> mà là <code>CasWebflowCipherBean</code> -&gt; <code>BinaryCipherExecutor</code>:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/BinaryCipherExecutor.png" alt="BinaryCipherExecutor"></p>
+<p><code>BinaryCipherExecutor#decode()</code> dùng <code>org.apache.shiro.crypto.AesCipherService</code> (line 72) thuộc lib <code>shiro-core</code> để implement encryption và mặc định vẫn sử dụng thuật toán AES-CBC:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/AesCipherService.png" alt="AesCipherService">
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/AES-CBC2.png" alt="AES-CBC2"></p>
+<p>Nhưng khác với <code>BufferedBlockCipherBean</code>, method này trước khi thực hiện AES-CBC decrypt ciphertext sẽ thực hiện <code>verifySignature()</code> như ảnh trên với HMAC-SHA512 để kiểm tra tính toàn vẹn của ciphertext, nếu bị sửa đổi thì trả về <code>null</code> do đó không thực hiện decrypt nên không thể sửa đổi ciphertext để tấn công padding oracle:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/verifySignature.png" alt="verifySignature"></p>
+<h2 id="cas-42x425-administrative-endpoints-exposed">cas 4.2.x~4.2.5 administrative endpoints exposed</h2>
+<ul>
+<li><strong>advisory</strong>: <a href="https://apereo.github.io/2016/10/24/servlvulndisc/">https://apereo.github.io/2016/10/24/servlvulndisc/</a></li>
+<li><strong>fixed</strong>: <code>4.2.6</code></li>
+</ul>
+<p><strong>Exposure endpoints</strong>:</p>
+<pre tabindex="0"><code>/statistics/ping
+/statistics/threads
+/statistics/metrics
+/statistics/healthcheck
+/statistics/ssosessions
+/statistics/ssosessions/**
+</code></pre><p>Lỗ hổng cho phép truy cập các administrative endpoints như phía trên không cần xác thực (mình chưa poc đc <code>/statistics/ssosessions</code>):
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/threads.png" alt="threads"></p>
+<p>Bản fix <code>4.2.6</code> xóa các endpoints trên ở file <code>web.xml</code>:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/4.2.6.png" alt="4.2.6"></p>
+<p>Thêm lại mapping vào bean <code>handlerMappingC</code> - <code>SimpleUrlHandlerMapping</code> thuộc file <code>applicationContext.xml</code>:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/applicationContext.png" alt="applicationContext"></p>
+<p>Từ đó các endpoints này thay vì được tomcat mapping trực tiếp đến các servlets thì sẽ được mapping bởi <code>org.springframework.web.servlet.DispatcherServlet</code> của spring.</p>
+<p>Do tại <code>securityContext.xml</code> config của spring có <code>RequiresAuthenticationInterceptor</code> được cấu hình để validate liệu các endpoints <code>/status/**&quot;</code> hay <code>/statistics/**</code> có được truy cập từ địa chỉ của admin/loopback <code>127.0.0.1</code>:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/securityContext.png" alt="securityContext"></p>
+<p>Nên các endpoints ở bản &lt; <code>4.2.6</code> exposure do không đi qua <code>DispatcherServlet</code> của spring nên cũng không đi qua interceptor trên.</p>
+<p>Điều này dấn đến 2 trường hợp misconfiguration khác:</p>
+<ol>
+<li>Nếu CAS đứng sau một reverse proxy cùng chạy trên 1 server thì khi request được forward sẽ đều mang địa chỉ loopback &ndash;&gt; exposure</li>
+<li>Nếu dev cấu hình các administrative endpoints mapping bởi tomcat (ex: servlet web.xml) thay vì spring &ndash;&gt; exposure</li>
+</ol>
+<h3 id="bonus-easy-rce">bonus easy RCE</h3>
+<p>Không được đề cập ở advisory trên nhưng đây là một số endpoints nhạy cảm khác exposure tùy cấu hình, riêng <code>/cas/status/config/getProperties</code> có thể truy cập unauth và leaks cả file <code>cas.properties</code> (default - đã tested bản <code>4.2.5</code>) - có thể RCE với leaked webflow key trong file cấu hình!</p>
+<pre tabindex="0"><code>/cas/status
+/cas/status/config
+/cas/status/config/getProperties
+</code></pre><p>(lab demo chưa cấu hình gì)
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/req_bonus_easy_RCE.png" alt="req_bonus_easy_RCE"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> org.jasig.cas.web.report;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// .....</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Controller</span>(<span style="color:#e6db74">&#34;internalConfigController&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">InternalConfigStateController</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String VIEW_CONFIG <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;monitoring/viewConfig&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> ApplicationContext applicationContext;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>(
+</span></span><span style="display:flex;"><span>        required <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Qualifier</span>(<span style="color:#e6db74">&#34;casProperties&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Properties casProperties;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">InternalConfigStateController</span>() {
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(
+</span></span><span style="display:flex;"><span>        method <span style="color:#f92672">=</span> {RequestMethod.<span style="color:#a6e22e">GET</span>},
+</span></span><span style="display:flex;"><span>        value <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;/status/config&#34;</span>}
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> ModelAndView <span style="color:#a6e22e">handleRequestInternal</span>(HttpServletRequest request, HttpServletResponse response) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> ModelAndView(<span style="color:#e6db74">&#34;monitoring/viewConfig&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(
+</span></span><span style="display:flex;"><span>        value <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;/getProperties&#34;</span>},
+</span></span><span style="display:flex;"><span>        method <span style="color:#f92672">=</span> {RequestMethod.<span style="color:#a6e22e">GET</span>}
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> Set<span style="color:#f92672">&lt;</span>Map.<span style="color:#a6e22e">Entry</span><span style="color:#f92672">&lt;</span>Object, Object<span style="color:#f92672">&gt;&gt;</span> <span style="color:#a6e22e">getProperties</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">casProperties</span>.<span style="color:#a6e22e">entrySet</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Nhìn qua mình chưa hiểu nguyên nhân tại sao có thể truy cập unauth do trong <code>web.xml</code> chỉ có cấu hình trỏ đến <code>/status/config/*</code>, không thấy mapping <code>/getProperties</code>.</p>
+<p>Tiến hành debug, <code>/status/config/getProperties</code> sẽ mapping bởi <code>DispatcherServlet#getHandler()</code>, tiếp đến tìm method handler qua <code>AbstractHandlerMethodMapping#getHandlerInternal()</code>, tại đây <code>lookupPath</code> trả về <code>/getProperties</code>:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/AbstractHandlerMethodMapping.png" alt="AbstractHandlerMethodMapping"></p>
+<p>Nguyên nhân do <code>UrlPathHelper.alwaysUseFullPath=false</code> (default của spring):
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/alwaysUseFullPath.png" alt="alwaysUseFullPath"></p>
+<p>Để hiểu đơn giản: map <code>/servletPath/*</code></p>
+<pre tabindex="0"><code>/app/servletPath/pathInfo --&gt; /pathInfo # alwaysUseFullPath=false
+/app/servletPath/pathInfo --&gt; /servletPath/pathInfo # alwaysUseFullPath=true
+</code></pre><p>Spring sẽ dùng <code>lookupPath</code> trên để tìm handler method tương ứng như ở ảnh trên (line 169) và tìm được <code>InternalConfigStateController#getProperties()</code></p>
+<p>Có được handler method sẽ tìm tiếp các interceptors tương ứng và spring vẫn dùng <code>lookupPath</code> với <code>alwaysUseFullPath=false</code>, do đó regex check servletPath <code>/status/**</code> và <code>/statistics/**</code> trở nên vô dụng:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/interceptors.png" alt="interceptors"></p>
+<p>Nhờ đó bypass được <code>RequiresAuthenticationInterceptor</code> và gọi <code>/getProperties</code> trả về toàn bộ cấu hình file <code>cas.properties</code> :D</p>
+<p>Lỗi mapping tương tự trên stackoverflow: <a href="https://stackoverflow.com/questions/40162345/spring-mvc-servlet-url-does-not-map-correctly">https://stackoverflow.com/questions/40162345/spring-mvc-servlet-url-does-not-map-correctly</a></p>
+<p>Spring document Path Matching cũng đã đề cập đến vấn đề này: <a href="https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet/handlermapping-path.html">https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet/handlermapping-path.html</a></p>
+<p>Bản fix <code>4.2.6</code> set <code>UrlPathHelper.alwaysUseFullPath=true</code> để <code>lookupPath</code> của spring giống với cấu hình servlet.
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/4.2.6-2.png" alt="4.2.6-2">
+Request:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/req_4.2.6-2.png" alt="req_4.2.6-2"></p>
+<p>Họ cũng đặt lại thành full path là <code>/status/config/getProperties</code>
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/edit_4.2.6-2.png" alt="edit_4.2.6-2"></p>
+<h3 id="a-critical-vulnerability">a critical vulnerability</h3>
+<p>Vậy <code>cas &lt; 4.2.6</code> có thể lợi dụng các mapping <code>/servletPath/*</code> để gọi đến <strong>handler method bất kỳ</strong> mong muốn trừ <code>/status/**</code>, <code>/statistics/**</code>, ví dụ <code>/getSsoSessions</code> không hề được cấu hình sử dụng:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/getSsoSessions.png" alt="getSsoSessions">
+(lab test nên không data)
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/req_getSsoSessions.png" alt="req_getSsoSessions"></p>
+<p>Với <code>/v1/*</code>:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/v1.png" alt="v1">
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/req_v1.png" alt="req_v1"></p>
+<p>Các default endpoints có thể lợi dụng:</p>
+<pre tabindex="0"><code>/statistics/ssosessions/*
+/status/config/*
+/v1/*
+</code></pre><h2 id="spring-web-flow-data-binding-expression-vulnerability">Spring Web flow Data Binding Expression Vulnerability</h2>
+<p>Product version cũ tương ứng với các thư viện sử dụng đi kèm cũng là đồ cũ, thư viện tồn tại CVE thì chính product cũng dính theo, với CAS thư viện chính được sử dụng trong xác thực là spring web flow tồn tại một số CVE khá nghiêm trọng như SpEL Injection. Theo mình test thì để exploit được dù phụ thuộc cấu hình mà mình deploy nhưng khả năng dính của Jasig CAS cao hơn cả khi default không set <code>UseSpringBeanBinding=true</code>.</p>
+<p>2 CVE:</p>
+<ul>
+<li>CVE-2017-8039: Data Binding Expression Vulnerability in Spring Web Flow</li>
+<li>CVE-2017-4971: Data Binding Expression Vulnerability in Spring Web Flow</li>
+</ul>
+<p>Mình cũng đã có bài viết các lỗ hổng về thư viện này, tham khảo: <a href="/posts/2024/spring-web-flow-past-vulnerabilities/">Spring Web Flow past vulnerabilities research</a></p>
+<h2 id="cas-client-core---3111360-xml-external-entity-injection">cas-client-core - (3.1.11,3.6.0] xml external entity injection</h2>
+<ul>
+<li><strong>library</strong>: <code>cas-client-core</code></li>
+<li><strong>dùng logout filter</strong>: <code>org.jasig.cas.client.session.SingleSignOutFilter</code></li>
+<li><strong>advisory</strong>: <a href="https://security.snyk.io/vuln/SNYK-JAVA-ORGJASIGCASCLIENT-31192">https://security.snyk.io/vuln/SNYK-JAVA-ORGJASIGCASCLIENT-31192</a></li>
+</ul>
+<h3 id="analysis">analysis</h3>
+<p>Follow <a href="https://github.com/apereo/java-cas-client/pull/318/files">pull request</a> biết sink tại <code>cas-client-core/src/main/java/org/jasig/cas/client/util/XmlUtils.java</code> nhận thấy method khởi tạo xml parser đã được set thêm các security features
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/XmlUtils.png" alt="XmlUtils"></p>
+<p>Có 2 method sử dụng <code>getXmlReader()</code> để parse xml là <code>getTextForElements()/getTextForElement()</code> mà arguments là string xml sẽ được parse trực tiếp bởi vulnerable parser:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/getTextForElement.png" alt="getTextForElement"></p>
+<p>Với cả 2 methods, sau một hồi ngồi find usage mình tìm được chain sau sẽ có thể khải thác được khi mặc định sử dụng <code>SingleSignOutFilter</code> logout filter của CAS.</p>
+<p>Đầu tiên handler <code>SingleSignOutHandler</code> nhận parse xml parameter <code>logoutRequest</code>, xml cần có element <code>SessionIndex</code>:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/SingleSignOutHandler.png" alt="SingleSignOutHandler"></p>
+<p>Tại handler method <code>process()</code> sẽ gọi đến hàm này, để vào vòng if như ảnh
+chỉ cần method POST + có parameter <code>logoutRequest</code>:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/process.png" alt="process"></p>
+<p>Và cuối cùng đơn giản <code>SingleSignOutFilter#doFilter()</code> sẽ gọi đến handler này:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/doFilter.png" alt="doFilter"></p>
+<p><strong>Call Stack</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>SingleSignOutFilter.<span style="color:#a6e22e">doFilter</span>()
+</span></span><span style="display:flex;"><span>    AbstractConfigurationFilter.<span style="color:#a6e22e">destroySession</span>()
+</span></span><span style="display:flex;"><span>        XmlUtils.<span style="color:#a6e22e">getTextForElement</span>()
+</span></span><span style="display:flex;"><span>            XMLReader.<span style="color:#a6e22e">parse</span>()
+</span></span></code></pre></div><h3 id="poc">POC</h3>
+<pre tabindex="0"><code>POST /cas_client/logout HTTP/1.1
+Host: cas_client
+Content-Type: application/x-www-form-urlencoded
+
+logoutRequest=&lt;?xml version=&#34;1.0&#34;?&gt;&lt;!DOCTYPE root [&lt;!ENTITY test SYSTEM &#39;http://&lt;ssrf&gt;&#39;&gt;]&gt;&lt;SessionIndex&gt;&amp;test;&lt;/SessionIndex&gt;
+</code></pre><p>Request:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/req_xxe.png" alt="req_xxe"></p>
+<p>Dns Query:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/dns_xxe.png" alt="dns_xxe"></p>
+<h3 id="refs">refs</h3>
+<ul>
+<li>apereo cas pull request: <a href="https://github.com/apereo/java-cas-client/pull/318/files">https://github.com/apereo/java-cas-client/pull/318/files</a></li>
+<li>java cas client example: <a href="https://github.com/apereo/cas-sample-java-webapp">https://github.com/apereo/cas-sample-java-webapp</a></li>
+</ul>
+<h2 id="bonus">bonus</h2>
+<h3 id="cas-version-detect">cas version detect</h3>
+<ul>
+<li>
+<p><code>cas &lt;= 3.x | cas &gt;= 5.x</code> do version này <a href="#CAS---41x416-deserialization-vulnerability-exploiting-default-key">không dùng</a> <code>spring-webflow-client</code>, parameter <code>execution</code> không có uuid&hellip;:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/version1.png" alt="version1"></p>
+</li>
+<li>
+<p><code>cas &lt;= 4.1.6</code> ciphertext có <code>headerBytes</code> là <code>[0, 0, 0, 34, 0, 0, 0, 16,.....</code>
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/version2.png" alt="version2">
+&ndash;&gt; sau base64 encode là <code>AAAAI....</code>:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/version3.png" alt="version3">
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/version4.png" alt="version4"></p>
+</li>
+<li>
+<p><code>cas &gt;= 4.1.7</code> ciphertext sẽ có dạng một jws token được encode base64 với phần payload_token chứa serialized object:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/version5.png" alt="version5">
+(base64 decode 2 lần)
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/version6.png" alt="version6"></p>
+</li>
+<li>
+<p><code>cas &lt;= 4.2.4</code>:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/version7.png" alt="version7"></p>
+</li>
+</ul>
+<h3 id="default-credentials">default credentials</h3>
+<p>ref: <a href="https://apereo.github.io/cas/7.0.x/authentication/Configuring-Authentication-Components.html#authentication-handlers">https://apereo.github.io/cas/7.0.x/authentication/Configuring-Authentication-Components.html#authentication-handlers</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-properties" data-lang="properties"><span style="display:flex;"><span><span style="color:#a6e22e">accept.authn.users</span><span style="color:#f92672">=</span><span style="color:#e6db74">casuser::Mellon</span>
+</span></span></code></pre></div><h2 id="refs-1">refs</h2>
+<ul>
+<li>vulnerability disclosure blog: <a href="https://apereo.github.io/tags/#CAS">https://apereo.github.io/tags/#CAS</a></li>
+</ul>
+
+    </div>
+  </article>
+
+  
+  
+
+
+
+
+
+
+  <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/posts">Archives</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="/about">About</a></li>
+        
+      </ul>
+    </div>
+
+    
+    <div id="toc-footer" style="display: none">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#preface">Preface</a></li>
+    <li><a href="#cas---41x416-deserialization-vulnerability-exploiting-default-key">cas - 4.1.x~4.1.6 deserialization vulnerability (exploiting default key)</a></li>
+    <li><a href="#cas---41742x-deserialization-vulnerability-need-to-know-encryption-key-and-signature-key">cas - 4.1.7~4.2.x deserialization vulnerability (need to know encryption key and signature key)</a></li>
+    <li><a href="#cas---4x416-padding-oracle-cbc-deserialization-vulnerability">cas - 4.x~4.1.6 Padding Oracle CBC deserialization vulnerability</a>
+      <ul>
+        <li><a href="#cas--417">cas &gt;= 4.1.7</a></li>
+      </ul>
+    </li>
+    <li><a href="#cas-42x425-administrative-endpoints-exposed">cas 4.2.x~4.2.5 administrative endpoints exposed</a>
+      <ul>
+        <li><a href="#bonus-easy-rce">bonus easy RCE</a></li>
+        <li><a href="#a-critical-vulnerability">a critical vulnerability</a></li>
+      </ul>
+    </li>
+    <li><a href="#spring-web-flow-data-binding-expression-vulnerability">Spring Web flow Data Binding Expression Vulnerability</a></li>
+    <li><a href="#cas-client-core---3111360-xml-external-entity-injection">cas-client-core - (3.1.11,3.6.0] xml external entity injection</a>
+      <ul>
+        <li><a href="#analysis">analysis</a></li>
+        <li><a href="#poc">POC</a></li>
+        <li><a href="#refs">refs</a></li>
+      </ul>
+    </li>
+    <li><a href="#bonus">bonus</a>
+      <ul>
+        <li><a href="#cas-version-detect">cas version detect</a></li>
+        <li><a href="#default-credentials">default credentials</a></li>
+      </ul>
+    </li>
+    <li><a href="#refs-1">refs</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    <div id="share-footer" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjasig-cas-past-vulnerabilities%2f" aria-label="Facebook">
+      <i class="fab fa-facebook fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjasig-cas-past-vulnerabilities%2f&text=Jasig%20CAS%20past%20vulnerabilities%20research" aria-label="Twitter">
+      <i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjasig-cas-past-vulnerabilities%2f&title=Jasig%20CAS%20past%20vulnerabilities%20research" aria-label="Linkedin">
+      <i class="fab fa-linkedin fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjasig-cas-past-vulnerabilities%2f&is_video=false&description=Jasig%20CAS%20past%20vulnerabilities%20research" aria-label="Pinterest">
+      <i class="fab fa-pinterest fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=Jasig%20CAS%20past%20vulnerabilities%20research&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjasig-cas-past-vulnerabilities%2f" aria-label="Email">
+      <i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjasig-cas-past-vulnerabilities%2f&title=Jasig%20CAS%20past%20vulnerabilities%20research" aria-label="Pocket">
+      <i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjasig-cas-past-vulnerabilities%2f&title=Jasig%20CAS%20past%20vulnerabilities%20research" aria-label="reddit">
+      <i class="fab fa-reddit fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjasig-cas-past-vulnerabilities%2f&name=Jasig%20CAS%20past%20vulnerabilities%20research&description=Preface%20CAS%20l%c3%a0%20m%e1%bb%99t%20%e1%bb%a9ng%20d%e1%bb%a5ng%20Enterprise%20Single%20Sign-On%20open%20source%20kh%c3%a1%20ph%e1%bb%95%20bi%e1%ba%bfn%20%c4%91%c6%b0%e1%bb%a3c%20s%e1%bb%ad%20d%e1%bb%a5ng%20b%e1%bb%9fi%20nhi%e1%bb%81u%20doanh%20nghi%e1%bb%87p%20l%e1%bb%9bn.%20CAS%20h%e1%bb%97%20tr%e1%bb%a3%20nhi%e1%bb%81u%20giao%20th%e1%bb%a9c%20x%c3%a1c%20th%e1%bb%b1c%20nh%c6%b0%20CAS%20%28t%c6%b0%c6%a1ng%20t%e1%bb%b1%20kerberos%29%2c%20SAML%2c%20Oauth%2c%20OpenID%20c%c5%a9ng%20nh%c6%b0%20c%c3%b3%20t%c3%adnh%20t%c3%b9y%20bi%e1%ba%bfn%20cao%20n%c3%aan%20%c4%91%c6%b0%e1%bb%a3c%20nhi%e1%bb%81u%20b%c3%aan%20l%e1%bb%b1a%20ch%e1%bb%8dn.%0aCAS%20ban%20%c4%91%e1%ba%a7u%20%c4%91%c6%b0%e1%bb%a3c%20ph%c3%a1t%20tri%e1%bb%83n%20v%e1%bb%9bi%20t%c3%aan%20Jasig%20CAS%20c%c3%b3%20package%20name%20l%c3%a0%20org.jasig.cas%20nh%c6%b0ng%20t%e1%bb%ab%202012%20th%c3%ac%20Jasig%20h%e1%bb%a3p%20nh%e1%ba%a5t%20v%e1%bb%9bi%20Sakai%20Foundation%20t%e1%ba%a1o%20n%c3%aan%20Apereo%20Foundation." aria-label="Tumblr">
+      <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjasig-cas-past-vulnerabilities%2f&t=Jasig%20CAS%20past%20vulnerabilities%20research" aria-label="Hacker News">
+      <i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      
+        <a id="menu-toggle" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;" aria-label="Menu">
+          <i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+        <a id="toc-toggle" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;" aria-label="TOC">
+          <i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share-toggle" class="icon" href="#" onclick="$('#share-footer').toggle();return false;" aria-label="Share">
+          <i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+          <i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+
+  <footer id="footer">
+  <div class="footer-left">
+    Copyright  &copy; 2024  devme4f blogs 
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Archives</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="/about">About</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+
+  </div>
+</body>
+
+<link rel="stylesheet" href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+
+<script src=/js/code-copy.js></script>
+
+
+
+
+</html>

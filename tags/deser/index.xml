@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Deser on devme4f blogs</title>
+    <link>https://devme4f.github.io/tags/deser/</link>
+    <description>Recent content in Deser on devme4f blogs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>vi-vn</language>
+    <lastBuildDate>Fri, 22 Dec 2023 12:35:17 +0700</lastBuildDate>
+    <atom:link href="https://devme4f.github.io/tags/deser/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>SVATTT-2023 Ctf Writeup - The new Waf Deser</title>
+      <link>https://devme4f.github.io/posts/2023/svattt-2023_new-waf-deser/</link>
+      <pubDate>Fri, 22 Dec 2023 12:35:17 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/svattt-2023_new-waf-deser/</guid>
+      <description>Preface Gõ phím viết bài này thì cũng đã gần 2 tháng kể từ đợt final A&amp;amp;D SVATTT 2023 kết thúc. Năm nay mình may may mắn được vào chung khảo chơi A&amp;amp;D và với role là defense (cấu hình log, patch bug,..etc). Vào thi thì khá loạn + nhiều việc, và vì mình role defense nên cũng chỉ ngó qua bài này và thấy backend y chang bài waf-deser năm trước khác mỗi phần front-end, tưởng dễ nên mình vẫn chưa mò lại xem, nay đến deadline hoàn thành task ở clb mới lụi cụi làm, thấy hay nên write up lại luôn, coi như làm tài liệu tham khảo cho các năm sau :D</description>
+    </item>
+    <item>
+      <title>Java Deserialization p1 - TemplateImpl class and its utilization chain</title>
+      <link>https://devme4f.github.io/posts/2023/java-deserialization-p1/</link>
+      <pubDate>Tue, 12 Sep 2023 23:46:31 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/java-deserialization-p1/</guid>
+      <description>Preface com.sun.org.apache.xalan.internal.xsltc.trax.TemplateImpl là một class nằm trong thư viện Apache Xalan có sẵn trong java runtime nhằm phục vụ quá trình transform XML document, tuy nhiên lại bị lợi dụng rất nhiều trong các bộ deserialization gadget chain do có thể thực hiện load bytecode dẫn đến thực thi command tùy ý. Bài viết sẽ phân tích chi tiết class TemplateImpl và một vài chain phổ biến sử dụng sink là TemplateImpl như bộ CommonsBeanutils hay CommonsCollections 2, 3, 4.</description>
+    </item>
+    <item>
+      <title>Tìm hiểu CVE-2017-9822 - DotNetNuke Cookie Deserialization RCE</title>
+      <link>https://devme4f.github.io/posts/2023/dotnetnuke_cve-2017-9822/</link>
+      <pubDate>Tue, 17 Jan 2023 17:44:52 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/dotnetnuke_cve-2017-9822/</guid>
+      <description>Preface DotNetNuke là hệ thống quản lý nội dung(content management system) mã nguồn mở trên nền tảng ASP.NET. Bài viết này sẽ đi vào phân tích CVE-2017-9822 trên DNN, lỗ hổng unauth insecure deserialization có thể dẫn đến RCE. Lỗ hổng được được phát hiện bởi Alvaro Muñoz và trình bày tại blackhat US 2017 - Friday the 13th JSON Attacks gồm nhiều advanced techniques về khai thác java/.net deserialization, được coi như mở ra kỷ nguyên mới về khai thác loại lỗ hổng này!</description>
+    </item>
+    <item>
+      <title>Tìm hiểu CVE-2019-16891 - Liferay JSON Deserialization to RCE</title>
+      <link>https://devme4f.github.io/posts/2023/liferay_cve-2019-16891/</link>
+      <pubDate>Thu, 12 Jan 2023 12:09:17 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/liferay_cve-2019-16891/</guid>
+      <description>Tham khảo: https://sec.vnpt.vn/2019/09/liferay-deserialization-json-deserialization-part-4/ Version affect: Liferay &amp;lt; 7.x Setup debug Liferay 6.2.5 gồm luôn tomcat server: https://sourceforge.net/projects/lportal/files/Liferay%20Portal/6.2.5%20GA6/&#xA;Server: Giải nén file trên, config 1 vài cái nhỏ nhỏ theo guide rồi start tomcat server ở mode jpda: .\catalina jpda start (ở đây mình dùng java 1.8) Client: Open file or project &amp;ndash;&amp;gt; ROOT folder trong webapps(chỉ cần debug folder này) &amp;ndash;&amp;gt; Load &amp;ndash;&amp;gt; Edit configuration &amp;ndash;&amp;gt; Remote JVM Debug &amp;ndash;&amp;gt; Config port 8000(jpda default chạy port 8000) &amp;ndash;&amp;gt; Debug Nếu thấy các thư viện đã được load trong Project Structure mà chưa thấy ở External Library thì nhớ set JDK ở intellij</description>
+    </item>
+    <item>
+      <title>SVATTT 2022 Ctf Writeup - Waf Deser</title>
+      <link>https://devme4f.github.io/posts/2022/waf-deser/</link>
+      <pubDate>Mon, 17 Oct 2022 10:40:32 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2022/waf-deser/</guid>
+      <description>Preface Writeup bài web jeopardy java Waf Deser thuộc giải SVATTT 2022 vòng sơ khảo, đây cũng là năm đầu tiên mình may mắn nằm trong team của trường được tham dự giải này, java lúc này cũng khá xa lạ đối với mình nhưng may mắn team mình vẫn cố gắng và solved được vào phút chót - nhờ đó có giải ẵm về hihi!&#xA;Source-code: https://drive.google.com/file/d/1wxbVU11RIqD_RTtAcrIQGB82ihAxX06q/view?usp=sharing&#xA;Review Source Code Sau khi giải nén mình được 1 file jar + nginx.</description>
+    </item>
+  </channel>
+</rss>

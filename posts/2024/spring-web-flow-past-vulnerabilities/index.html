@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="vi-vn">
+<head>
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title> Spring Web Flow past vulnerabilities research | devme4f blogs</title>
+  <link rel = 'canonical' href = 'https://devme4f.github.io/posts/2024/spring-web-flow-past-vulnerabilities/'>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta property="og:title" content="Spring Web Flow past vulnerabilities research" />
+<meta property="og:description" content="Prefeace Spring Web Flow xây dựng dựa trên Spring MVC và cho phép triển khai các &ldquo;luồng&rdquo; của ứng dụng web. Một luồng bao gồm một chuỗi ghi lại các bước người dùng thực hiện. Nó bao gồm nhiều yêu cầu HTTP, có trạng thái, xử lý dữ liệu giao dịch, có thể tái sử dụng, dynamic,&hellip;
+Câu trên dịch từ overview của project khá thô nhưng căn bản để dễ hiểu thì có thể coi nó như view-state trong ASP." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://devme4f.github.io/posts/2024/spring-web-flow-past-vulnerabilities/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-03-28T17:13:36+07:00" />
+<meta property="article:modified_time" content="2024-03-28T17:13:36+07:00" />
+
+  <meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Spring Web Flow past vulnerabilities research"/>
+<meta name="twitter:description" content="Prefeace Spring Web Flow xây dựng dựa trên Spring MVC và cho phép triển khai các &ldquo;luồng&rdquo; của ứng dụng web. Một luồng bao gồm một chuỗi ghi lại các bước người dùng thực hiện. Nó bao gồm nhiều yêu cầu HTTP, có trạng thái, xử lý dữ liệu giao dịch, có thể tái sử dụng, dynamic,&hellip;
+Câu trên dịch từ overview của project khá thô nhưng căn bản để dễ hiểu thì có thể coi nó như view-state trong ASP."/>
+
+  
+  
+    
+  
+  
+  <link rel="stylesheet" href="https://devme4f.github.io/css/styles.a7dd5af4c7ef9f93fb31b1147bb343d14667fd6cdafa7ae17de8d923a2f6a282b9db99fd91500efb76d5de5a5603d29fb153733d9bfac95b534e595d0ab745a7.css" integrity="sha512-p91a9Mfvn5P7MbEUe7ND0UZn/Wza&#43;nrhfejZI6L2ooK525n9kVAO&#43;3bV3lpWA9KfsVNzPZv6yVtTTlldCrdFpw=="> 
+
+  
+  
+  
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+<link rel="icon" type="image/png" href="https://devme4f.github.io/images/favicon.ico" />
+
+  
+  
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+  <div class="content index py4">
+
+  <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;" aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Archives</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="/about">About</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li>
+          <a class="icon" href=" https://devme4f.github.io/posts/2024/jasig-cas-past-vulnerabilities/" aria-label="Previous">
+            <i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i>
+          </a>
+        </li>
+        
+        
+        <li>
+          <a class="icon" href="https://devme4f.github.io/about/" aria-label="Next">
+            <i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i>
+          </a>
+        </li>
+        
+        <li>
+          <a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+            <i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i>
+          </a>
+        </li>
+        <li>
+          <a class="icon" href="#" aria-label="Share">
+            <i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i>
+          </a>
+        </li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-web-flow-past-vulnerabilities%2f" aria-label="Facebook">
+      <i class="fab fa-facebook " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-web-flow-past-vulnerabilities%2f&text=Spring%20Web%20Flow%20past%20vulnerabilities%20research" aria-label="Twitter">
+      <i class="fab fa-twitter " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-web-flow-past-vulnerabilities%2f&title=Spring%20Web%20Flow%20past%20vulnerabilities%20research" aria-label="Linkedin">
+      <i class="fab fa-linkedin " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-web-flow-past-vulnerabilities%2f&is_video=false&description=Spring%20Web%20Flow%20past%20vulnerabilities%20research" aria-label="Pinterest">
+      <i class="fab fa-pinterest " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=Spring%20Web%20Flow%20past%20vulnerabilities%20research&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-web-flow-past-vulnerabilities%2f" aria-label="Email">
+      <i class="fas fa-envelope " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-web-flow-past-vulnerabilities%2f&title=Spring%20Web%20Flow%20past%20vulnerabilities%20research" aria-label="Pocket">
+      <i class="fab fa-get-pocket " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-web-flow-past-vulnerabilities%2f&title=Spring%20Web%20Flow%20past%20vulnerabilities%20research" aria-label="reddit">
+      <i class="fab fa-reddit " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-web-flow-past-vulnerabilities%2f&name=Spring%20Web%20Flow%20past%20vulnerabilities%20research&description=Prefeace%20Spring%20Web%20Flow%20x%c3%a2y%20d%e1%bb%b1ng%20d%e1%bb%b1a%20tr%c3%aan%20Spring%20MVC%20v%c3%a0%20cho%20ph%c3%a9p%20tri%e1%bb%83n%20khai%20c%c3%a1c%20%26ldquo%3blu%e1%bb%93ng%26rdquo%3b%20c%e1%bb%a7a%20%e1%bb%a9ng%20d%e1%bb%a5ng%20web.%20M%e1%bb%99t%20lu%e1%bb%93ng%20bao%20g%e1%bb%93m%20m%e1%bb%99t%20chu%e1%bb%97i%20ghi%20l%e1%ba%a1i%20c%c3%a1c%20b%c6%b0%e1%bb%9bc%20ng%c6%b0%e1%bb%9di%20d%c3%b9ng%20th%e1%bb%b1c%20hi%e1%bb%87n.%20N%c3%b3%20bao%20g%e1%bb%93m%20nhi%e1%bb%81u%20y%c3%aau%20c%e1%ba%a7u%20HTTP%2c%20c%c3%b3%20tr%e1%ba%a1ng%20th%c3%a1i%2c%20x%e1%bb%ad%20l%c3%bd%20d%e1%bb%af%20li%e1%bb%87u%20giao%20d%e1%bb%8bch%2c%20c%c3%b3%20th%e1%bb%83%20t%c3%a1i%20s%e1%bb%ad%20d%e1%bb%a5ng%2c%20dynamic%2c%26hellip%3b%0aC%c3%a2u%20tr%c3%aan%20d%e1%bb%8bch%20t%e1%bb%ab%20overview%20c%e1%bb%a7a%20project%20kh%c3%a1%20th%c3%b4%20nh%c6%b0ng%20c%c4%83n%20b%e1%ba%a3n%20%c4%91%e1%bb%83%20d%e1%bb%85%20hi%e1%bb%83u%20th%c3%ac%20c%c3%b3%20th%e1%bb%83%20coi%20n%c3%b3%20nh%c6%b0%20view-state%20trong%20ASP." aria-label="Tumblr">
+      <i class="fab fa-tumblr " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-web-flow-past-vulnerabilities%2f&t=Spring%20Web%20Flow%20past%20vulnerabilities%20research" aria-label="Hacker News">
+      <i class="fab fa-hacker-news " aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+    
+    <div id="toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#prefeace">Prefeace</a></li>
+    <li><a href="#cve-2017-4971-data-binding-expression-vulnerability-in-spring-web-flow">CVE-2017-4971: Data Binding Expression Vulnerability in Spring Web Flow</a>
+      <ul>
+        <li><a href="#mitigation">mitigation</a></li>
+        <li><a href="#refs">refs</a></li>
+      </ul>
+    </li>
+    <li><a href="#cve-2017-8039-data-binding-expression-vulnerability-in-spring-web-flow">CVE-2017-8039: Data Binding Expression Vulnerability in Spring Web Flow</a>
+      <ul>
+        <li><a href="#mitigation-1">mitigation</a></li>
+      </ul>
+    </li>
+    <li><a href="#refs-1">refs</a></li>
+  </ul>
+</nav>
+    </div>
+    
+  </span>
+</div>
+
+
+  <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+      <h1 class="posttitle" itemprop="name headline">
+        Spring Web Flow past vulnerabilities research
+      </h1>
+      <div class="meta">
+        
+        <div class="postdate">
+          
+          <time datetime="2024-03-28 17:13:36 &#43;0700 &#43;07" itemprop="datePublished">2024-03-28</time>
+          
+        </div>
+        
+        
+        
+        
+        <div class="article-tag">
+            <i class="fas fa-tag"></i>
+            
+            
+            <a class="tag-link" href="/tags/research" rel="tag">research</a>
+            
+             ,  
+            <a class="tag-link" href="/tags/cve" rel="tag">cve</a>
+            
+        </div>
+        
+      </div>
+    </header>
+
+  
+    
+    <div class="content" itemprop="articleBody">
+      <p><img src="/images/2024/Spring-Web-Flow-past-vulnerabilities/theme.jpg" alt="theme"></p>
+<h2 id="prefeace">Prefeace</h2>
+<p>Spring Web Flow xây dựng dựa trên Spring MVC và cho phép triển khai các &ldquo;luồng&rdquo; của ứng dụng web. Một luồng bao gồm một chuỗi ghi lại các bước người dùng thực hiện. Nó bao gồm nhiều yêu cầu HTTP, có trạng thái, xử lý dữ liệu giao dịch, có thể tái sử dụng, dynamic,&hellip;</p>
+<p>Câu trên dịch từ overview của project khá thô nhưng căn bản để dễ hiểu thì có thể coi nó như view-state trong ASP.NET, lưu lại luồng hoạt động trên ứng dụng nhằm phục phụ nhiều yêu cầu nghiệp vụ khác nhau. Có thể kể đến như app shopping hay authentication flow - tiêu biểu là con CAS có sử dụng lib này mà mình vừa có bài phân tích, cũng chính là lý do mình quyết định tìm hiểu thêm lib này.</p>
+<h2 id="cve-2017-4971-data-binding-expression-vulnerability-in-spring-web-flow">CVE-2017-4971: Data Binding Expression Vulnerability in Spring Web Flow</h2>
+<ul>
+<li><strong>advisory</strong>: <a href="https://spring.io/security/cve-2017-4971">https://spring.io/security/cve-2017-4971</a></li>
+<li><strong>version affected</strong>:
+<ul>
+<li>Spring Web Flow <code>2.4.0 to 2.4.4</code></li>
+<li>Older unsupported versions are also affected</li>
+</ul>
+</li>
+</ul>
+<p>Lab debug dựa trên sample chính thức: <a href="https://github.com/spring-projects/spring-webflow-samples">https://github.com/spring-projects/spring-webflow-samples</a> - commit: <code>f2312608cb924666d5d068e8016c1727b006d372</code> hay spring-webflow version <code>2.4.4</code></p>
+<p><strong>Theo advisory</strong>:
+<img src="/images/2024/Spring-Web-Flow-past-vulnerabilities/CVE-2017-4971.png" alt="CVE-2017-4971"></p>
+<p>Đọc thì khá khó hiểu, nhưng nói chung để exploit được bug này cần 2 điều kiện không quá khó gặp. App chạy cấu hình default không set lại thuộc tính <code>MvcViewFactoryCreator.setUseSpringBeanBinding</code> thành <code>true</code>. Như sample trên thì mặc định đã set lại nên không dính:
+<img src="/images/2024/Spring-Web-Flow-past-vulnerabilities/setUseSpringBeanBinding.png" alt="setUseSpringBeanBinding"></p>
+<p>Nguyên nhân do khi truy cập lần đầu <code>/hotels/booking??hotelId=1</code> app sẽ tìm đến cấu hình <code>booking-flow.xml</code> và thực hiện khởi tạo các ViewFactory tương ứng với các <code>view-state</code> trong file. Trước khi tạo sẽ kiểm tra thuộc tính <code>useSpringBeanBinding</code>:
+<img src="/images/2024/Spring-Web-Flow-past-vulnerabilities/useSpringBeanBinding.png" alt="useSpringBeanBinding"></p>
+<p>Nếu giá trị là <code>true</code> sẽ dùng <code>BeanWrapperExpressionParser</code> như hình, nếu không thì dùng parser default <code>SpelExpressionParser</code>.</p>
+<p>Ngoài ra cần có 1 <code>view-state</code> không cấu hình <code>binding</code> như view <code>reviewBooking</code> (vẫn cần gán <code>model=&quot;something...&quot;</code> để web flow thực hiện binding), còn như <code>enterBookingDetails</code> thì không được:
+<img src="/images/2024/Spring-Web-Flow-past-vulnerabilities/view-state.png" alt="view-state"></p>
+<p>Nguyên nhân do khi tiến hành bind parameters với model tại <code>AbstractMvcView#bind()</code>, với view-state là <code>enterBookingDetails</code>, do view này có cấu hình <code>binding</code> nên <code>binderConfiguration != null</code>, request đi vào <code>addModelBindings()</code>
+<img src="/images/2024/Spring-Web-Flow-past-vulnerabilities/addModelBindings.png" alt="addModelBindings"></p>
+<p>và mapping <code>property</code> match với <code>model</code> đã cấu hình, không có giá trị nào ta kiểm soát được ở đây:
+<img src="/images/2024/Spring-Web-Flow-past-vulnerabilities/property.png" alt="property"></p>
+<p>Điều mình muốn là <code>binderConfiguration == null</code> - tương ứng với view-state là <code>reviewBooking</code>, khi đó request đi vào <code>addDefaultMappings()</code>. Lúc này method lấy ra <code>field</code> chính là parameter keys có prefix là <code>_</code> đi vào <code>addEmptyValueMapping()</code>:
+<img src="/images/2024/Spring-Web-Flow-past-vulnerabilities/prefix_.png" alt="prefix_"></p>
+<p>Tại đây <code>field</code> sẽ được parse expression bởi <code>expressionParser</code> là <code>BeanWrapperExpressionParser</code> như phần trên do app đã cấu hình <code>setUseSpringBeanBinding</code> là <code>true</code>.
+<img src="/images/2024/Spring-Web-Flow-past-vulnerabilities/expressionParser.png" alt="expressionParser"></p>
+<p>Nếu không cấu hình thuộc tính này như advisory:
+<img src="/images/2024/Spring-Web-Flow-past-vulnerabilities/commented.png" alt="commented"></p>
+<p><img src="/images/2024/Spring-Web-Flow-past-vulnerabilities/false.png" alt="false"></p>
+<p><code>expressionParser</code> sẽ là <code>SpelExpressionParser</code>, RCE đơn giản với request sau đến view <code>reviewBooking</code>:</p>
+<pre tabindex="0"><code>POST /booking_mvc/hotels/booking?execution=e2s2 HTTP/1.1
+Host: devme4f.io:8080
+Content-Length: 60
+Content-Type: application/x-www-form-urlencoded
+Cookie: JSESSIONID=01DFF10A46C8E55EB4668C28044381C6
+Connection: close
+
+_eventId_confirm=&amp;_csrf=89ce2001-ec0f-4d08-8133-c6f4affd6394&amp;_T(java.lang.Runtime).getRuntime().exec(&#34;calc.exe&#34;)
+</code></pre><p>hitted:
+<img src="/images/2024/Spring-Web-Flow-past-vulnerabilities/hitted.png" alt="hitted"></p>
+<p>Output dễ đoán:
+<img src="/images/2024/Spring-Web-Flow-past-vulnerabilities/Output.png" alt="Output"></p>
+<h3 id="mitigation">mitigation</h3>
+<p>Bản fix <code>2.4.5</code> mặc định method <code>addEmptyValueMapping()</code> sẽ dùng <code>BeanWrapperExpressionParser</code>
+<img src="/images/2024/Spring-Web-Flow-past-vulnerabilities/fix_2.4.5.png" alt="fix_2.4.5"></p>
+<h3 id="refs">refs</h3>
+<ul>
+<li><a href="https://www.aon.com/cyber-solutions/aon_cyber_labs/cve-2017-4971-remote-code-execution-vulnerability-in-the-spring-web-flow-framework/">https://www.aon.com/cyber-solutions/aon_cyber_labs/cve-2017-4971-remote-code-execution-vulnerability-in-the-spring-web-flow-framework/</a></li>
+</ul>
+<h2 id="cve-2017-8039-data-binding-expression-vulnerability-in-spring-web-flow">CVE-2017-8039: Data Binding Expression Vulnerability in Spring Web Flow</h2>
+<ul>
+<li><strong>advisory</strong>: <a href="https://spring.io/security/cve-2017-8039">https://spring.io/security/cve-2017-8039</a></li>
+<li><strong>version affected</strong>:
+<ul>
+<li>Spring Web Flow <code>2.4.0 to 2.4.5</code></li>
+<li>Older unsupported versions are also affected</li>
+</ul>
+</li>
+</ul>
+<p><strong>Theo advisory</strong>:
+<img src="/images/2024/Spring-Web-Flow-past-vulnerabilities/CVE-2017-8039.png" alt="CVE-2017-8039"></p>
+<p>Thì do bản fix trước chỉ sửa mỗi method <code>addEmptyValueMapping()</code> nên vẫn còn method khác có thể lợi dụng được. Thật ra khi chưa xem CVE này thì trong quá trình debug mình đã thấy rồi, để thấy bản fix trước khá tạm bợ - fix cho xong. Anyway, method đó là <code>addDefaultMapping()</code>:
+<img src="/images/2024/Spring-Web-Flow-past-vulnerabilities/addDefaultMapping.png" alt="addDefaultMapping"></p>
+<p>Nếu bạn để ý thì method này được gọi ngay dưới <code>addEmptyValueMapping()</code> mà mình đã show ở trên, khi parameter không có prefix <code>_</code> thì sẽ vào đây, còn lại xử lý parse expression y chang:
+<img src="/images/2024/Spring-Web-Flow-past-vulnerabilities/prefix.png" alt="prefix"></p>
+<h3 id="mitigation-1">mitigation</h3>
+<p>Bản fix mới check nếu expressionParser là <code>BeanWrapperExpressionParser</code> sẽ pass, nếu không thì expression phải thỏa mãn hàm check <code>checkModelProperty()</code>:
+<img src="/images/2024/Spring-Web-Flow-past-vulnerabilities/checkModelProperty.png" alt="checkModelProperty"></p>
+<p><code>checkModelProperty()</code> duyệt expression và lấy ra từng property để kiểm tra xem property có nằm trong model đang muốn binding:
+<img src="/images/2024/Spring-Web-Flow-past-vulnerabilities/method_checkModelProperty.png" alt="method_checkModelProperty"></p>
+<p>Tạm bỏ qua chuyện có bypass được hàm này không, bản latest <code>3.0.0</code> chuyển qua dùng <code>SimpleEvaluationContext</code>, cái được biết đến là safe khi chỉ hỗ trợ evaluate các expression đơn giản so với <code>StandardEvaluationContext</code> dùng được hầu hết java class, có bypass được method <code>checkModelProperty</code> khi dùng <code>SpelExpressionParser</code> thì inject cũng không làm được gì. <code>SimpleEvaluationContext</code> vẫn <a href="https://0xn3va.gitbook.io/cheat-sheets/framework/spring/spel-injection#simpleevaluationcontext-redos">vulnerable</a> với ReDoS nhưng nếu app chạy java version cao thì cũng không redos được!</p>
+<p><img src="/images/2024/Spring-Web-Flow-past-vulnerabilities/SimpleEvaluationContext.png" alt="SimpleEvaluationContext"></p>
+<ul>
+<li>Use SimpleEvaluationContext in AbstractMvcView [SWF-1722]: <a href="https://github.com/spring-projects/spring-webflow/issues/897">https://github.com/spring-projects/spring-webflow/issues/897</a></li>
+<li><a href="https://stackoverflow.com/questions/69820458/spel-how-to-protect-against-injection-attacks">https://stackoverflow.com/questions/69820458/spel-how-to-protect-against-injection-attacks</a></li>
+</ul>
+<h2 id="refs-1">refs</h2>
+<ul>
+<li><a href="https://docs.spring.io/spring-webflow/docs/current/reference/">https://docs.spring.io/spring-webflow/docs/current/reference/</a></li>
+<li><a href="https://spring.io/projects/spring-webflow/">https://spring.io/projects/spring-webflow/</a></li>
+</ul>
+
+    </div>
+  </article>
+
+  
+  
+
+
+
+
+
+
+  <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/posts">Archives</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="/about">About</a></li>
+        
+      </ul>
+    </div>
+
+    
+    <div id="toc-footer" style="display: none">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#prefeace">Prefeace</a></li>
+    <li><a href="#cve-2017-4971-data-binding-expression-vulnerability-in-spring-web-flow">CVE-2017-4971: Data Binding Expression Vulnerability in Spring Web Flow</a>
+      <ul>
+        <li><a href="#mitigation">mitigation</a></li>
+        <li><a href="#refs">refs</a></li>
+      </ul>
+    </li>
+    <li><a href="#cve-2017-8039-data-binding-expression-vulnerability-in-spring-web-flow">CVE-2017-8039: Data Binding Expression Vulnerability in Spring Web Flow</a>
+      <ul>
+        <li><a href="#mitigation-1">mitigation</a></li>
+      </ul>
+    </li>
+    <li><a href="#refs-1">refs</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    <div id="share-footer" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-web-flow-past-vulnerabilities%2f" aria-label="Facebook">
+      <i class="fab fa-facebook fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-web-flow-past-vulnerabilities%2f&text=Spring%20Web%20Flow%20past%20vulnerabilities%20research" aria-label="Twitter">
+      <i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-web-flow-past-vulnerabilities%2f&title=Spring%20Web%20Flow%20past%20vulnerabilities%20research" aria-label="Linkedin">
+      <i class="fab fa-linkedin fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-web-flow-past-vulnerabilities%2f&is_video=false&description=Spring%20Web%20Flow%20past%20vulnerabilities%20research" aria-label="Pinterest">
+      <i class="fab fa-pinterest fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=Spring%20Web%20Flow%20past%20vulnerabilities%20research&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-web-flow-past-vulnerabilities%2f" aria-label="Email">
+      <i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-web-flow-past-vulnerabilities%2f&title=Spring%20Web%20Flow%20past%20vulnerabilities%20research" aria-label="Pocket">
+      <i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-web-flow-past-vulnerabilities%2f&title=Spring%20Web%20Flow%20past%20vulnerabilities%20research" aria-label="reddit">
+      <i class="fab fa-reddit fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-web-flow-past-vulnerabilities%2f&name=Spring%20Web%20Flow%20past%20vulnerabilities%20research&description=Prefeace%20Spring%20Web%20Flow%20x%c3%a2y%20d%e1%bb%b1ng%20d%e1%bb%b1a%20tr%c3%aan%20Spring%20MVC%20v%c3%a0%20cho%20ph%c3%a9p%20tri%e1%bb%83n%20khai%20c%c3%a1c%20%26ldquo%3blu%e1%bb%93ng%26rdquo%3b%20c%e1%bb%a7a%20%e1%bb%a9ng%20d%e1%bb%a5ng%20web.%20M%e1%bb%99t%20lu%e1%bb%93ng%20bao%20g%e1%bb%93m%20m%e1%bb%99t%20chu%e1%bb%97i%20ghi%20l%e1%ba%a1i%20c%c3%a1c%20b%c6%b0%e1%bb%9bc%20ng%c6%b0%e1%bb%9di%20d%c3%b9ng%20th%e1%bb%b1c%20hi%e1%bb%87n.%20N%c3%b3%20bao%20g%e1%bb%93m%20nhi%e1%bb%81u%20y%c3%aau%20c%e1%ba%a7u%20HTTP%2c%20c%c3%b3%20tr%e1%ba%a1ng%20th%c3%a1i%2c%20x%e1%bb%ad%20l%c3%bd%20d%e1%bb%af%20li%e1%bb%87u%20giao%20d%e1%bb%8bch%2c%20c%c3%b3%20th%e1%bb%83%20t%c3%a1i%20s%e1%bb%ad%20d%e1%bb%a5ng%2c%20dynamic%2c%26hellip%3b%0aC%c3%a2u%20tr%c3%aan%20d%e1%bb%8bch%20t%e1%bb%ab%20overview%20c%e1%bb%a7a%20project%20kh%c3%a1%20th%c3%b4%20nh%c6%b0ng%20c%c4%83n%20b%e1%ba%a3n%20%c4%91%e1%bb%83%20d%e1%bb%85%20hi%e1%bb%83u%20th%c3%ac%20c%c3%b3%20th%e1%bb%83%20coi%20n%c3%b3%20nh%c6%b0%20view-state%20trong%20ASP." aria-label="Tumblr">
+      <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-web-flow-past-vulnerabilities%2f&t=Spring%20Web%20Flow%20past%20vulnerabilities%20research" aria-label="Hacker News">
+      <i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      
+        <a id="menu-toggle" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;" aria-label="Menu">
+          <i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+        <a id="toc-toggle" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;" aria-label="TOC">
+          <i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share-toggle" class="icon" href="#" onclick="$('#share-footer').toggle();return false;" aria-label="Share">
+          <i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+          <i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+
+  <footer id="footer">
+  <div class="footer-left">
+    Copyright  &copy; 2024  devme4f blogs 
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Archives</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="/about">About</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+
+  </div>
+</body>
+
+<link rel="stylesheet" href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+
+<script src=/js/code-copy.js></script>
+
+
+
+
+</html>

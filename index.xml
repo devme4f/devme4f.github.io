@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>devme4f blogs</title>
+    <link>https://devme4f.github.io/</link>
+    <description>Recent content on devme4f blogs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>vi-vn</language>
+    <lastBuildDate>Sat, 30 Mar 2024 23:53:13 +0700</lastBuildDate>
+    <atom:link href="https://devme4f.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>About</title>
+      <link>https://devme4f.github.io/about/</link>
+      <pubDate>Sat, 30 Mar 2024 23:53:13 +0700</pubDate>
+      <guid>https://devme4f.github.io/about/</guid>
+      <description>hi! i&amp;#39;m K pentester at VNPT currently interested in java security Here are some of my cves:&#xA;CVE-2023-43798 Bigbluebutton SSRF: https://github.com/bigbluebutton/bigbluebutton/security/advisories/GHSA-h98v-2h8w-99c4 CVE-2023-43797 Bigbluebutton XSS: https://github.com/bigbluebutton/bigbluebutton/security/advisories/GHSA-v6wg-q866-h73x updating&amp;hellip; ₍ఠ ͜ఠ₎ </description>
+    </item>
+    <item>
+      <title>Spring Web Flow past vulnerabilities research</title>
+      <link>https://devme4f.github.io/posts/2024/spring-web-flow-past-vulnerabilities/</link>
+      <pubDate>Thu, 28 Mar 2024 17:13:36 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2024/spring-web-flow-past-vulnerabilities/</guid>
+      <description>Prefeace Spring Web Flow xây dựng dựa trên Spring MVC và cho phép triển khai các &amp;ldquo;luồng&amp;rdquo; của ứng dụng web. Một luồng bao gồm một chuỗi ghi lại các bước người dùng thực hiện. Nó bao gồm nhiều yêu cầu HTTP, có trạng thái, xử lý dữ liệu giao dịch, có thể tái sử dụng, dynamic,&amp;hellip;&#xA;Câu trên dịch từ overview của project khá thô nhưng căn bản để dễ hiểu thì có thể coi nó như view-state trong ASP.</description>
+    </item>
+    <item>
+      <title>Jasig CAS past vulnerabilities research</title>
+      <link>https://devme4f.github.io/posts/2024/jasig-cas-past-vulnerabilities/</link>
+      <pubDate>Wed, 27 Mar 2024 17:05:40 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2024/jasig-cas-past-vulnerabilities/</guid>
+      <description>Preface CAS là một ứng dụng Enterprise Single Sign-On open source khá phổ biến được sử dụng bởi nhiều doanh nghiệp lớn. CAS hỗ trợ nhiều giao thức xác thực như CAS (tương tự kerberos), SAML, Oauth, OpenID cũng như có tính tùy biến cao nên được nhiều bên lựa chọn.&#xA;CAS ban đầu được phát triển với tên Jasig CAS có package name là org.jasig.cas nhưng từ 2012 thì Jasig hợp nhất với Sakai Foundation tạo nên Apereo Foundation.</description>
+    </item>
+    <item>
+      <title>TetCTF-2024 Ctf Writeup - J4v4 Censored web challenge and unintended solution that break nginx rule</title>
+      <link>https://devme4f.github.io/posts/2024/tetctf-2024_j4v4-censored/</link>
+      <pubDate>Tue, 30 Jan 2024 15:05:59 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2024/tetctf-2024_j4v4-censored/</guid>
+      <description>preface Hi! bài này mình sẽ writeup lại bài J4v4 Censored trong giải TetCTF-2024 mà team mình (KCSC) đã solve được. Đây là 1 bài java mình đánh giá không quá khó nhưng lại là half-black-box nên phải đoán, fuzzing khá nhiều nên khi làm mình khá nản nhưng cũng nhờ có teammates quyết tâm tìm ra được unintended solution nên may mắn (cũng chính là team duy nhất) solved được.</description>
+    </item>
+    <item>
+      <title>SVATTT-2023 Ctf Writeup - The new Waf Deser</title>
+      <link>https://devme4f.github.io/posts/2023/svattt-2023_new-waf-deser/</link>
+      <pubDate>Fri, 22 Dec 2023 12:35:17 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/svattt-2023_new-waf-deser/</guid>
+      <description>Preface Gõ phím viết bài này thì cũng đã gần 2 tháng kể từ đợt final A&amp;amp;D SVATTT 2023 kết thúc. Năm nay mình may may mắn được vào chung khảo chơi A&amp;amp;D và với role là defense (cấu hình log, patch bug,..etc). Vào thi thì khá loạn + nhiều việc, và vì mình role defense nên cũng chỉ ngó qua bài này và thấy backend y chang bài waf-deser năm trước khác mỗi phần front-end, tưởng dễ nên mình vẫn chưa mò lại xem, nay đến deadline hoàn thành task ở clb mới lụi cụi làm, thấy hay nên write up lại luôn, coi như làm tài liệu tham khảo cho các năm sau :D</description>
+    </item>
+    <item>
+      <title>Quick Note Spring Memshell</title>
+      <link>https://devme4f.github.io/posts/2023/quick-note-spring-memshell/</link>
+      <pubDate>Tue, 19 Sep 2023 21:50:22 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/quick-note-spring-memshell/</guid>
+      <description>Preface Một vài mẫu note rời rạc về spring memory webshell mà mình đã dành thời gian tìm hiểu chưa có thời gian viết hoàn thiện&#xA;Spring boot Maven: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web&#xA;spring boot &amp;lt; 2.x =&amp;gt; test ok (2.4.10, 2.5.14, 2.7.15) spring boot 3.x (support jdk &amp;gt;= 17) =&amp;gt; not ok do jdk ver cao Dynamically set RequestMappings in Spring (at runtime) Lấy WebApplicationContext Key khi inject memshell trong spring là lấy được WebApplicationContext</description>
+    </item>
+    <item>
+      <title>Java Deserialization p1 - TemplateImpl class and its utilization chain</title>
+      <link>https://devme4f.github.io/posts/2023/java-deserialization-p1/</link>
+      <pubDate>Tue, 12 Sep 2023 23:46:31 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/java-deserialization-p1/</guid>
+      <description>Preface com.sun.org.apache.xalan.internal.xsltc.trax.TemplateImpl là một class nằm trong thư viện Apache Xalan có sẵn trong java runtime nhằm phục vụ quá trình transform XML document, tuy nhiên lại bị lợi dụng rất nhiều trong các bộ deserialization gadget chain do có thể thực hiện load bytecode dẫn đến thực thi command tùy ý. Bài viết sẽ phân tích chi tiết class TemplateImpl và một vài chain phổ biến sử dụng sink là TemplateImpl như bộ CommonsBeanutils hay CommonsCollections 2, 3, 4.</description>
+    </item>
+    <item>
+      <title>SekaiCTF-2023 Ctf Writeup - Frog WAF - EL Injection WAF Bypass</title>
+      <link>https://devme4f.github.io/posts/2023/sekaictf-2023_frog-waf/</link>
+      <pubDate>Mon, 28 Aug 2023 09:09:53 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/sekaictf-2023_frog-waf/</guid>
+      <description>Preface Write up chi tiết bài Frog-WAF thuộc giải SekaiCTF-2023. Bài này trong giải mình không làm ra do stuck 1 số chỗ nên hôm nay mình sẽ tham khảo qua script solution và write up chi tiết lại.&#xA;Overview Challenge cho source-code, các bạn có thể tải tại: https://drive.google.com/file/d/1NDolpwf01ckCy7qcBGEp-_aZGT0OfI6E/view?usp=sharing&#xA;Challenge dùng gradle để build app spring boot Xem Dockerfile:&#xA;FROM gradle:7.5-jdk11-alpine AS build COPY --chown=gradle:gradle build.gradle settings.gradle /home/gradle/frogwaf/ COPY --chown=gradle:gradle src/ /home/gradle/frogwaf/src/ WORKDIR /home/gradle/frogwaf RUN gradle bootJar FROM openjdk:11-slim COPY flag.</description>
+    </item>
+    <item>
+      <title>BKCTF-2023 Ctf Writeup - Texttext - Java deser exploit Text4Shell</title>
+      <link>https://devme4f.github.io/posts/2023/bkctf-2023_texttext/</link>
+      <pubDate>Sun, 20 Aug 2023 09:22:58 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/bkctf-2023_texttext/</guid>
+      <description>Preface Tuần vừa rồi mình có tham gia giải BKCTF-2023 ở bảng offline, thành tích team thì cũng không có gì nổi bật nhưng trong giải mình có giải được một bài cũng khá hay dù không quá khó là bài Texttext, khi nhận giải được yêu cầu viết writeup nên yup, đây chính là nó.&#xA;Overview Challenge cho source-code, các bạn có thể tải tại: https://drive.google.com/file/d/1onNxUHArYn3KTR3YJ8bKPykSDDm7kkMG/view?usp=drive_link&#xA;Sau khi tải về được 1 file là textext.</description>
+    </item>
+    <item>
+      <title>Liferay Pentest</title>
+      <link>https://devme4f.github.io/posts/2023/liferay-pentest/</link>
+      <pubDate>Thu, 25 May 2023 22:08:11 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/liferay-pentest/</guid>
+      <description>Preface Bài viết tổng hợp một số lỗ hổng phổ biến / nghiêm trọng trên product Liferay đã được phát hiện, nhằm giúp người đọc (và mình) có cái nhìn tổng quan và cũng là cheat-sheet khi pentest các site Liferay.&#xA;Liferay Blind SSRF Pingback Affected version: &amp;lt;= Liferay Portal 7.0.4 Lỗ hổng SSRF nằm trong tính năng blog pingback của liferay, cho phép gửi http get request đến địa chỉ bất kỳ.</description>
+    </item>
+    <item>
+      <title>Angstromctf-2023 Ctf Writeup - filestore</title>
+      <link>https://devme4f.github.io/posts/2023/angstromctf-2023_filestore/</link>
+      <pubDate>Thu, 27 Apr 2023 00:03:12 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/angstromctf-2023_filestore/</guid>
+      <description>Overview Challenge cho source code: https://drive.google.com/file/d/1udkCu6axKKX6KhXgP4X3W_ejeIew0HNF/view?usp=sharing&#xA;index.php:&#xA;&amp;lt;?php if($_SERVER[&amp;#39;REQUEST_METHOD&amp;#39;] == &amp;#34;POST&amp;#34;){ if ($_FILES[&amp;#34;f&amp;#34;][&amp;#34;size&amp;#34;] &amp;gt; 1000) { echo &amp;#34;file too large&amp;#34;; return; } $i = uniqid(); if (empty($_FILES[&amp;#34;f&amp;#34;])){ return; } if (move_uploaded_file($_FILES[&amp;#34;f&amp;#34;][&amp;#34;tmp_name&amp;#34;], &amp;#34;./uploads/&amp;#34; . $i . &amp;#34;_&amp;#34; . hash(&amp;#39;sha256&amp;#39;, $_FILES[&amp;#34;f&amp;#34;][&amp;#34;name&amp;#34;]) . &amp;#34;_&amp;#34; . $_FILES[&amp;#34;f&amp;#34;][&amp;#34;name&amp;#34;])){ echo &amp;#34;upload success&amp;#34;; } else { echo &amp;#34;upload error&amp;#34;; } } else { if (isset($_GET[&amp;#34;f&amp;#34;])) { include &amp;#34;./uploads/&amp;#34; . $_GET[&amp;#34;f&amp;#34;]; } highlight_file(&amp;#34;index.php&amp;#34;); // this doesn&amp;#39;t work, so I&amp;#39;m commenting it out 😛 // system(&amp;#34;/list_uploads&amp;#34;); } ?</description>
+    </item>
+    <item>
+      <title>Tìm hiểu CVE-2017-9822 - DotNetNuke Cookie Deserialization RCE</title>
+      <link>https://devme4f.github.io/posts/2023/dotnetnuke_cve-2017-9822/</link>
+      <pubDate>Tue, 17 Jan 2023 17:44:52 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/dotnetnuke_cve-2017-9822/</guid>
+      <description>Preface DotNetNuke là hệ thống quản lý nội dung(content management system) mã nguồn mở trên nền tảng ASP.NET. Bài viết này sẽ đi vào phân tích CVE-2017-9822 trên DNN, lỗ hổng unauth insecure deserialization có thể dẫn đến RCE. Lỗ hổng được được phát hiện bởi Alvaro Muñoz và trình bày tại blackhat US 2017 - Friday the 13th JSON Attacks gồm nhiều advanced techniques về khai thác java/.net deserialization, được coi như mở ra kỷ nguyên mới về khai thác loại lỗ hổng này!</description>
+    </item>
+    <item>
+      <title>Tìm hiểu CVE-2019-16891 - Liferay JSON Deserialization to RCE</title>
+      <link>https://devme4f.github.io/posts/2023/liferay_cve-2019-16891/</link>
+      <pubDate>Thu, 12 Jan 2023 12:09:17 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/liferay_cve-2019-16891/</guid>
+      <description>Tham khảo: https://sec.vnpt.vn/2019/09/liferay-deserialization-json-deserialization-part-4/ Version affect: Liferay &amp;lt; 7.x Setup debug Liferay 6.2.5 gồm luôn tomcat server: https://sourceforge.net/projects/lportal/files/Liferay%20Portal/6.2.5%20GA6/&#xA;Server: Giải nén file trên, config 1 vài cái nhỏ nhỏ theo guide rồi start tomcat server ở mode jpda: .\catalina jpda start (ở đây mình dùng java 1.8) Client: Open file or project &amp;ndash;&amp;gt; ROOT folder trong webapps(chỉ cần debug folder này) &amp;ndash;&amp;gt; Load &amp;ndash;&amp;gt; Edit configuration &amp;ndash;&amp;gt; Remote JVM Debug &amp;ndash;&amp;gt; Config port 8000(jpda default chạy port 8000) &amp;ndash;&amp;gt; Debug Nếu thấy các thư viện đã được load trong Project Structure mà chưa thấy ở External Library thì nhớ set JDK ở intellij</description>
+    </item>
+    <item>
+      <title>Tìm hiểu CVE-2020-15394 - Manage Engine Application Manager unauth RCE</title>
+      <link>https://devme4f.github.io/posts/2023/manageengineam_cve-2020-15394/</link>
+      <pubDate>Sun, 08 Jan 2023 12:15:44 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/manageengineam_cve-2020-15394/</guid>
+      <description>Preface CVE-2020-15394 - Unauthenticated Remote Code Execution via SQL injection in REST API module: https://www.manageengine.com/products/applications_manager/security-updates/security-updates-cve-2020-15394.html&#xA;Affected Builds: builds &amp;lt; 14684; 14689 &amp;lt; builds &amp;lt; 14740&#xA;Recommended Fix: Upgrade Applications Manager to version 14740 or above.&#xA;Setup step Application Manager installation archives: https://archives.manageengine.com/applications_manager/&#xA;Restricted installation: MangeEngine hạn chế cho phép tải các phiên bản cũ (&amp;lt;=14700) để hạn chế bugs: https://pitstop.manageengine.com/portal/en/community/topic/license-file-might-be-missing&#xA;Release Notes: https://www.manageengine.com/products/applications_manager/release-notes.html?utm_source=set3&#xA;Đầu tiên setup remode debug bằng Intellij:</description>
+    </item>
+    <item>
+      <title>SVATTT 2022 Ctf Writeup - Waf Deser</title>
+      <link>https://devme4f.github.io/posts/2022/waf-deser/</link>
+      <pubDate>Mon, 17 Oct 2022 10:40:32 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2022/waf-deser/</guid>
+      <description>Preface Writeup bài web jeopardy java Waf Deser thuộc giải SVATTT 2022 vòng sơ khảo, đây cũng là năm đầu tiên mình may mắn nằm trong team của trường được tham dự giải này, java lúc này cũng khá xa lạ đối với mình nhưng may mắn team mình vẫn cố gắng và solved được vào phút chót - nhờ đó có giải ẵm về hihi!&#xA;Source-code: https://drive.google.com/file/d/1wxbVU11RIqD_RTtAcrIQGB82ihAxX06q/view?usp=sharing&#xA;Review Source Code Sau khi giải nén mình được 1 file jar + nginx.</description>
+    </item>
+  </channel>
+</rss>

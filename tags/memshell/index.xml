@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Memshell on devme4f blogs</title>
+    <link>https://devme4f.github.io/tags/memshell/</link>
+    <description>Recent content in Memshell on devme4f blogs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>vi-vn</language>
+    <lastBuildDate>Tue, 19 Sep 2023 21:50:22 +0700</lastBuildDate>
+    <atom:link href="https://devme4f.github.io/tags/memshell/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Quick Note Spring Memshell</title>
+      <link>https://devme4f.github.io/posts/2023/quick-note-spring-memshell/</link>
+      <pubDate>Tue, 19 Sep 2023 21:50:22 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/quick-note-spring-memshell/</guid>
+      <description>Preface Một vài mẫu note rời rạc về spring memory webshell mà mình đã dành thời gian tìm hiểu chưa có thời gian viết hoàn thiện&#xA;Spring boot Maven: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web&#xA;spring boot &amp;lt; 2.x =&amp;gt; test ok (2.4.10, 2.5.14, 2.7.15) spring boot 3.x (support jdk &amp;gt;= 17) =&amp;gt; not ok do jdk ver cao Dynamically set RequestMappings in Spring (at runtime) Lấy WebApplicationContext Key khi inject memshell trong spring là lấy được WebApplicationContext</description>
+    </item>
+  </channel>
+</rss>

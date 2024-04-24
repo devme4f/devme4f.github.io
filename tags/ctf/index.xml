@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ctf on devme4f blogs</title>
+    <link>https://devme4f.github.io/tags/ctf/</link>
+    <description>Recent content in Ctf on devme4f blogs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>vi-vn</language>
+    <lastBuildDate>Tue, 30 Jan 2024 15:05:59 +0700</lastBuildDate>
+    <atom:link href="https://devme4f.github.io/tags/ctf/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>TetCTF-2024 Ctf Writeup - J4v4 Censored web challenge and unintended solution that break nginx rule</title>
+      <link>https://devme4f.github.io/posts/2024/tetctf-2024_j4v4-censored/</link>
+      <pubDate>Tue, 30 Jan 2024 15:05:59 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2024/tetctf-2024_j4v4-censored/</guid>
+      <description>preface Hi! bài này mình sẽ writeup lại bài J4v4 Censored trong giải TetCTF-2024 mà team mình (KCSC) đã solve được. Đây là 1 bài java mình đánh giá không quá khó nhưng lại là half-black-box nên phải đoán, fuzzing khá nhiều nên khi làm mình khá nản nhưng cũng nhờ có teammates quyết tâm tìm ra được unintended solution nên may mắn (cũng chính là team duy nhất) solved được.</description>
+    </item>
+    <item>
+      <title>SVATTT-2023 Ctf Writeup - The new Waf Deser</title>
+      <link>https://devme4f.github.io/posts/2023/svattt-2023_new-waf-deser/</link>
+      <pubDate>Fri, 22 Dec 2023 12:35:17 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/svattt-2023_new-waf-deser/</guid>
+      <description>Preface Gõ phím viết bài này thì cũng đã gần 2 tháng kể từ đợt final A&amp;amp;D SVATTT 2023 kết thúc. Năm nay mình may may mắn được vào chung khảo chơi A&amp;amp;D và với role là defense (cấu hình log, patch bug,..etc). Vào thi thì khá loạn + nhiều việc, và vì mình role defense nên cũng chỉ ngó qua bài này và thấy backend y chang bài waf-deser năm trước khác mỗi phần front-end, tưởng dễ nên mình vẫn chưa mò lại xem, nay đến deadline hoàn thành task ở clb mới lụi cụi làm, thấy hay nên write up lại luôn, coi như làm tài liệu tham khảo cho các năm sau :D</description>
+    </item>
+    <item>
+      <title>SekaiCTF-2023 Ctf Writeup - Frog WAF - EL Injection WAF Bypass</title>
+      <link>https://devme4f.github.io/posts/2023/sekaictf-2023_frog-waf/</link>
+      <pubDate>Mon, 28 Aug 2023 09:09:53 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/sekaictf-2023_frog-waf/</guid>
+      <description>Preface Write up chi tiết bài Frog-WAF thuộc giải SekaiCTF-2023. Bài này trong giải mình không làm ra do stuck 1 số chỗ nên hôm nay mình sẽ tham khảo qua script solution và write up chi tiết lại.&#xA;Overview Challenge cho source-code, các bạn có thể tải tại: https://drive.google.com/file/d/1NDolpwf01ckCy7qcBGEp-_aZGT0OfI6E/view?usp=sharing&#xA;Challenge dùng gradle để build app spring boot Xem Dockerfile:&#xA;FROM gradle:7.5-jdk11-alpine AS build COPY --chown=gradle:gradle build.gradle settings.gradle /home/gradle/frogwaf/ COPY --chown=gradle:gradle src/ /home/gradle/frogwaf/src/ WORKDIR /home/gradle/frogwaf RUN gradle bootJar FROM openjdk:11-slim COPY flag.</description>
+    </item>
+    <item>
+      <title>BKCTF-2023 Ctf Writeup - Texttext - Java deser exploit Text4Shell</title>
+      <link>https://devme4f.github.io/posts/2023/bkctf-2023_texttext/</link>
+      <pubDate>Sun, 20 Aug 2023 09:22:58 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/bkctf-2023_texttext/</guid>
+      <description>Preface Tuần vừa rồi mình có tham gia giải BKCTF-2023 ở bảng offline, thành tích team thì cũng không có gì nổi bật nhưng trong giải mình có giải được một bài cũng khá hay dù không quá khó là bài Texttext, khi nhận giải được yêu cầu viết writeup nên yup, đây chính là nó.&#xA;Overview Challenge cho source-code, các bạn có thể tải tại: https://drive.google.com/file/d/1onNxUHArYn3KTR3YJ8bKPykSDDm7kkMG/view?usp=drive_link&#xA;Sau khi tải về được 1 file là textext.</description>
+    </item>
+    <item>
+      <title>Angstromctf-2023 Ctf Writeup - filestore</title>
+      <link>https://devme4f.github.io/posts/2023/angstromctf-2023_filestore/</link>
+      <pubDate>Thu, 27 Apr 2023 00:03:12 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/angstromctf-2023_filestore/</guid>
+      <description>Overview Challenge cho source code: https://drive.google.com/file/d/1udkCu6axKKX6KhXgP4X3W_ejeIew0HNF/view?usp=sharing&#xA;index.php:&#xA;&amp;lt;?php if($_SERVER[&amp;#39;REQUEST_METHOD&amp;#39;] == &amp;#34;POST&amp;#34;){ if ($_FILES[&amp;#34;f&amp;#34;][&amp;#34;size&amp;#34;] &amp;gt; 1000) { echo &amp;#34;file too large&amp;#34;; return; } $i = uniqid(); if (empty($_FILES[&amp;#34;f&amp;#34;])){ return; } if (move_uploaded_file($_FILES[&amp;#34;f&amp;#34;][&amp;#34;tmp_name&amp;#34;], &amp;#34;./uploads/&amp;#34; . $i . &amp;#34;_&amp;#34; . hash(&amp;#39;sha256&amp;#39;, $_FILES[&amp;#34;f&amp;#34;][&amp;#34;name&amp;#34;]) . &amp;#34;_&amp;#34; . $_FILES[&amp;#34;f&amp;#34;][&amp;#34;name&amp;#34;])){ echo &amp;#34;upload success&amp;#34;; } else { echo &amp;#34;upload error&amp;#34;; } } else { if (isset($_GET[&amp;#34;f&amp;#34;])) { include &amp;#34;./uploads/&amp;#34; . $_GET[&amp;#34;f&amp;#34;]; } highlight_file(&amp;#34;index.php&amp;#34;); // this doesn&amp;#39;t work, so I&amp;#39;m commenting it out 😛 // system(&amp;#34;/list_uploads&amp;#34;); } ?</description>
+    </item>
+    <item>
+      <title>SVATTT 2022 Ctf Writeup - Waf Deser</title>
+      <link>https://devme4f.github.io/posts/2022/waf-deser/</link>
+      <pubDate>Mon, 17 Oct 2022 10:40:32 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2022/waf-deser/</guid>
+      <description>Preface Writeup bài web jeopardy java Waf Deser thuộc giải SVATTT 2022 vòng sơ khảo, đây cũng là năm đầu tiên mình may mắn nằm trong team của trường được tham dự giải này, java lúc này cũng khá xa lạ đối với mình nhưng may mắn team mình vẫn cố gắng và solved được vào phút chót - nhờ đó có giải ẵm về hihi!&#xA;Source-code: https://drive.google.com/file/d/1wxbVU11RIqD_RTtAcrIQGB82ihAxX06q/view?usp=sharing&#xA;Review Source Code Sau khi giải nén mình được 1 file jar + nginx.</description>
+    </item>
+  </channel>
+</rss>

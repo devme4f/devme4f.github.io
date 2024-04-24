@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cve on devme4f blogs</title>
+    <link>https://devme4f.github.io/tags/cve/</link>
+    <description>Recent content in Cve on devme4f blogs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>vi-vn</language>
+    <lastBuildDate>Thu, 28 Mar 2024 17:13:36 +0700</lastBuildDate>
+    <atom:link href="https://devme4f.github.io/tags/cve/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Spring Web Flow past vulnerabilities research</title>
+      <link>https://devme4f.github.io/posts/2024/spring-web-flow-past-vulnerabilities/</link>
+      <pubDate>Thu, 28 Mar 2024 17:13:36 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2024/spring-web-flow-past-vulnerabilities/</guid>
+      <description>Prefeace Spring Web Flow xây dựng dựa trên Spring MVC và cho phép triển khai các &amp;ldquo;luồng&amp;rdquo; của ứng dụng web. Một luồng bao gồm một chuỗi ghi lại các bước người dùng thực hiện. Nó bao gồm nhiều yêu cầu HTTP, có trạng thái, xử lý dữ liệu giao dịch, có thể tái sử dụng, dynamic,&amp;hellip;&#xA;Câu trên dịch từ overview của project khá thô nhưng căn bản để dễ hiểu thì có thể coi nó như view-state trong ASP.</description>
+    </item>
+    <item>
+      <title>Jasig CAS past vulnerabilities research</title>
+      <link>https://devme4f.github.io/posts/2024/jasig-cas-past-vulnerabilities/</link>
+      <pubDate>Wed, 27 Mar 2024 17:05:40 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2024/jasig-cas-past-vulnerabilities/</guid>
+      <description>Preface CAS là một ứng dụng Enterprise Single Sign-On open source khá phổ biến được sử dụng bởi nhiều doanh nghiệp lớn. CAS hỗ trợ nhiều giao thức xác thực như CAS (tương tự kerberos), SAML, Oauth, OpenID cũng như có tính tùy biến cao nên được nhiều bên lựa chọn.&#xA;CAS ban đầu được phát triển với tên Jasig CAS có package name là org.jasig.cas nhưng từ 2012 thì Jasig hợp nhất với Sakai Foundation tạo nên Apereo Foundation.</description>
+    </item>
+    <item>
+      <title>Liferay Pentest</title>
+      <link>https://devme4f.github.io/posts/2023/liferay-pentest/</link>
+      <pubDate>Thu, 25 May 2023 22:08:11 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/liferay-pentest/</guid>
+      <description>Preface Bài viết tổng hợp một số lỗ hổng phổ biến / nghiêm trọng trên product Liferay đã được phát hiện, nhằm giúp người đọc (và mình) có cái nhìn tổng quan và cũng là cheat-sheet khi pentest các site Liferay.&#xA;Liferay Blind SSRF Pingback Affected version: &amp;lt;= Liferay Portal 7.0.4 Lỗ hổng SSRF nằm trong tính năng blog pingback của liferay, cho phép gửi http get request đến địa chỉ bất kỳ.</description>
+    </item>
+    <item>
+      <title>Tìm hiểu CVE-2017-9822 - DotNetNuke Cookie Deserialization RCE</title>
+      <link>https://devme4f.github.io/posts/2023/dotnetnuke_cve-2017-9822/</link>
+      <pubDate>Tue, 17 Jan 2023 17:44:52 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/dotnetnuke_cve-2017-9822/</guid>
+      <description>Preface DotNetNuke là hệ thống quản lý nội dung(content management system) mã nguồn mở trên nền tảng ASP.NET. Bài viết này sẽ đi vào phân tích CVE-2017-9822 trên DNN, lỗ hổng unauth insecure deserialization có thể dẫn đến RCE. Lỗ hổng được được phát hiện bởi Alvaro Muñoz và trình bày tại blackhat US 2017 - Friday the 13th JSON Attacks gồm nhiều advanced techniques về khai thác java/.net deserialization, được coi như mở ra kỷ nguyên mới về khai thác loại lỗ hổng này!</description>
+    </item>
+    <item>
+      <title>Tìm hiểu CVE-2019-16891 - Liferay JSON Deserialization to RCE</title>
+      <link>https://devme4f.github.io/posts/2023/liferay_cve-2019-16891/</link>
+      <pubDate>Thu, 12 Jan 2023 12:09:17 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/liferay_cve-2019-16891/</guid>
+      <description>Tham khảo: https://sec.vnpt.vn/2019/09/liferay-deserialization-json-deserialization-part-4/ Version affect: Liferay &amp;lt; 7.x Setup debug Liferay 6.2.5 gồm luôn tomcat server: https://sourceforge.net/projects/lportal/files/Liferay%20Portal/6.2.5%20GA6/&#xA;Server: Giải nén file trên, config 1 vài cái nhỏ nhỏ theo guide rồi start tomcat server ở mode jpda: .\catalina jpda start (ở đây mình dùng java 1.8) Client: Open file or project &amp;ndash;&amp;gt; ROOT folder trong webapps(chỉ cần debug folder này) &amp;ndash;&amp;gt; Load &amp;ndash;&amp;gt; Edit configuration &amp;ndash;&amp;gt; Remote JVM Debug &amp;ndash;&amp;gt; Config port 8000(jpda default chạy port 8000) &amp;ndash;&amp;gt; Debug Nếu thấy các thư viện đã được load trong Project Structure mà chưa thấy ở External Library thì nhớ set JDK ở intellij</description>
+    </item>
+    <item>
+      <title>Tìm hiểu CVE-2020-15394 - Manage Engine Application Manager unauth RCE</title>
+      <link>https://devme4f.github.io/posts/2023/manageengineam_cve-2020-15394/</link>
+      <pubDate>Sun, 08 Jan 2023 12:15:44 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/manageengineam_cve-2020-15394/</guid>
+      <description>Preface CVE-2020-15394 - Unauthenticated Remote Code Execution via SQL injection in REST API module: https://www.manageengine.com/products/applications_manager/security-updates/security-updates-cve-2020-15394.html&#xA;Affected Builds: builds &amp;lt; 14684; 14689 &amp;lt; builds &amp;lt; 14740&#xA;Recommended Fix: Upgrade Applications Manager to version 14740 or above.&#xA;Setup step Application Manager installation archives: https://archives.manageengine.com/applications_manager/&#xA;Restricted installation: MangeEngine hạn chế cho phép tải các phiên bản cũ (&amp;lt;=14700) để hạn chế bugs: https://pitstop.manageengine.com/portal/en/community/topic/license-file-might-be-missing&#xA;Release Notes: https://www.manageengine.com/products/applications_manager/release-notes.html?utm_source=set3&#xA;Đầu tiên setup remode debug bằng Intellij:</description>
+    </item>
+  </channel>
+</rss>

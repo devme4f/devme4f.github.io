@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Sqli2rce on devme4f blogs</title>
+    <link>https://devme4f.github.io/tags/sqli2rce/</link>
+    <description>Recent content in Sqli2rce on devme4f blogs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>vi-vn</language>
+    <lastBuildDate>Sun, 08 Jan 2023 12:15:44 +0700</lastBuildDate>
+    <atom:link href="https://devme4f.github.io/tags/sqli2rce/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Tìm hiểu CVE-2020-15394 - Manage Engine Application Manager unauth RCE</title>
+      <link>https://devme4f.github.io/posts/2023/manageengineam_cve-2020-15394/</link>
+      <pubDate>Sun, 08 Jan 2023 12:15:44 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2023/manageengineam_cve-2020-15394/</guid>
+      <description>Preface CVE-2020-15394 - Unauthenticated Remote Code Execution via SQL injection in REST API module: https://www.manageengine.com/products/applications_manager/security-updates/security-updates-cve-2020-15394.html&#xA;Affected Builds: builds &amp;lt; 14684; 14689 &amp;lt; builds &amp;lt; 14740&#xA;Recommended Fix: Upgrade Applications Manager to version 14740 or above.&#xA;Setup step Application Manager installation archives: https://archives.manageengine.com/applications_manager/&#xA;Restricted installation: MangeEngine hạn chế cho phép tải các phiên bản cũ (&amp;lt;=14700) để hạn chế bugs: https://pitstop.manageengine.com/portal/en/community/topic/license-file-might-be-missing&#xA;Release Notes: https://www.manageengine.com/products/applications_manager/release-notes.html?utm_source=set3&#xA;Đầu tiên setup remode debug bằng Intellij:</description>
+    </item>
+  </channel>
+</rss>
