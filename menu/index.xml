@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Menus on devme4f blogs</title>
+    <title>Menus on devme4f&#39;s blog</title>
     <link>https://devme4f.github.io/menu/</link>
-    <description>Recent content in Menus on devme4f blogs</description>
+    <description>Recent content in Menus on devme4f&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>vi-vn</language>
     <lastBuildDate>Sat, 30 Mar 2024 23:53:13 +0700</lastBuildDate>
@@ -13,7 +13,7 @@
       <link>https://devme4f.github.io/about/</link>
       <pubDate>Sat, 30 Mar 2024 23:53:13 +0700</pubDate>
       <guid>https://devme4f.github.io/about/</guid>
-      <description>hi! i&amp;#39;m K pentester at VNPT currently interested in java security Here are some of my cves:&#xA;CVE-2023-43798 Bigbluebutton SSRF: https://github.com/bigbluebutton/bigbluebutton/security/advisories/GHSA-h98v-2h8w-99c4 CVE-2023-43797 Bigbluebutton XSS: https://github.com/bigbluebutton/bigbluebutton/security/advisories/GHSA-v6wg-q866-h73x updating&amp;hellip; ₍ఠ ͜ఠ₎ </description>
+      <description>hi! i&amp;#39;m K pentester at VNPT currently interested in java security My CVEs:&#xA;CVE-2024-34750 Apache Tomcat DoS CVE-2024-22271 Spring Cloud Function DoS CVE-2023-43798 Bigbluebutton SSRF CVE-2023-43797 Bigbluebutton XSS </description>
     </item>
   </channel>
 </rss>
