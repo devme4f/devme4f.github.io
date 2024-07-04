@@ -189,7 +189,6 @@ CAS ban đầu được phát triển với tên Jasig CAS có package name là 
     <li><a href="#bonus">bonus</a>
       <ul>
         <li><a href="#cas-version-detect">cas version detect</a></li>
-        <li><a href="#default-credentials">default credentials</a></li>
       </ul>
     </li>
     <li><a href="#refs-1">refs</a></li>
@@ -239,7 +238,6 @@ CAS ban đầu được phát triển với tên Jasig CAS có package name là 
 <p>CAS là một ứng dụng Enterprise Single Sign-On open source khá phổ biến được sử dụng bởi nhiều doanh nghiệp lớn. CAS hỗ trợ nhiều giao thức xác thực như CAS (tương tự kerberos), SAML, Oauth, OpenID cũng như có tính tùy biến cao nên được nhiều bên lựa chọn.</p>
 <p>CAS ban đầu được phát triển với tên <code>Jasig CAS</code> có package name là <a href="https://mvnrepository.com/artifact/org.jasig.cas">org.jasig.cas</a> nhưng từ 2012 thì Jasig hợp nhất với Sakai Foundation tạo nên Apereo Foundation. Từ đó CAS có tên <code>Apereo CAS</code> và cũng đổi luôn package name thành <a href="https://mvnrepository.com/artifact/org.apereo.cas">org.apereo.cas</a> từ <a href="https://github.com/apereo/cas/releases/tag/v5.0.0">version 5.0</a> và vẫn được tích cực maintain cho đến ngày nay. Dù <code>Jasig CAS</code> EOL từ 2012 nhưng vẫn có một số library tiếp tục được maintain và sử dụng cho đến nay nên mình vẫn sẽ chia ra 2 tên / package như trên.</p>
 <p>Bài viết này sẽ đi vào tìm hiểu CAS / một số lỗ hổng tiêu biểu trong quá khứ / quá trình sử dụng dụng mà có thể cấu hình sai nhắm giúp người đọc (và mình) có cái nhìn tổng quan khi pentest product này. CAS có release vulnerability disclosure blog tại <a href="https://apereo.github.io/">đây</a> tuy nhiên các lỗ hổng ít khi được đánh CVE gây khó khăn trong quá trình theo dõi.</p>
-<p>Ban đầu mình định gộp chung phân tích hết lỗ hổng vào 1 bài nhưng do quá dài nên đây chỉ là part 1, tập trung vào <code>Jasig CAS</code>, part 2 sẽ phân tích các lỗ hổng trên <code>Apereo CAS</code>.</p>
 <h2 id="cas---41x416-deserialization-vulnerability-exploiting-default-key">cas - 4.1.x~4.1.6 deserialization vulnerability (exploiting default key)</h2>
 <ul>
 <li><strong>advisory</strong>: <a href="https://apereo.github.io/2016/04/08/commonsvulndisc/">https://apereo.github.io/2016/04/08/commonsvulndisc/</a></li>
@@ -326,11 +324,10 @@ Received:
 <li>Nếu dev cấu hình các administrative endpoints mapping bởi tomcat (ex: servlet web.xml) thay vì spring &ndash;&gt; exposure</li>
 </ol>
 <h3 id="bonus-easy-rce">bonus easy RCE</h3>
-<p>Không được đề cập ở advisory trên nhưng đây là một số endpoints nhạy cảm khác exposure tùy cấu hình, riêng <code>/cas/status/config/getProperties</code> có thể truy cập unauth và leaks cả file <code>cas.properties</code> (default - đã tested bản <code>4.2.5</code>) - có thể RCE với leaked webflow key trong file cấu hình!</p>
-<pre tabindex="0"><code>/cas/status
-/cas/status/config
-/cas/status/config/getProperties
-</code></pre><p>(lab demo chưa cấu hình gì)
+<p>Tại file <code>viewConfig.js</code> có khai báo endpoint <code>/cas/status/config/getProperties</code>:
+<img src="/images/2024/Jasig-CAS-past-vulnerabilities/viewConfig.js.png" alt="viewConfig.js"></p>
+<p>Dù không được đề cập ở advisory trên nhưng endpoint này có thể truy cập unauth và trả về toàn bộ file cấu hình <code>cas.properties</code> - có thể RCE với webflow key trong file trên!</p>
+<p>(lab demo chưa cấu hình gì)
 <img src="/images/2024/Jasig-CAS-past-vulnerabilities/req_bonus_easy_RCE.png" alt="req_bonus_easy_RCE"></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> org.jasig.cas.web.report;
 </span></span><span style="display:flex;"><span>
@@ -388,7 +385,7 @@ Request:
 <p>Họ cũng đặt lại thành full path là <code>/status/config/getProperties</code>
 <img src="/images/2024/Jasig-CAS-past-vulnerabilities/edit_4.2.6-2.png" alt="edit_4.2.6-2"></p>
 <h3 id="a-critical-vulnerability">a critical vulnerability</h3>
-<p>Vậy <code>cas &lt; 4.2.6</code> có thể lợi dụng các mapping <code>/servletPath/*</code> để gọi đến <strong>handler method bất kỳ</strong> mong muốn trừ <code>/status/**</code>, <code>/statistics/**</code>, ví dụ <code>/getSsoSessions</code> không hề được cấu hình sử dụng:
+<p>Vậy <code>cas &lt; 4.2.6</code> có thể lợi dụng các mapping <code>/servletPath/*</code> để gọi đến <strong>handler method bất kỳ</strong> mong muốn trừ <code>/status/**</code>, <code>/statistics/**</code>, ví dụ <code>/getSsoSessions</code> (trả về toàn bộ active sessions trên CAS -&gt; session hijacking) không hề được cấu hình sử dụng:
 <img src="/images/2024/Jasig-CAS-past-vulnerabilities/getSsoSessions.png" alt="getSsoSessions">
 (lab test nên không data)
 <img src="/images/2024/Jasig-CAS-past-vulnerabilities/req_getSsoSessions.png" alt="req_getSsoSessions"></p>
@@ -471,10 +468,7 @@ logoutRequest=&lt;?xml version=&#34;1.0&#34;?&gt;&lt;!DOCTYPE root [&lt;!ENTITY 
 <img src="/images/2024/Jasig-CAS-past-vulnerabilities/version7.png" alt="version7"></p>
 </li>
 </ul>
-<h3 id="default-credentials">default credentials</h3>
-<p>ref: <a href="https://apereo.github.io/cas/7.0.x/authentication/Configuring-Authentication-Components.html#authentication-handlers">https://apereo.github.io/cas/7.0.x/authentication/Configuring-Authentication-Components.html#authentication-handlers</a></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-properties" data-lang="properties"><span style="display:flex;"><span><span style="color:#a6e22e">accept.authn.users</span><span style="color:#f92672">=</span><span style="color:#e6db74">casuser::Mellon</span>
-</span></span></code></pre></div><h2 id="refs-1">refs</h2>
+<h2 id="refs-1">refs</h2>
 <ul>
 <li>vulnerability disclosure blog: <a href="https://apereo.github.io/tags/#CAS">https://apereo.github.io/tags/#CAS</a></li>
 </ul>
@@ -536,7 +530,6 @@ logoutRequest=&lt;?xml version=&#34;1.0&#34;?&gt;&lt;!DOCTYPE root [&lt;!ENTITY 
     <li><a href="#bonus">bonus</a>
       <ul>
         <li><a href="#cas-version-detect">cas version detect</a></li>
-        <li><a href="#default-credentials">default credentials</a></li>
       </ul>
     </li>
     <li><a href="#refs-1">refs</a></li>
