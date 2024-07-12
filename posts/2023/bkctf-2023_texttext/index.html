@@ -329,7 +329,7 @@ Sau khi tải về được 1 file là textext."/>
 <img src="/images/2023/BKCTF-2023_Texttext/lookup.png" alt="lookup"></p>
 <p>Tại đây sẽ lấy ra <code>prefix</code> và <code>name</code> có giá trị lần lượt là <code>script</code> và <code>javascript:java.lang.Runtime.getRuntime().exec('calc')</code></p>
 <p>sau đó get loại lookup function trong <code>stringLookupmap</code> được lấy theo <code>prefix</code>, ta có các fields ứng với lookup function sau:
-![stringLookupmap ](/images/2023/BKCTF-2023_Texttext/stringLookupmap .png)</p>
+<img src="/images/2023/BKCTF-2023_Texttext/stringLookupmap.png" alt="stringLookupmap"></p>
 <p>ở đây thì method <code>scriptStringLookup()</code> về sau có thể dẫn đến RCE khi thực hiện lookup.</p>
 <p><code>ScriptStringLookup#lookup()</code>:
 <img src="/images/2023/BKCTF-2023_Texttext/ScriptStringLookup.png" alt="ScriptStringLookup"></p>
