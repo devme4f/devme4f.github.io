@@ -6,8 +6,15 @@
     <description>Recent content in Cve on devme4f&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>vi-vn</language>
-    <lastBuildDate>Thu, 28 Mar 2024 17:13:36 +0700</lastBuildDate>
+    <lastBuildDate>Fri, 16 Aug 2024 20:01:01 +0700</lastBuildDate>
     <atom:link href="https://devme4f.github.io/tags/cve/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Analyzing CVE-2024-34750 Apache Tomcat DoS</title>
+      <link>https://devme4f.github.io/posts/2024/analyzing-cve-2024-34750-tomcat-dos/</link>
+      <pubDate>Fri, 16 Aug 2024 20:01:01 +0700</pubDate>
+      <guid>https://devme4f.github.io/posts/2024/analyzing-cve-2024-34750-tomcat-dos/</guid>
+      <description>Preface Bài viết sẽ phân tích lại CVE-2024-34750, CVE mà mình tìm được gần đây. Về web server Tomcat chắc cũng không còn phải giới thiệu nhiều, trong các ứng dụng java web servlet hay spring framework thì tomcat luôn là server được lựa chọn để deploy phổ biến nhất cho đến nay.&#xA;Nói ngắn gọn, CVE-2024-34750 cho phép DoS sập HTTP/2 connector của tomcat bằng cách trigger lỗi StreamException làm giá trị activeRemoteStreamCount bị đếm sai dẫn đến connection timeout bị set vô thời hạn (connection không được đóng sau khi xử lý xong).</description>
+    </item>
     <item>
       <title>Spring Web Flow past vulnerabilities research</title>
       <link>https://devme4f.github.io/posts/2024/spring-web-flow-past-vulnerabilities/</link>
