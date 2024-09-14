@@ -175,7 +175,7 @@
         <li><a href="#commonscollections3">CommonsCollections3</a></li>
       </ul>
     </li>
-    <li><a href="#thoughs">Thoughs</a></li>
+    <li><a href="#thoughts">Thoughts</a></li>
     <li><a href="#refs">refs</a></li>
   </ul>
 </nav>
@@ -377,15 +377,15 @@
 <ul>
 <li>
 <p><code>_name</code> chỉ cần khác <code>null</code> để gọi được đến <code>defineTransletClasses()</code>:
-<img src="/images/2023/Java-deserialization-p1/_name.png" alt="_name"></p>
+<img src="/images/2023/Java-deserialization-p1/name.png" alt="name"></p>
 </li>
 <li>
 <p><code>_tfactory</code> cần là <code>TransformerFactoryImpl</code> object do trong <code>TemplatesImpl#defineTransletClasses()</code> có gọi đến method <code>TransformerFactoryImpl#getExternalExtensionsMap()</code>:
-<img src="/images/2023/Java-deserialization-p1/_tfactory.png" alt="_tfactory"></p>
+<img src="/images/2023/Java-deserialization-p1/tfactory.png" alt="tfactory"></p>
 </li>
 <li>
 <p><code>_bytecodes</code> là bytecode để khởi tạo malicious class, class này còn phải là subclass của <code>com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet</code>:
-<img src="/images/2023/Java-deserialization-p1/_bytecodes.png" alt="_bytecodes"></p>
+<img src="/images/2023/Java-deserialization-p1/bytecodes.png" alt="bytecodes"></p>
 </li>
 </ul>
 <p>Ta tạo được malicious class sau:</p>
@@ -956,7 +956,7 @@ thì so sánh 2 object trực tiếp, nếu không sẽ gọi được <code>Pro
 </span></span></code></pre></div><p><img src="/images/2023/Java-deserialization-p1/popup5.png" alt="popup5"></p>
 <p>Từ <code>jdk8u71</code>, method <code>AnnotationInvocationHandler#readObject()</code> đã bị sửa, làm đứt chain, diff <code>jdk8u202</code> vs <code>jdk8u66</code>:
 <img src="/images/2023/Java-deserialization-p1/diff-jdk8u71.png" alt="diff-jdk8u71"></p>
-<h2 id="thoughs">Thoughs</h2>
+<h2 id="thoughts">Thoughts</h2>
 <p>Bộ CommonsCollections gadget chain với CC2, CC3, CC4 có cùng một sink là <code>TemplatesImpl</code> mà mình đã phân tích cùng với CommonsBeanutils1, các bộ còn lại CC1, CC5, CC6, CC7 cũng chung 1 sink khác là: <code>InvokerTransformer</code> + <code>ChainedTransformer</code> = reflection, cái mình sẽ dành thời gian để viết tiếp part 2.</p>
 <h2 id="refs">refs</h2>
 <ul>
@@ -1010,7 +1010,7 @@ thì so sánh 2 object trực tiếp, nếu không sẽ gọi được <code>Pro
         <li><a href="#commonscollections3">CommonsCollections3</a></li>
       </ul>
     </li>
-    <li><a href="#thoughs">Thoughs</a></li>
+    <li><a href="#thoughts">Thoughts</a></li>
     <li><a href="#refs">refs</a></li>
   </ul>
 </nav>
