@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Text4shell on devme4f&#39;s blog</title>
+    <title>text4shell on devme4f&#39;s blog</title>
     <link>https://devme4f.github.io/tags/text4shell/</link>
-    <description>Recent content in Text4shell on devme4f&#39;s blog</description>
+    <description>Recent content in text4shell on devme4f&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>vi-vn</language>
-    <lastBuildDate>Sun, 20 Aug 2023 09:22:58 +0700</lastBuildDate>
-    <atom:link href="https://devme4f.github.io/tags/text4shell/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 20 Aug 2023 09:22:58 +0700</lastBuildDate><atom:link href="https://devme4f.github.io/tags/text4shell/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>BKCTF-2023 Ctf Writeup - Texttext - Java deser exploit Text4Shell</title>
       <link>https://devme4f.github.io/posts/2023/bkctf-2023_texttext/</link>
       <pubDate>Sun, 20 Aug 2023 09:22:58 +0700</pubDate>
+      
       <guid>https://devme4f.github.io/posts/2023/bkctf-2023_texttext/</guid>
-      <description>Preface Tuần vừa rồi mình có tham gia giải BKCTF-2023 ở bảng offline, thành tích team thì cũng không có gì nổi bật nhưng trong giải mình có giải được một bài cũng khá hay dù không quá khó là bài Texttext, khi nhận giải được yêu cầu viết writeup nên yup, đây chính là nó.&#xA;Overview Challenge cho source-code, các bạn có thể tải tại: https://drive.google.com/file/d/1onNxUHArYn3KTR3YJ8bKPykSDDm7kkMG/view?usp=drive_link&#xA;Sau khi tải về được 1 file là textext.</description>
+      <description>Preface Tuần vừa rồi mình có tham gia giải BKCTF-2023 ở bảng offline, thành tích team thì cũng không có gì nổi bật nhưng trong giải mình có giải được một bài cũng khá hay dù không quá khó là bài Texttext, khi nhận giải được yêu cầu viết writeup nên yup, đây chính là nó.
+Overview Challenge cho source-code, các bạn có thể tải tại: https://drive.google.com/file/d/1onNxUHArYn3KTR3YJ8bKPykSDDm7kkMG/view?usp=drive_link
+Sau khi tải về được 1 file là textext.</description>
     </item>
+    
   </channel>
 </rss>

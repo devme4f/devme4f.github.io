@@ -6,77 +6,96 @@
     <description>Recent content in Tags on devme4f&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>vi-vn</language>
-    <lastBuildDate>Fri, 16 Aug 2024 20:01:01 +0700</lastBuildDate>
-    <atom:link href="https://devme4f.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 17 Oct 2024 11:24:02 +0700</lastBuildDate><atom:link href="https://devme4f.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Cve</title>
-      <link>https://devme4f.github.io/tags/cve/</link>
-      <pubDate>Fri, 16 Aug 2024 20:01:01 +0700</pubDate>
-      <guid>https://devme4f.github.io/tags/cve/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Research</title>
-      <link>https://devme4f.github.io/tags/research/</link>
-      <pubDate>Fri, 16 Aug 2024 20:01:01 +0700</pubDate>
-      <guid>https://devme4f.github.io/tags/research/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Ctf</title>
+      <title>ctf</title>
       <link>https://devme4f.github.io/tags/ctf/</link>
-      <pubDate>Tue, 30 Jan 2024 15:05:59 +0700</pubDate>
+      <pubDate>Thu, 17 Oct 2024 11:24:02 +0700</pubDate>
+      
       <guid>https://devme4f.github.io/tags/ctf/</guid>
       <description></description>
     </item>
+    
     <item>
-      <title>El-Inject</title>
+      <title>research</title>
+      <link>https://devme4f.github.io/tags/research/</link>
+      <pubDate>Thu, 17 Oct 2024 11:24:02 +0700</pubDate>
+      
+      <guid>https://devme4f.github.io/tags/research/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>cve</title>
+      <link>https://devme4f.github.io/tags/cve/</link>
+      <pubDate>Fri, 16 Aug 2024 20:01:01 +0700</pubDate>
+      
+      <guid>https://devme4f.github.io/tags/cve/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>el-inject</title>
       <link>https://devme4f.github.io/tags/el-inject/</link>
       <pubDate>Tue, 30 Jan 2024 15:05:59 +0700</pubDate>
+      
       <guid>https://devme4f.github.io/tags/el-inject/</guid>
       <description></description>
     </item>
+    
     <item>
-      <title>Deser</title>
+      <title>deser</title>
       <link>https://devme4f.github.io/tags/deser/</link>
       <pubDate>Fri, 22 Dec 2023 12:35:17 +0700</pubDate>
+      
       <guid>https://devme4f.github.io/tags/deser/</guid>
       <description></description>
     </item>
+    
     <item>
-      <title>Memshell</title>
+      <title>memshell</title>
       <link>https://devme4f.github.io/tags/memshell/</link>
       <pubDate>Tue, 19 Sep 2023 21:50:22 +0700</pubDate>
+      
       <guid>https://devme4f.github.io/tags/memshell/</guid>
       <description></description>
     </item>
+    
     <item>
-      <title>Text4shell</title>
+      <title>text4shell</title>
       <link>https://devme4f.github.io/tags/text4shell/</link>
       <pubDate>Sun, 20 Aug 2023 09:22:58 +0700</pubDate>
+      
       <guid>https://devme4f.github.io/tags/text4shell/</guid>
       <description></description>
     </item>
+    
     <item>
-      <title>Liferay</title>
+      <title>liferay</title>
       <link>https://devme4f.github.io/tags/liferay/</link>
       <pubDate>Thu, 25 May 2023 22:08:11 +0700</pubDate>
+      
       <guid>https://devme4f.github.io/tags/liferay/</guid>
       <description></description>
     </item>
+    
     <item>
-      <title>Php</title>
+      <title>php</title>
       <link>https://devme4f.github.io/tags/php/</link>
       <pubDate>Thu, 27 Apr 2023 00:03:12 +0700</pubDate>
+      
       <guid>https://devme4f.github.io/tags/php/</guid>
       <description></description>
     </item>
+    
     <item>
-      <title>Sqli2rce</title>
+      <title>sqli2rce</title>
       <link>https://devme4f.github.io/tags/sqli2rce/</link>
       <pubDate>Sun, 08 Jan 2023 12:15:44 +0700</pubDate>
+      
       <guid>https://devme4f.github.io/tags/sqli2rce/</guid>
       <description></description>
     </item>
+    
   </channel>
 </rss>

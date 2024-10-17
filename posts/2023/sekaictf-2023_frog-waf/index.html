@@ -24,7 +24,8 @@ FROM gradle:7.5-jdk11-alpine AS build COPY --chown=gradle:gradle build.gradle se
 <meta property="article:published_time" content="2023-08-28T09:09:53+07:00" />
 <meta property="article:modified_time" content="2023-08-28T09:09:53+07:00" />
 
-  <meta name="twitter:card" content="summary"/><meta name="twitter:title" content="SekaiCTF-2023 Ctf Writeup - Frog WAF - EL Injection WAF Bypass"/>
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="SekaiCTF-2023 Ctf Writeup - Frog WAF - EL Injection WAF Bypass"/>
 <meta name="twitter:description" content="Preface Write up chi tiết bài Frog-WAF thuộc giải SekaiCTF-2023. Bài này trong giải mình không làm ra do stuck 1 số chỗ nên hôm nay mình sẽ tham khảo qua script solution và write up chi tiết lại.
 Overview Challenge cho source-code, các bạn có thể tải tại: https://drive.google.com/file/d/1NDolpwf01ckCy7qcBGEp-_aZGT0OfI6E/view?usp=sharing
 Challenge dùng gradle để build app spring boot Xem Dockerfile:
@@ -251,9 +252,9 @@ FROM gradle:7.5-jdk11-alpine AS build COPY --chown=gradle:gradle build.gradle se
 <p>Class này có format là một POJO tức chỉ có các fields và các getters, setters method mặc định.</p>
 <p>Lúc đầu mình tưởng đây là <a href="https://www.lunasec.io/docs/blog/spring-rce-vulnerabilities/">Spring4Shell</a> nhưng loay hoay một hồi mới nhận ra không phải do challenge chạy jdk8 và không chạy trên tomcat,&hellip; -&gt; <a href="https://www.kaspersky.com/blog/spring4shell-critical-vulnerability-in-spring-java-framework/44034/#:~:text=Conditions%20for%20exploiting%20a%20Spring4Shell%20vulnerability&amp;text=Apache%20Tomcat%20as%20a%20servlet,Spring%20framework%20versions%205.3.">condition</a></p>
 <p>Mày mò một hồi mới nhận ra điều đặc biệt là ở các annotation validate field <code>country</code>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>ContactController <span style="color:#f92672">--&gt;</span> addContact(HttpSession session, <span style="color:#a6e22e">@RequestBody</span> <span style="color:#a6e22e">@Valid</span> Contact contact) {
-</span></span><span style="display:flex;"><span><span style="color:#75715e">////</span>
-</span></span><span style="display:flex;"><span>Contact <span style="color:#f92672">--&gt;</span> <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">@NotNull</span> <span style="color:#a6e22e">@CheckCountry</span> String country;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>ContactController <span style="color:#f92672">--&gt;</span> addContact<span style="color:#f92672">(</span>HttpSession session<span style="color:#f92672">,</span> <span style="color:#a6e22e">@RequestBody</span> <span style="color:#a6e22e">@Valid</span> Contact contact<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">////
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Contact <span style="color:#f92672">--&gt;</span> <span style="color:#66d9ef">private</span> <span style="color:#a6e22e">@NotNull</span> <span style="color:#a6e22e">@CheckCountry</span> String country<span style="color:#f92672">;</span>
 </span></span></code></pre></div><p>Interface <code>CheckCountry</code>:
 <img src="/images/2023/SekaiCTF-2023_Frog-WAF/CheckCountry.png" alt="CheckCountry"></p>
 <p>Class <code>CountryValidator</code>: custom validator
@@ -273,7 +274,7 @@ FROM gradle:7.5-jdk11-alpine AS build COPY --chown=gradle:gradle build.gradle se
 <img src="/images/2023/SekaiCTF-2023_Frog-WAF/poc_country.png" alt="poc_country"></p>
 <h2 id="build-payload">Build payload</h2>
 <p>Mục tiêu của bypass là tạo được payload EL Injection để RCE tương tự như sau:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">getClass</span>().<span style="color:#a6e22e">forName</span>(<span style="color:#e6db74">&#34;java.lang.Runtime&#34;</span>).<span style="color:#a6e22e">getRuntime</span>().<span style="color:#a6e22e">invoke</span>(<span style="color:#66d9ef">null</span>).<span style="color:#a6e22e">exec</span>(<span style="color:#e6db74">&#34;calc&#34;</span>).<span style="color:#a6e22e">getInputStream</span>().<span style="color:#a6e22e">read</span>()
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">().</span><span style="color:#a6e22e">forName</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;java.lang.Runtime&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">getRuntime</span><span style="color:#f92672">().</span><span style="color:#a6e22e">invoke</span><span style="color:#f92672">(</span><span style="color:#66d9ef">null</span><span style="color:#f92672">).</span><span style="color:#a6e22e">exec</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;calc&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">getInputStream</span><span style="color:#f92672">().</span><span style="color:#a6e22e">read</span><span style="color:#f92672">()</span>
 </span></span></code></pre></div><p>Từ <code>ConstraintValidatorContext</code> (interface <code>CheckCountry</code>) biết được có thể truy cập các biến sau: <code>messsage</code>, <code>groups</code>, <code>payload</code></p>
 <p>Dễ dàng lấy được class <code>java.lang.Class</code>:
 <img src="/images/2023/SekaiCTF-2023_Frog-WAF/java.lang.Class.png" alt="java.lang.Class"></p>

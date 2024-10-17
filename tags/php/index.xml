@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Php on devme4f&#39;s blog</title>
+    <title>php on devme4f&#39;s blog</title>
     <link>https://devme4f.github.io/tags/php/</link>
-    <description>Recent content in Php on devme4f&#39;s blog</description>
+    <description>Recent content in php on devme4f&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>vi-vn</language>
-    <lastBuildDate>Thu, 27 Apr 2023 00:03:12 +0700</lastBuildDate>
-    <atom:link href="https://devme4f.github.io/tags/php/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 27 Apr 2023 00:03:12 +0700</lastBuildDate><atom:link href="https://devme4f.github.io/tags/php/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Angstromctf-2023 Ctf Writeup - filestore</title>
       <link>https://devme4f.github.io/posts/2023/angstromctf-2023_filestore/</link>
       <pubDate>Thu, 27 Apr 2023 00:03:12 +0700</pubDate>
+      
       <guid>https://devme4f.github.io/posts/2023/angstromctf-2023_filestore/</guid>
-      <description>Overview Challenge cho source code: https://drive.google.com/file/d/1udkCu6axKKX6KhXgP4X3W_ejeIew0HNF/view?usp=sharing&#xA;index.php:&#xA;&amp;lt;?php if($_SERVER[&amp;#39;REQUEST_METHOD&amp;#39;] == &amp;#34;POST&amp;#34;){ if ($_FILES[&amp;#34;f&amp;#34;][&amp;#34;size&amp;#34;] &amp;gt; 1000) { echo &amp;#34;file too large&amp;#34;; return; } $i = uniqid(); if (empty($_FILES[&amp;#34;f&amp;#34;])){ return; } if (move_uploaded_file($_FILES[&amp;#34;f&amp;#34;][&amp;#34;tmp_name&amp;#34;], &amp;#34;./uploads/&amp;#34; . $i . &amp;#34;_&amp;#34; . hash(&amp;#39;sha256&amp;#39;, $_FILES[&amp;#34;f&amp;#34;][&amp;#34;name&amp;#34;]) . &amp;#34;_&amp;#34; . $_FILES[&amp;#34;f&amp;#34;][&amp;#34;name&amp;#34;])){ echo &amp;#34;upload success&amp;#34;; } else { echo &amp;#34;upload error&amp;#34;; } } else { if (isset($_GET[&amp;#34;f&amp;#34;])) { include &amp;#34;./uploads/&amp;#34; . $_GET[&amp;#34;f&amp;#34;]; } highlight_file(&amp;#34;index.php&amp;#34;); // this doesn&amp;#39;t work, so I&amp;#39;m commenting it out 😛 // system(&amp;#34;/list_uploads&amp;#34;); } ?</description>
+      <description>Overview Challenge cho source code: https://drive.google.com/file/d/1udkCu6axKKX6KhXgP4X3W_ejeIew0HNF/view?usp=sharing
+index.php:
+&amp;lt;?php if($_SERVER[&amp;#39;REQUEST_METHOD&amp;#39;] == &amp;#34;POST&amp;#34;){ if ($_FILES[&amp;#34;f&amp;#34;][&amp;#34;size&amp;#34;] &amp;gt; 1000) { echo &amp;#34;file too large&amp;#34;; return; } $i = uniqid(); if (empty($_FILES[&amp;#34;f&amp;#34;])){ return; } if (move_uploaded_file($_FILES[&amp;#34;f&amp;#34;][&amp;#34;tmp_name&amp;#34;], &amp;#34;./uploads/&amp;#34; . $i . &amp;#34;_&amp;#34; . hash(&amp;#39;sha256&amp;#39;, $_FILES[&amp;#34;f&amp;#34;][&amp;#34;name&amp;#34;]) . &amp;#34;_&amp;#34; . $_FILES[&amp;#34;f&amp;#34;][&amp;#34;name&amp;#34;])){ echo &amp;#34;upload success&amp;#34;; } else { echo &amp;#34;upload error&amp;#34;; } } else { if (isset($_GET[&amp;#34;f&amp;#34;])) { include &amp;#34;./uploads/&amp;#34; . $_GET[&amp;#34;f&amp;#34;]; } highlight_file(&amp;#34;index.php&amp;#34;); // this doesn&amp;#39;t work, so I&amp;#39;m commenting it out 😛 // system(&amp;#34;/list_uploads&amp;#34;); } ?</description>
     </item>
+    
   </channel>
 </rss>

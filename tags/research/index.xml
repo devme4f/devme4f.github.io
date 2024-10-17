@@ -1,54 +1,81 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Research on devme4f&#39;s blog</title>
+    <title>research on devme4f&#39;s blog</title>
     <link>https://devme4f.github.io/tags/research/</link>
-    <description>Recent content in Research on devme4f&#39;s blog</description>
+    <description>Recent content in research on devme4f&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>vi-vn</language>
-    <lastBuildDate>Fri, 16 Aug 2024 20:01:01 +0700</lastBuildDate>
-    <atom:link href="https://devme4f.github.io/tags/research/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 17 Oct 2024 11:24:02 +0700</lastBuildDate><atom:link href="https://devme4f.github.io/tags/research/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Quick note Spring Boot Fat Jar file writing to RCE (writeup)</title>
+      <link>https://devme4f.github.io/posts/2024/spring-boot-fat-jar-file-writing-rce/</link>
+      <pubDate>Thu, 17 Oct 2024 11:24:02 +0700</pubDate>
+      
+      <guid>https://devme4f.github.io/posts/2024/spring-boot-fat-jar-file-writing-rce/</guid>
+      <description>Lâu rồi mình cũng chưa viết bài blog nào mới, do là dạo gần đây khá tụt mood, cuộc sống cứ như vòng lặp vậy, thật nhàm chán, chẳng nghiên cứu được gì nhiều. Dù vậy mình vẫn có thói quen note lại những suy nghĩ - mấy cái học được, bài dưới đây mình cũng đã viết từ trước, thấy hay nên mình lôi ra publish chống cháy.
+Đây là đề mình ra trong đợt KMA-CTF 2024 ở trường, một trick khá hay trong java spring và vì muốn nó thực tế một tí nên không quá đánh đố, độ khó medium, hướng exploit cũng khá straight-forward.</description>
+    </item>
+    
     <item>
       <title>Analyzing CVE-2024-34750 Apache Tomcat DoS</title>
       <link>https://devme4f.github.io/posts/2024/analyzing-cve-2024-34750-tomcat-dos/</link>
       <pubDate>Fri, 16 Aug 2024 20:01:01 +0700</pubDate>
+      
       <guid>https://devme4f.github.io/posts/2024/analyzing-cve-2024-34750-tomcat-dos/</guid>
-      <description>Preface Bài viết sẽ phân tích lại CVE-2024-34750, CVE mà mình tìm được gần đây. Về web server Tomcat chắc cũng không còn phải giới thiệu nhiều, trong các ứng dụng java web servlet hay spring framework thì tomcat luôn là server được lựa chọn để deploy phổ biến nhất cho đến nay.&#xA;Nói ngắn gọn, CVE-2024-34750 cho phép DoS sập HTTP/2 connector của tomcat bằng cách trigger lỗi StreamException làm giá trị activeRemoteStreamCount bị đếm sai dẫn đến connection timeout bị set vô thời hạn (connection không được đóng sau khi xử lý xong).</description>
+      <description>Preface Bài viết sẽ phân tích lại CVE-2024-34750, CVE mà mình tìm được gần đây. Về web server Tomcat chắc cũng không còn phải giới thiệu nhiều, trong các ứng dụng java web servlet hay spring framework thì tomcat luôn là server được lựa chọn để deploy phổ biến nhất cho đến nay.
+Nói ngắn gọn, CVE-2024-34750 cho phép DoS sập HTTP/2 connector của tomcat bằng cách trigger lỗi StreamException làm giá trị activeRemoteStreamCount bị đếm sai dẫn đến connection timeout bị set vô thời hạn (connection không được đóng sau khi xử lý xong).</description>
     </item>
+    
     <item>
       <title>Spring Web Flow past vulnerabilities research</title>
       <link>https://devme4f.github.io/posts/2024/spring-web-flow-past-vulnerabilities/</link>
       <pubDate>Thu, 28 Mar 2024 17:13:36 +0700</pubDate>
+      
       <guid>https://devme4f.github.io/posts/2024/spring-web-flow-past-vulnerabilities/</guid>
-      <description>Prefeace Spring Web Flow xây dựng dựa trên Spring MVC và cho phép triển khai các &amp;ldquo;luồng&amp;rdquo; của ứng dụng web. Một luồng bao gồm một chuỗi ghi lại các bước người dùng thực hiện. Nó bao gồm nhiều yêu cầu HTTP, có trạng thái, xử lý dữ liệu giao dịch, có thể tái sử dụng, dynamic,&amp;hellip;&#xA;Câu trên dịch từ overview của project khá thô nhưng căn bản để dễ hiểu thì có thể coi nó như view-state trong ASP.</description>
+      <description>Prefeace Spring Web Flow xây dựng dựa trên Spring MVC và cho phép triển khai các &amp;ldquo;luồng&amp;rdquo; của ứng dụng web. Một luồng bao gồm một chuỗi ghi lại các bước người dùng thực hiện. Nó bao gồm nhiều yêu cầu HTTP, có trạng thái, xử lý dữ liệu giao dịch, có thể tái sử dụng, dynamic,&amp;hellip;
+Câu trên dịch từ overview của project khá thô nhưng căn bản để dễ hiểu thì có thể coi nó như view-state trong ASP.</description>
     </item>
+    
     <item>
       <title>Jasig CAS past vulnerabilities research</title>
       <link>https://devme4f.github.io/posts/2024/jasig-cas-past-vulnerabilities/</link>
       <pubDate>Wed, 27 Mar 2024 17:05:40 +0700</pubDate>
+      
       <guid>https://devme4f.github.io/posts/2024/jasig-cas-past-vulnerabilities/</guid>
-      <description>Preface CAS là một ứng dụng Enterprise Single Sign-On open source khá phổ biến được sử dụng bởi nhiều doanh nghiệp lớn. CAS hỗ trợ nhiều giao thức xác thực như CAS (tương tự kerberos), SAML, Oauth, OpenID cũng như có tính tùy biến cao nên được nhiều bên lựa chọn.&#xA;CAS ban đầu được phát triển với tên Jasig CAS có package name là org.jasig.cas nhưng từ 2012 thì Jasig hợp nhất với Sakai Foundation tạo nên Apereo Foundation.</description>
+      <description>Preface CAS là một ứng dụng Enterprise Single Sign-On open source khá phổ biến được sử dụng bởi nhiều doanh nghiệp lớn. CAS hỗ trợ nhiều giao thức xác thực như CAS (tương tự kerberos), SAML, Oauth, OpenID cũng như có tính tùy biến cao nên được nhiều bên lựa chọn.
+CAS ban đầu được phát triển với tên Jasig CAS có package name là org.jasig.cas nhưng từ 2012 thì Jasig hợp nhất với Sakai Foundation tạo nên Apereo Foundation.</description>
     </item>
+    
     <item>
       <title>Quick Note Spring Memshell</title>
       <link>https://devme4f.github.io/posts/2023/quick-note-spring-memshell/</link>
       <pubDate>Tue, 19 Sep 2023 21:50:22 +0700</pubDate>
+      
       <guid>https://devme4f.github.io/posts/2023/quick-note-spring-memshell/</guid>
-      <description>Preface Một vài mẫu note rời rạc về spring memory webshell mà mình đã dành thời gian tìm hiểu chưa có thời gian viết hoàn thiện&#xA;Spring boot Maven: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web&#xA;spring boot &amp;lt; 2.x =&amp;gt; test ok (2.4.10, 2.5.14, 2.7.15) spring boot 3.x (support jdk &amp;gt;= 17) =&amp;gt; not ok do jdk ver cao Dynamically set RequestMappings in Spring (at runtime) Lấy WebApplicationContext Key khi inject memshell trong spring là lấy được WebApplicationContext</description>
+      <description>Preface Một vài mẫu note rời rạc về spring memory webshell mà mình đã dành thời gian tìm hiểu chưa có thời gian viết hoàn thiện
+Spring boot Maven: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
+spring boot &amp;lt; 2.x =&amp;gt; test ok (2.4.10, 2.5.14, 2.7.15) spring boot 3.x (support jdk &amp;gt;= 17) =&amp;gt; not ok do jdk ver cao Dynamically set RequestMappings in Spring (at runtime) Lấy WebApplicationContext Key khi inject memshell trong spring là lấy được WebApplicationContext</description>
     </item>
+    
     <item>
       <title>Java Deserialization p1 - TemplateImpl class and its utilization chain</title>
       <link>https://devme4f.github.io/posts/2023/java-deserialization-p1/</link>
       <pubDate>Tue, 12 Sep 2023 23:46:31 +0700</pubDate>
+      
       <guid>https://devme4f.github.io/posts/2023/java-deserialization-p1/</guid>
       <description>Preface com.sun.org.apache.xalan.internal.xsltc.trax.TemplateImpl là một class nằm trong thư viện Apache Xalan có sẵn trong java runtime nhằm phục vụ quá trình transform XML document, tuy nhiên lại bị lợi dụng rất nhiều trong các bộ deserialization gadget chain do có thể thực hiện load bytecode dẫn đến thực thi command tùy ý. Bài viết sẽ phân tích chi tiết class TemplateImpl và một vài chain phổ biến sử dụng sink là TemplateImpl như bộ CommonsBeanutils hay CommonsCollections 2, 3, 4.</description>
     </item>
+    
     <item>
       <title>Liferay Pentest</title>
       <link>https://devme4f.github.io/posts/2023/liferay-pentest/</link>
       <pubDate>Thu, 25 May 2023 22:08:11 +0700</pubDate>
+      
       <guid>https://devme4f.github.io/posts/2023/liferay-pentest/</guid>
-      <description>Preface Bài viết tổng hợp một số lỗ hổng phổ biến / nghiêm trọng trên product Liferay đã được phát hiện, nhằm giúp người đọc (và mình) có cái nhìn tổng quan và cũng là cheat-sheet khi pentest các site Liferay.&#xA;Liferay Blind SSRF Pingback Affected version: &amp;lt;= Liferay Portal 7.0.4 Lỗ hổng SSRF nằm trong tính năng blog pingback của liferay, cho phép gửi http get request đến địa chỉ bất kỳ.</description>
+      <description>Preface Bài viết tổng hợp một số lỗ hổng phổ biến / nghiêm trọng trên product Liferay đã được phát hiện, nhằm giúp người đọc (và mình) có cái nhìn tổng quan và cũng là cheat-sheet khi pentest các site Liferay.
+Liferay Blind SSRF Pingback Affected version: &amp;lt;= Liferay Portal 7.0.4 Lỗ hổng SSRF nằm trong tính năng blog pingback của liferay, cho phép gửi http get request đến địa chỉ bất kỳ.</description>
     </item>
+    
   </channel>
 </rss>

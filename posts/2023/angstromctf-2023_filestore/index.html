@@ -23,7 +23,8 @@ index.php:
 <meta property="article:published_time" content="2023-04-27T00:03:12+07:00" />
 <meta property="article:modified_time" content="2023-04-27T00:03:12+07:00" />
 
-  <meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Angstromctf-2023 Ctf Writeup - filestore"/>
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Angstromctf-2023 Ctf Writeup - filestore"/>
 <meta name="twitter:description" content="Overview Challenge cho source code: https://drive.google.com/file/d/1udkCu6axKKX6KhXgP4X3W_ejeIew0HNF/view?usp=sharing
 index.php:
 &lt;?php if($_SERVER[&#39;REQUEST_METHOD&#39;] == &#34;POST&#34;){ if ($_FILES[&#34;f&#34;][&#34;size&#34;] &gt; 1000) { echo &#34;file too large&#34;; return; } $i = uniqid(); if (empty($_FILES[&#34;f&#34;])){ return; } if (move_uploaded_file($_FILES[&#34;f&#34;][&#34;tmp_name&#34;], &#34;./uploads/&#34; . $i . &#34;_&#34; . hash(&#39;sha256&#39;, $_FILES[&#34;f&#34;][&#34;name&#34;]) . &#34;_&#34; . $_FILES[&#34;f&#34;][&#34;name&#34;])){ echo &#34;upload success&#34;; } else { echo &#34;upload error&#34;; } } else { if (isset($_GET[&#34;f&#34;])) { include &#34;./uploads/&#34; . $_GET[&#34;f&#34;]; } highlight_file(&#34;index.php&#34;); // this doesn&#39;t work, so I&#39;m commenting it out 😛 // system(&#34;/list_uploads&#34;); } ?"/>
