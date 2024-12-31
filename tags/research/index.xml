@@ -13,7 +13,7 @@
       <pubDate>Thu, 17 Oct 2024 11:24:02 +0700</pubDate>
       
       <guid>https://devme4f.github.io/posts/2024/spring-boot-fat-jar-file-writing-rce/</guid>
-      <description>Lâu rồi mình cũng chưa viết bài blog nào mới, do là dạo gần đây khá tụt mood, cuộc sống cứ như vòng lặp vậy, thật nhàm chán, chẳng nghiên cứu được gì nhiều. Dù vậy mình vẫn có thói quen note lại những suy nghĩ - mấy cái học được, bài dưới đây mình cũng đã viết từ trước, thấy hay nên mình lôi ra publish chống cháy.
+      <description>Lâu rồi mình cũng chưa viết bài blog nào mới, do là dạo gần đây khá tụt mood, cuộc sống cứ như vòng lặp vậy, thật nhàm chán, chẳng nghiên cứu được gì nhiều. Dù vậy mình vẫn có thói quen note lại những suy nghĩ - mấy cái học được, bài dưới đây mình cũng đã viết từ trước.
 Đây là đề mình ra trong đợt KMA-CTF 2024 ở trường, một trick khá hay trong java spring và vì muốn nó thực tế một tí nên không quá đánh đố, độ khó medium, hướng exploit cũng khá straight-forward.</description>
     </item>
     

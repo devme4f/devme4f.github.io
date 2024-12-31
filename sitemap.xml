@@ -3,7 +3,32 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://devme4f.github.io/</loc>
-    <lastmod>2024-11-11T20:05:55+07:00</lastmod>
+    <lastmod>2024-12-31T19:56:07+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://devme4f.github.io/posts/2024/java-memshell-facing-tomcat-compatibility/</loc>
+    <lastmod>2024-12-31T19:56:07+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://devme4f.github.io/tags/memshell/</loc>
+    <lastmod>2024-12-31T19:56:07+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://devme4f.github.io/posts/</loc>
+    <lastmod>2024-12-31T19:56:07+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://devme4f.github.io/tags/</loc>
+    <lastmod>2024-12-31T19:56:07+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://devme4f.github.io/tags/tomcat/</loc>
+    <lastmod>2024-12-31T19:56:07+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
@@ -22,22 +47,12 @@
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
-    <loc>https://devme4f.github.io/posts/</loc>
-    <lastmod>2024-10-17T11:24:02+07:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
     <loc>https://devme4f.github.io/posts/2024/spring-boot-fat-jar-file-writing-rce/</loc>
     <lastmod>2024-10-17T11:24:02+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
     <loc>https://devme4f.github.io/tags/research/</loc>
-    <lastmod>2024-10-17T11:24:02+07:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://devme4f.github.io/tags/</loc>
     <lastmod>2024-10-17T11:24:02+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -89,11 +104,6 @@
   </url><url>
     <loc>https://devme4f.github.io/posts/2023/svattt-2023_new-waf-deser/</loc>
     <lastmod>2023-12-22T12:35:17+07:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://devme4f.github.io/tags/memshell/</loc>
-    <lastmod>2023-09-19T21:50:22+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>

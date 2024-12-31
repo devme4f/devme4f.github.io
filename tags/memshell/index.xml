@@ -6,7 +6,17 @@
     <description>Recent content in memshell on devme4f&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>vi-vn</language>
-    <lastBuildDate>Tue, 19 Sep 2023 21:50:22 +0700</lastBuildDate><atom:link href="https://devme4f.github.io/tags/memshell/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 31 Dec 2024 19:56:07 +0700</lastBuildDate><atom:link href="https://devme4f.github.io/tags/memshell/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Level-up Java Memshell - Facing Tomcat Compatibility Problems</title>
+      <link>https://devme4f.github.io/posts/2024/java-memshell-facing-tomcat-compatibility/</link>
+      <pubDate>Tue, 31 Dec 2024 19:56:07 +0700</pubDate>
+      
+      <guid>https://devme4f.github.io/posts/2024/java-memshell-facing-tomcat-compatibility/</guid>
+      <description>The knowledge is endless, don&amp;rsquo;t just learn it, do it
+preface Trước đây mình đã viết một bài khá basic về 3 loại memshell trên tomcat, đây vẫn chưa phải tất cả các thành phần có thể lợi dụng, còn các loại khác như Valve, Executor, Poller, Http11NioProtocol,&amp;hellip; (chưa kể framework như spring hay các webserver servlet khác) nhưng để phân loại theo các cách inject vào memory từ exec code, ta có ba loại:</description>
+    </item>
+    
     <item>
       <title>Quick Note Spring Memshell</title>
       <link>https://devme4f.github.io/posts/2023/quick-note-spring-memshell/</link>

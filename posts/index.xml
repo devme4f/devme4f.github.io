@@ -6,14 +6,24 @@
     <description>Recent content in Posts on devme4f&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>vi-vn</language>
-    <lastBuildDate>Thu, 17 Oct 2024 11:24:02 +0700</lastBuildDate><atom:link href="https://devme4f.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 31 Dec 2024 19:56:07 +0700</lastBuildDate><atom:link href="https://devme4f.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Level-up Java Memshell - Facing Tomcat Compatibility Problems</title>
+      <link>https://devme4f.github.io/posts/2024/java-memshell-facing-tomcat-compatibility/</link>
+      <pubDate>Tue, 31 Dec 2024 19:56:07 +0700</pubDate>
+      
+      <guid>https://devme4f.github.io/posts/2024/java-memshell-facing-tomcat-compatibility/</guid>
+      <description>The knowledge is endless, don&amp;rsquo;t just learn it, do it
+preface Trước đây mình đã viết một bài khá basic về 3 loại memshell trên tomcat, đây vẫn chưa phải tất cả các thành phần có thể lợi dụng, còn các loại khác như Valve, Executor, Poller, Http11NioProtocol,&amp;hellip; (chưa kể framework như spring hay các webserver servlet khác) nhưng để phân loại theo các cách inject vào memory từ exec code, ta có ba loại:</description>
+    </item>
+    
     <item>
       <title>Quick note Spring Boot Fat Jar file writing to RCE (writeup)</title>
       <link>https://devme4f.github.io/posts/2024/spring-boot-fat-jar-file-writing-rce/</link>
       <pubDate>Thu, 17 Oct 2024 11:24:02 +0700</pubDate>
       
       <guid>https://devme4f.github.io/posts/2024/spring-boot-fat-jar-file-writing-rce/</guid>
-      <description>Lâu rồi mình cũng chưa viết bài blog nào mới, do là dạo gần đây khá tụt mood, cuộc sống cứ như vòng lặp vậy, thật nhàm chán, chẳng nghiên cứu được gì nhiều. Dù vậy mình vẫn có thói quen note lại những suy nghĩ - mấy cái học được, bài dưới đây mình cũng đã viết từ trước, thấy hay nên mình lôi ra publish chống cháy.
+      <description>Lâu rồi mình cũng chưa viết bài blog nào mới, do là dạo gần đây khá tụt mood, cuộc sống cứ như vòng lặp vậy, thật nhàm chán, chẳng nghiên cứu được gì nhiều. Dù vậy mình vẫn có thói quen note lại những suy nghĩ - mấy cái học được, bài dưới đây mình cũng đã viết từ trước.
 Đây là đề mình ra trong đợt KMA-CTF 2024 ở trường, một trick khá hay trong java spring và vì muốn nó thực tế một tí nên không quá đánh đố, độ khó medium, hướng exploit cũng khá straight-forward.</description>
     </item>
     
