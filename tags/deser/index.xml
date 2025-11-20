@@ -13,7 +13,7 @@
       <pubDate>Fri, 22 Dec 2023 12:35:17 +0700</pubDate>
       
       <guid>https://devme4f.github.io/posts/2023/svattt-2023_new-waf-deser/</guid>
-      <description>Preface Gõ phím viết bài này thì cũng đã gần 2 tháng kể từ đợt final A&amp;amp;D SVATTT 2023 kết thúc. Năm nay mình may may mắn được vào chung khảo chơi A&amp;amp;D và với role là defense (cấu hình log, patch bug,..etc). Vào thi thì khá loạn + nhiều việc, và vì mình role defense nên cũng chỉ ngó qua bài này và thấy backend y chang bài waf-deser năm trước khác mỗi phần front-end, tưởng dễ nên mình vẫn chưa mò lại xem, nay đến deadline hoàn thành task ở clb mới lụi cụi làm, thấy hay nên write up lại luôn, coi như làm tài liệu tham khảo cho các năm sau :D</description>
+      <description>Preface Khi viết bài này thì cũng đã được 2 tháng kể từ đợt final A&amp;amp;D SVATTT 2023 kết thúc. Năm nay mình may may mắn được vào chung khảo chơi A&amp;amp;D và với role là defense (cấu hình log, patch bug,..etc). Vào thi thì khá loạn + nhiều việc, mình với role defense nên cũng chỉ ngó qua bài này, thấy backend y chang bài waf-deser năm trước và khác mỗi phần front-end, tưởng dễ nên mình vẫn chưa mò lại xem, nay làm lại thấy hay nên write up lại luôn, coi như làm tài liệu tham khảo cho các năm sau :D</description>
     </item>
     
     <item>

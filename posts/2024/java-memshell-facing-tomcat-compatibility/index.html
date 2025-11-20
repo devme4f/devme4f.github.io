@@ -8,13 +8,13 @@
   
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title> Level-up Java Memshell - Facing Tomcat Compatibility Problems | devme4f&#39;s blog</title>
+  <title> Level-up Java Memshell - Tomcat Compatibility Problems | devme4f&#39;s blog</title>
   <link rel = 'canonical' href = 'https://devme4f.github.io/posts/2024/java-memshell-facing-tomcat-compatibility/'>
   
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="all,follow">
   <meta name="googlebot" content="index,follow,snippet,archive">
-  <meta property="og:title" content="Level-up Java Memshell - Facing Tomcat Compatibility Problems" />
+  <meta property="og:title" content="Level-up Java Memshell - Tomcat Compatibility Problems" />
 <meta property="og:description" content="The knowledge is endless, don&rsquo;t just learn it, do it
 preface Trước đây mình đã viết một bài khá basic về 3 loại memshell trên tomcat, đây vẫn chưa phải tất cả các thành phần có thể lợi dụng, còn các loại khác như Valve, Executor, Poller, Http11NioProtocol,&hellip; (chưa kể framework như spring hay các webserver servlet khác) nhưng để phân loại theo các cách inject vào memory từ exec code, ta có ba loại:" />
 <meta property="og:type" content="article" />
@@ -23,7 +23,7 @@ preface Trước đây mình đã viết một bài khá basic về 3 loại mem
 <meta property="article:modified_time" content="2024-12-31T19:56:07+07:00" />
 
   <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Level-up Java Memshell - Facing Tomcat Compatibility Problems"/>
+<meta name="twitter:title" content="Level-up Java Memshell - Tomcat Compatibility Problems"/>
 <meta name="twitter:description" content="The knowledge is endless, don&rsquo;t just learn it, do it
 preface Trước đây mình đã viết một bài khá basic về 3 loại memshell trên tomcat, đây vẫn chưa phải tất cả các thành phần có thể lợi dụng, còn các loại khác như Valve, Executor, Poller, Http11NioProtocol,&hellip; (chưa kể framework như spring hay các webserver servlet khác) nhưng để phân loại theo các cách inject vào memory từ exec code, ta có ba loại:"/>
 
@@ -119,42 +119,42 @@ preface Trước đây mình đã viết một bài khá basic về 3 loại mem
     </a>
   </li>
   <li>
-    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&text=Level-up%20Java%20Memshell%20-%20Facing%20Tomcat%20Compatibility%20Problems" aria-label="Twitter">
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&text=Level-up%20Java%20Memshell%20-%20Tomcat%20Compatibility%20Problems" aria-label="Twitter">
       <i class="fab fa-twitter " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&title=Level-up%20Java%20Memshell%20-%20Facing%20Tomcat%20Compatibility%20Problems" aria-label="Linkedin">
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&title=Level-up%20Java%20Memshell%20-%20Tomcat%20Compatibility%20Problems" aria-label="Linkedin">
       <i class="fab fa-linkedin " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&is_video=false&description=Level-up%20Java%20Memshell%20-%20Facing%20Tomcat%20Compatibility%20Problems" aria-label="Pinterest">
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&is_video=false&description=Level-up%20Java%20Memshell%20-%20Tomcat%20Compatibility%20Problems" aria-label="Pinterest">
       <i class="fab fa-pinterest " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="mailto:?subject=Level-up%20Java%20Memshell%20-%20Facing%20Tomcat%20Compatibility%20Problems&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f" aria-label="Email">
+    <a class="icon" href="mailto:?subject=Level-up%20Java%20Memshell%20-%20Tomcat%20Compatibility%20Problems&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f" aria-label="Email">
       <i class="fas fa-envelope " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&title=Level-up%20Java%20Memshell%20-%20Facing%20Tomcat%20Compatibility%20Problems" aria-label="Pocket">
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&title=Level-up%20Java%20Memshell%20-%20Tomcat%20Compatibility%20Problems" aria-label="Pocket">
       <i class="fab fa-get-pocket " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&title=Level-up%20Java%20Memshell%20-%20Facing%20Tomcat%20Compatibility%20Problems" aria-label="reddit">
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&title=Level-up%20Java%20Memshell%20-%20Tomcat%20Compatibility%20Problems" aria-label="reddit">
       <i class="fab fa-reddit " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&name=Level-up%20Java%20Memshell%20-%20Facing%20Tomcat%20Compatibility%20Problems&description=The%20knowledge%20is%20endless%2c%20don%26rsquo%3bt%20just%20learn%20it%2c%20do%20it%0apreface%20Tr%c6%b0%e1%bb%9bc%20%c4%91%c3%a2y%20m%c3%acnh%20%c4%91%c3%a3%20vi%e1%ba%bft%20m%e1%bb%99t%20b%c3%a0i%20kh%c3%a1%20basic%20v%e1%bb%81%203%20lo%e1%ba%a1i%20memshell%20tr%c3%aan%20tomcat%2c%20%c4%91%c3%a2y%20v%e1%ba%abn%20ch%c6%b0a%20ph%e1%ba%a3i%20t%e1%ba%a5t%20c%e1%ba%a3%20c%c3%a1c%20th%c3%a0nh%20ph%e1%ba%a7n%20c%c3%b3%20th%e1%bb%83%20l%e1%bb%a3i%20d%e1%bb%a5ng%2c%20c%c3%b2n%20c%c3%a1c%20lo%e1%ba%a1i%20kh%c3%a1c%20nh%c6%b0%20Valve%2c%20Executor%2c%20Poller%2c%20Http11NioProtocol%2c%26hellip%3b%20%28ch%c6%b0a%20k%e1%bb%83%20framework%20nh%c6%b0%20spring%20hay%20c%c3%a1c%20webserver%20servlet%20kh%c3%a1c%29%20nh%c6%b0ng%20%c4%91%e1%bb%83%20ph%c3%a2n%20lo%e1%ba%a1i%20theo%20c%c3%a1c%20c%c3%a1ch%20inject%20v%c3%a0o%20memory%20t%e1%bb%ab%20exec%20code%2c%20ta%20c%c3%b3%20ba%20lo%e1%ba%a1i%3a" aria-label="Tumblr">
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&name=Level-up%20Java%20Memshell%20-%20Tomcat%20Compatibility%20Problems&description=The%20knowledge%20is%20endless%2c%20don%26rsquo%3bt%20just%20learn%20it%2c%20do%20it%0apreface%20Tr%c6%b0%e1%bb%9bc%20%c4%91%c3%a2y%20m%c3%acnh%20%c4%91%c3%a3%20vi%e1%ba%bft%20m%e1%bb%99t%20b%c3%a0i%20kh%c3%a1%20basic%20v%e1%bb%81%203%20lo%e1%ba%a1i%20memshell%20tr%c3%aan%20tomcat%2c%20%c4%91%c3%a2y%20v%e1%ba%abn%20ch%c6%b0a%20ph%e1%ba%a3i%20t%e1%ba%a5t%20c%e1%ba%a3%20c%c3%a1c%20th%c3%a0nh%20ph%e1%ba%a7n%20c%c3%b3%20th%e1%bb%83%20l%e1%bb%a3i%20d%e1%bb%a5ng%2c%20c%c3%b2n%20c%c3%a1c%20lo%e1%ba%a1i%20kh%c3%a1c%20nh%c6%b0%20Valve%2c%20Executor%2c%20Poller%2c%20Http11NioProtocol%2c%26hellip%3b%20%28ch%c6%b0a%20k%e1%bb%83%20framework%20nh%c6%b0%20spring%20hay%20c%c3%a1c%20webserver%20servlet%20kh%c3%a1c%29%20nh%c6%b0ng%20%c4%91%e1%bb%83%20ph%c3%a2n%20lo%e1%ba%a1i%20theo%20c%c3%a1c%20c%c3%a1ch%20inject%20v%c3%a0o%20memory%20t%e1%bb%ab%20exec%20code%2c%20ta%20c%c3%b3%20ba%20lo%e1%ba%a1i%3a" aria-label="Tumblr">
       <i class="fab fa-tumblr " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&t=Level-up%20Java%20Memshell%20-%20Facing%20Tomcat%20Compatibility%20Problems" aria-label="Hacker News">
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&t=Level-up%20Java%20Memshell%20-%20Tomcat%20Compatibility%20Problems" aria-label="Hacker News">
       <i class="fab fa-hacker-news " aria-hidden="true"></i>
     </a>
   </li>
@@ -194,7 +194,7 @@ preface Trước đây mình đã viết một bài khá basic về 3 loại mem
   <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
     <header>
       <h1 class="posttitle" itemprop="name headline">
-        Level-up Java Memshell - Facing Tomcat Compatibility Problems
+        Level-up Java Memshell - Tomcat Compatibility Problems
       </h1>
       <div class="meta">
         
@@ -917,42 +917,42 @@ Còn lại, để inject memshell, chỉ cần gọi <code>stdCtx.addApplication
     </a>
   </li>
   <li>
-    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&text=Level-up%20Java%20Memshell%20-%20Facing%20Tomcat%20Compatibility%20Problems" aria-label="Twitter">
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&text=Level-up%20Java%20Memshell%20-%20Tomcat%20Compatibility%20Problems" aria-label="Twitter">
       <i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&title=Level-up%20Java%20Memshell%20-%20Facing%20Tomcat%20Compatibility%20Problems" aria-label="Linkedin">
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&title=Level-up%20Java%20Memshell%20-%20Tomcat%20Compatibility%20Problems" aria-label="Linkedin">
       <i class="fab fa-linkedin fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&is_video=false&description=Level-up%20Java%20Memshell%20-%20Facing%20Tomcat%20Compatibility%20Problems" aria-label="Pinterest">
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&is_video=false&description=Level-up%20Java%20Memshell%20-%20Tomcat%20Compatibility%20Problems" aria-label="Pinterest">
       <i class="fab fa-pinterest fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="mailto:?subject=Level-up%20Java%20Memshell%20-%20Facing%20Tomcat%20Compatibility%20Problems&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f" aria-label="Email">
+    <a class="icon" href="mailto:?subject=Level-up%20Java%20Memshell%20-%20Tomcat%20Compatibility%20Problems&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f" aria-label="Email">
       <i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&title=Level-up%20Java%20Memshell%20-%20Facing%20Tomcat%20Compatibility%20Problems" aria-label="Pocket">
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&title=Level-up%20Java%20Memshell%20-%20Tomcat%20Compatibility%20Problems" aria-label="Pocket">
       <i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&title=Level-up%20Java%20Memshell%20-%20Facing%20Tomcat%20Compatibility%20Problems" aria-label="reddit">
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&title=Level-up%20Java%20Memshell%20-%20Tomcat%20Compatibility%20Problems" aria-label="reddit">
       <i class="fab fa-reddit fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&name=Level-up%20Java%20Memshell%20-%20Facing%20Tomcat%20Compatibility%20Problems&description=The%20knowledge%20is%20endless%2c%20don%26rsquo%3bt%20just%20learn%20it%2c%20do%20it%0apreface%20Tr%c6%b0%e1%bb%9bc%20%c4%91%c3%a2y%20m%c3%acnh%20%c4%91%c3%a3%20vi%e1%ba%bft%20m%e1%bb%99t%20b%c3%a0i%20kh%c3%a1%20basic%20v%e1%bb%81%203%20lo%e1%ba%a1i%20memshell%20tr%c3%aan%20tomcat%2c%20%c4%91%c3%a2y%20v%e1%ba%abn%20ch%c6%b0a%20ph%e1%ba%a3i%20t%e1%ba%a5t%20c%e1%ba%a3%20c%c3%a1c%20th%c3%a0nh%20ph%e1%ba%a7n%20c%c3%b3%20th%e1%bb%83%20l%e1%bb%a3i%20d%e1%bb%a5ng%2c%20c%c3%b2n%20c%c3%a1c%20lo%e1%ba%a1i%20kh%c3%a1c%20nh%c6%b0%20Valve%2c%20Executor%2c%20Poller%2c%20Http11NioProtocol%2c%26hellip%3b%20%28ch%c6%b0a%20k%e1%bb%83%20framework%20nh%c6%b0%20spring%20hay%20c%c3%a1c%20webserver%20servlet%20kh%c3%a1c%29%20nh%c6%b0ng%20%c4%91%e1%bb%83%20ph%c3%a2n%20lo%e1%ba%a1i%20theo%20c%c3%a1c%20c%c3%a1ch%20inject%20v%c3%a0o%20memory%20t%e1%bb%ab%20exec%20code%2c%20ta%20c%c3%b3%20ba%20lo%e1%ba%a1i%3a" aria-label="Tumblr">
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&name=Level-up%20Java%20Memshell%20-%20Tomcat%20Compatibility%20Problems&description=The%20knowledge%20is%20endless%2c%20don%26rsquo%3bt%20just%20learn%20it%2c%20do%20it%0apreface%20Tr%c6%b0%e1%bb%9bc%20%c4%91%c3%a2y%20m%c3%acnh%20%c4%91%c3%a3%20vi%e1%ba%bft%20m%e1%bb%99t%20b%c3%a0i%20kh%c3%a1%20basic%20v%e1%bb%81%203%20lo%e1%ba%a1i%20memshell%20tr%c3%aan%20tomcat%2c%20%c4%91%c3%a2y%20v%e1%ba%abn%20ch%c6%b0a%20ph%e1%ba%a3i%20t%e1%ba%a5t%20c%e1%ba%a3%20c%c3%a1c%20th%c3%a0nh%20ph%e1%ba%a7n%20c%c3%b3%20th%e1%bb%83%20l%e1%bb%a3i%20d%e1%bb%a5ng%2c%20c%c3%b2n%20c%c3%a1c%20lo%e1%ba%a1i%20kh%c3%a1c%20nh%c6%b0%20Valve%2c%20Executor%2c%20Poller%2c%20Http11NioProtocol%2c%26hellip%3b%20%28ch%c6%b0a%20k%e1%bb%83%20framework%20nh%c6%b0%20spring%20hay%20c%c3%a1c%20webserver%20servlet%20kh%c3%a1c%29%20nh%c6%b0ng%20%c4%91%e1%bb%83%20ph%c3%a2n%20lo%e1%ba%a1i%20theo%20c%c3%a1c%20c%c3%a1ch%20inject%20v%c3%a0o%20memory%20t%e1%bb%ab%20exec%20code%2c%20ta%20c%c3%b3%20ba%20lo%e1%ba%a1i%3a" aria-label="Tumblr">
       <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&t=Level-up%20Java%20Memshell%20-%20Facing%20Tomcat%20Compatibility%20Problems" aria-label="Hacker News">
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fjava-memshell-facing-tomcat-compatibility%2f&t=Level-up%20Java%20Memshell%20-%20Tomcat%20Compatibility%20Problems" aria-label="Hacker News">
       <i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i>
     </a>
   </li>

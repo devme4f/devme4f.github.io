@@ -15,7 +15,7 @@
   <meta name="robots" content="all,follow">
   <meta name="googlebot" content="index,follow,snippet,archive">
   <meta property="og:title" content="SVATTT-2023 Ctf Writeup - The new Waf Deser" />
-<meta property="og:description" content="Preface Gõ phím viết bài này thì cũng đã gần 2 tháng kể từ đợt final A&amp;D SVATTT 2023 kết thúc. Năm nay mình may may mắn được vào chung khảo chơi A&amp;D và với role là defense (cấu hình log, patch bug,..etc). Vào thi thì khá loạn &#43; nhiều việc, và vì mình role defense nên cũng chỉ ngó qua bài này và thấy backend y chang bài waf-deser năm trước khác mỗi phần front-end, tưởng dễ nên mình vẫn chưa mò lại xem, nay đến deadline hoàn thành task ở clb mới lụi cụi làm, thấy hay nên write up lại luôn, coi như làm tài liệu tham khảo cho các năm sau :D" />
+<meta property="og:description" content="Preface Khi viết bài này thì cũng đã được 2 tháng kể từ đợt final A&amp;D SVATTT 2023 kết thúc. Năm nay mình may may mắn được vào chung khảo chơi A&amp;D và với role là defense (cấu hình log, patch bug,..etc). Vào thi thì khá loạn &#43; nhiều việc, mình với role defense nên cũng chỉ ngó qua bài này, thấy backend y chang bài waf-deser năm trước và khác mỗi phần front-end, tưởng dễ nên mình vẫn chưa mò lại xem, nay làm lại thấy hay nên write up lại luôn, coi như làm tài liệu tham khảo cho các năm sau :D" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://devme4f.github.io/posts/2023/svattt-2023_new-waf-deser/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2023-12-22T12:35:17+07:00" />
@@ -23,7 +23,7 @@
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="SVATTT-2023 Ctf Writeup - The new Waf Deser"/>
-<meta name="twitter:description" content="Preface Gõ phím viết bài này thì cũng đã gần 2 tháng kể từ đợt final A&amp;D SVATTT 2023 kết thúc. Năm nay mình may may mắn được vào chung khảo chơi A&amp;D và với role là defense (cấu hình log, patch bug,..etc). Vào thi thì khá loạn &#43; nhiều việc, và vì mình role defense nên cũng chỉ ngó qua bài này và thấy backend y chang bài waf-deser năm trước khác mỗi phần front-end, tưởng dễ nên mình vẫn chưa mò lại xem, nay đến deadline hoàn thành task ở clb mới lụi cụi làm, thấy hay nên write up lại luôn, coi như làm tài liệu tham khảo cho các năm sau :D"/>
+<meta name="twitter:description" content="Preface Khi viết bài này thì cũng đã được 2 tháng kể từ đợt final A&amp;D SVATTT 2023 kết thúc. Năm nay mình may may mắn được vào chung khảo chơi A&amp;D và với role là defense (cấu hình log, patch bug,..etc). Vào thi thì khá loạn &#43; nhiều việc, mình với role defense nên cũng chỉ ngó qua bài này, thấy backend y chang bài waf-deser năm trước và khác mỗi phần front-end, tưởng dễ nên mình vẫn chưa mò lại xem, nay làm lại thấy hay nên write up lại luôn, coi như làm tài liệu tham khảo cho các năm sau :D"/>
 
   
   
@@ -147,7 +147,7 @@
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f&name=SVATTT-2023%20Ctf%20Writeup%20-%20The%20new%20Waf%20Deser&description=Preface%20G%c3%b5%20ph%c3%adm%20vi%e1%ba%bft%20b%c3%a0i%20n%c3%a0y%20th%c3%ac%20c%c5%a9ng%20%c4%91%c3%a3%20g%e1%ba%a7n%202%20th%c3%a1ng%20k%e1%bb%83%20t%e1%bb%ab%20%c4%91%e1%bb%a3t%20final%20A%26amp%3bD%20SVATTT%202023%20k%e1%ba%bft%20th%c3%bac.%20N%c4%83m%20nay%20m%c3%acnh%20may%20may%20m%e1%ba%afn%20%c4%91%c6%b0%e1%bb%a3c%20v%c3%a0o%20chung%20kh%e1%ba%a3o%20ch%c6%a1i%20A%26amp%3bD%20v%c3%a0%20v%e1%bb%9bi%20role%20l%c3%a0%20defense%20%28c%e1%ba%a5u%20h%c3%acnh%20log%2c%20patch%20bug%2c..etc%29.%20V%c3%a0o%20thi%20th%c3%ac%20kh%c3%a1%20lo%e1%ba%a1n%20%2b%20nhi%e1%bb%81u%20vi%e1%bb%87c%2c%20v%c3%a0%20v%c3%ac%20m%c3%acnh%20role%20defense%20n%c3%aan%20c%c5%a9ng%20ch%e1%bb%89%20ng%c3%b3%20qua%20b%c3%a0i%20n%c3%a0y%20v%c3%a0%20th%e1%ba%a5y%20backend%20y%20chang%20b%c3%a0i%20waf-deser%20n%c4%83m%20tr%c6%b0%e1%bb%9bc%20kh%c3%a1c%20m%e1%bb%97i%20ph%e1%ba%a7n%20front-end%2c%20t%c6%b0%e1%bb%9fng%20d%e1%bb%85%20n%c3%aan%20m%c3%acnh%20v%e1%ba%abn%20ch%c6%b0a%20m%c3%b2%20l%e1%ba%a1i%20xem%2c%20nay%20%c4%91%e1%ba%bfn%20deadline%20ho%c3%a0n%20th%c3%a0nh%20task%20%e1%bb%9f%20clb%20m%e1%bb%9bi%20l%e1%bb%a5i%20c%e1%bb%a5i%20l%c3%a0m%2c%20th%e1%ba%a5y%20hay%20n%c3%aan%20write%20up%20l%e1%ba%a1i%20lu%c3%b4n%2c%20coi%20nh%c6%b0%20l%c3%a0m%20t%c3%a0i%20li%e1%bb%87u%20tham%20kh%e1%ba%a3o%20cho%20c%c3%a1c%20n%c4%83m%20sau%20%3aD" aria-label="Tumblr">
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f&name=SVATTT-2023%20Ctf%20Writeup%20-%20The%20new%20Waf%20Deser&description=Preface%20Khi%20vi%e1%ba%bft%20b%c3%a0i%20n%c3%a0y%20th%c3%ac%20c%c5%a9ng%20%c4%91%c3%a3%20%c4%91%c6%b0%e1%bb%a3c%202%20th%c3%a1ng%20k%e1%bb%83%20t%e1%bb%ab%20%c4%91%e1%bb%a3t%20final%20A%26amp%3bD%20SVATTT%202023%20k%e1%ba%bft%20th%c3%bac.%20N%c4%83m%20nay%20m%c3%acnh%20may%20may%20m%e1%ba%afn%20%c4%91%c6%b0%e1%bb%a3c%20v%c3%a0o%20chung%20kh%e1%ba%a3o%20ch%c6%a1i%20A%26amp%3bD%20v%c3%a0%20v%e1%bb%9bi%20role%20l%c3%a0%20defense%20%28c%e1%ba%a5u%20h%c3%acnh%20log%2c%20patch%20bug%2c..etc%29.%20V%c3%a0o%20thi%20th%c3%ac%20kh%c3%a1%20lo%e1%ba%a1n%20%2b%20nhi%e1%bb%81u%20vi%e1%bb%87c%2c%20m%c3%acnh%20v%e1%bb%9bi%20role%20defense%20n%c3%aan%20c%c5%a9ng%20ch%e1%bb%89%20ng%c3%b3%20qua%20b%c3%a0i%20n%c3%a0y%2c%20th%e1%ba%a5y%20backend%20y%20chang%20b%c3%a0i%20waf-deser%20n%c4%83m%20tr%c6%b0%e1%bb%9bc%20v%c3%a0%20kh%c3%a1c%20m%e1%bb%97i%20ph%e1%ba%a7n%20front-end%2c%20t%c6%b0%e1%bb%9fng%20d%e1%bb%85%20n%c3%aan%20m%c3%acnh%20v%e1%ba%abn%20ch%c6%b0a%20m%c3%b2%20l%e1%ba%a1i%20xem%2c%20nay%20l%c3%a0m%20l%e1%ba%a1i%20th%e1%ba%a5y%20hay%20n%c3%aan%20write%20up%20l%e1%ba%a1i%20lu%c3%b4n%2c%20coi%20nh%c6%b0%20l%c3%a0m%20t%c3%a0i%20li%e1%bb%87u%20tham%20kh%e1%ba%a3o%20cho%20c%c3%a1c%20n%c4%83m%20sau%20%3aD" aria-label="Tumblr">
       <i class="fab fa-tumblr " aria-hidden="true"></i>
     </a>
   </li>
@@ -165,8 +165,8 @@
   <ul>
     <li><a href="#preface">Preface</a></li>
     <li><a href="#docker-composeyml">docker-compose.yml</a></li>
-    <li><a href="#de-old-backend">de old backend</a></li>
-    <li><a href="#de-front">de front</a></li>
+    <li><a href="#the-old-backend">the old backend</a></li>
+    <li><a href="#the-front">the front</a></li>
     <li><a href="#deser">deser</a></li>
     <li><a href="#anotherway-spring-view-manipulation-ssti-still-via-deser">Anotherway: Spring View Manipulation (SSTI) still, via deser</a></li>
   </ul>
@@ -211,7 +211,7 @@
     
     <div class="content" itemprop="articleBody">
       <h2 id="preface">Preface</h2>
-<p>Gõ phím viết bài này thì cũng đã gần 2 tháng kể từ đợt final <code>A&amp;D SVATTT 2023</code> kết thúc. Năm nay mình may may mắn được vào chung khảo chơi A&amp;D và với role là defense (cấu hình log, patch bug,..etc). Vào thi thì khá loạn + nhiều việc, và vì mình role defense nên cũng chỉ ngó qua bài này và thấy backend y chang bài <code>waf-deser</code> năm trước khác mỗi phần front-end, tưởng dễ nên mình vẫn chưa mò lại xem, nay đến deadline hoàn thành task ở clb mới lụi cụi làm, thấy hay nên write up lại luôn, coi như làm tài liệu tham khảo cho các năm sau :D</p>
+<p>Khi viết bài này thì cũng đã được 2 tháng kể từ đợt final <code>A&amp;D SVATTT 2023</code> kết thúc. Năm nay mình may may mắn được vào chung khảo chơi A&amp;D và với role là defense (cấu hình log, patch bug,..etc). Vào thi thì khá loạn + nhiều việc, mình với role defense nên cũng chỉ ngó qua bài này, thấy backend y chang bài <code>waf-deser</code> năm trước và khác mỗi phần front-end, tưởng dễ nên mình vẫn chưa mò lại xem, nay làm lại thấy hay nên write up lại luôn, coi như làm tài liệu tham khảo cho các năm sau :D</p>
 <p>Cũng chia sẻ thêm thì bài này trong đợt thi mình chỉ thấy 1 vài team là làm được, lúc đấy tự hỏi sao đề y chang năm trước, sửa mỗi tí lại ít solves thế. Nay xem kĩ thì mới thấy dù bài này không quá khó nhưng để build exploit hoàn chỉnh thì rất tốn time + bận exploit ở mỗi round attack nữa thì rất khó để hoàn thành.</p>
 <p>Anyway, bạn nào chưa đọc writeup bài <code>waf-deser</code> năm trước thì có thể đọc writeup mình viết tham khảo lại. Mình cũng sẽ weaponize deser theo hướng up spring memshell để persistent ở mọi round thay vì chỉ đọc flag.</p>
 <ul>
@@ -244,7 +244,7 @@
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">no-internet</span>:
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">internal</span>: <span style="color:#66d9ef">true</span>
 </span></span></code></pre></div><p>Sơ sơ qua thì file này deploy 2 services, trong đó service <code>back</code> vs <code>front</code> nằm cùng network là <code>no-internet</code>, không có outbound ra network khác. Phần <code>front</code> có expose port <code>8004</code> để conect đến được. Ý tưởng cũng chỉ có thể là dùng <code>front</code> để exploit <code>back</code>!</p>
-<h2 id="de-old-backend">de old backend</h2>
+<h2 id="the-old-backend">the old backend</h2>
 <p>Phần deser ở <code>UserController</code> vẫn khá tương tự năm ngoái:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@RequestMapping</span><span style="color:#f92672">(</span>
 </span></span><span style="display:flex;"><span>    value <span style="color:#f92672">=</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;/ticket/{info}&#34;</span><span style="color:#f92672">},</span>
@@ -281,7 +281,7 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
 </span></span></code></pre></div><p>Tuy nhiên ở đây check thêm độ dài payload sau khi gzip chỉ được bé hơn <code>2048</code>, nếu lớn hơn sẽ không vào phần deser &ndash;&gt; failed. Exploit chỗ này vẫn có thể dùng chain <code>CC4</code> để deser (check file <code>pom.xml</code>) (thế thôi, phần dễ nhất 😀😀)</p>
-<h2 id="de-front">de front</h2>
+<h2 id="the-front">the front</h2>
 <p>Không còn sử dụng nginx mà là 1 con web python như sau:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>FILTERED_HOSTS <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;back&#34;</span>]
 </span></span><span style="display:flex;"><span>
@@ -629,8 +629,8 @@ cmd4f: ls
   <ul>
     <li><a href="#preface">Preface</a></li>
     <li><a href="#docker-composeyml">docker-compose.yml</a></li>
-    <li><a href="#de-old-backend">de old backend</a></li>
-    <li><a href="#de-front">de front</a></li>
+    <li><a href="#the-old-backend">the old backend</a></li>
+    <li><a href="#the-front">the front</a></li>
     <li><a href="#deser">deser</a></li>
     <li><a href="#anotherway-spring-view-manipulation-ssti-still-via-deser">Anotherway: Spring View Manipulation (SSTI) still, via deser</a></li>
   </ul>
@@ -682,7 +682,7 @@ cmd4f: ls
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f&name=SVATTT-2023%20Ctf%20Writeup%20-%20The%20new%20Waf%20Deser&description=Preface%20G%c3%b5%20ph%c3%adm%20vi%e1%ba%bft%20b%c3%a0i%20n%c3%a0y%20th%c3%ac%20c%c5%a9ng%20%c4%91%c3%a3%20g%e1%ba%a7n%202%20th%c3%a1ng%20k%e1%bb%83%20t%e1%bb%ab%20%c4%91%e1%bb%a3t%20final%20A%26amp%3bD%20SVATTT%202023%20k%e1%ba%bft%20th%c3%bac.%20N%c4%83m%20nay%20m%c3%acnh%20may%20may%20m%e1%ba%afn%20%c4%91%c6%b0%e1%bb%a3c%20v%c3%a0o%20chung%20kh%e1%ba%a3o%20ch%c6%a1i%20A%26amp%3bD%20v%c3%a0%20v%e1%bb%9bi%20role%20l%c3%a0%20defense%20%28c%e1%ba%a5u%20h%c3%acnh%20log%2c%20patch%20bug%2c..etc%29.%20V%c3%a0o%20thi%20th%c3%ac%20kh%c3%a1%20lo%e1%ba%a1n%20%2b%20nhi%e1%bb%81u%20vi%e1%bb%87c%2c%20v%c3%a0%20v%c3%ac%20m%c3%acnh%20role%20defense%20n%c3%aan%20c%c5%a9ng%20ch%e1%bb%89%20ng%c3%b3%20qua%20b%c3%a0i%20n%c3%a0y%20v%c3%a0%20th%e1%ba%a5y%20backend%20y%20chang%20b%c3%a0i%20waf-deser%20n%c4%83m%20tr%c6%b0%e1%bb%9bc%20kh%c3%a1c%20m%e1%bb%97i%20ph%e1%ba%a7n%20front-end%2c%20t%c6%b0%e1%bb%9fng%20d%e1%bb%85%20n%c3%aan%20m%c3%acnh%20v%e1%ba%abn%20ch%c6%b0a%20m%c3%b2%20l%e1%ba%a1i%20xem%2c%20nay%20%c4%91%e1%ba%bfn%20deadline%20ho%c3%a0n%20th%c3%a0nh%20task%20%e1%bb%9f%20clb%20m%e1%bb%9bi%20l%e1%bb%a5i%20c%e1%bb%a5i%20l%c3%a0m%2c%20th%e1%ba%a5y%20hay%20n%c3%aan%20write%20up%20l%e1%ba%a1i%20lu%c3%b4n%2c%20coi%20nh%c6%b0%20l%c3%a0m%20t%c3%a0i%20li%e1%bb%87u%20tham%20kh%e1%ba%a3o%20cho%20c%c3%a1c%20n%c4%83m%20sau%20%3aD" aria-label="Tumblr">
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2023%2fsvattt-2023_new-waf-deser%2f&name=SVATTT-2023%20Ctf%20Writeup%20-%20The%20new%20Waf%20Deser&description=Preface%20Khi%20vi%e1%ba%bft%20b%c3%a0i%20n%c3%a0y%20th%c3%ac%20c%c5%a9ng%20%c4%91%c3%a3%20%c4%91%c6%b0%e1%bb%a3c%202%20th%c3%a1ng%20k%e1%bb%83%20t%e1%bb%ab%20%c4%91%e1%bb%a3t%20final%20A%26amp%3bD%20SVATTT%202023%20k%e1%ba%bft%20th%c3%bac.%20N%c4%83m%20nay%20m%c3%acnh%20may%20may%20m%e1%ba%afn%20%c4%91%c6%b0%e1%bb%a3c%20v%c3%a0o%20chung%20kh%e1%ba%a3o%20ch%c6%a1i%20A%26amp%3bD%20v%c3%a0%20v%e1%bb%9bi%20role%20l%c3%a0%20defense%20%28c%e1%ba%a5u%20h%c3%acnh%20log%2c%20patch%20bug%2c..etc%29.%20V%c3%a0o%20thi%20th%c3%ac%20kh%c3%a1%20lo%e1%ba%a1n%20%2b%20nhi%e1%bb%81u%20vi%e1%bb%87c%2c%20m%c3%acnh%20v%e1%bb%9bi%20role%20defense%20n%c3%aan%20c%c5%a9ng%20ch%e1%bb%89%20ng%c3%b3%20qua%20b%c3%a0i%20n%c3%a0y%2c%20th%e1%ba%a5y%20backend%20y%20chang%20b%c3%a0i%20waf-deser%20n%c4%83m%20tr%c6%b0%e1%bb%9bc%20v%c3%a0%20kh%c3%a1c%20m%e1%bb%97i%20ph%e1%ba%a7n%20front-end%2c%20t%c6%b0%e1%bb%9fng%20d%e1%bb%85%20n%c3%aan%20m%c3%acnh%20v%e1%ba%abn%20ch%c6%b0a%20m%c3%b2%20l%e1%ba%a1i%20xem%2c%20nay%20l%c3%a0m%20l%e1%ba%a1i%20th%e1%ba%a5y%20hay%20n%c3%aan%20write%20up%20l%e1%ba%a1i%20lu%c3%b4n%2c%20coi%20nh%c6%b0%20l%c3%a0m%20t%c3%a0i%20li%e1%bb%87u%20tham%20kh%e1%ba%a3o%20cho%20c%c3%a1c%20n%c4%83m%20sau%20%3aD" aria-label="Tumblr">
       <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
     </a>
   </li>

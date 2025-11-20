@@ -26,7 +26,7 @@
     </item>
     
     <item>
-      <title>Level-up Java Memshell - Facing Tomcat Compatibility Problems</title>
+      <title>Level-up Java Memshell - Tomcat Compatibility Problems</title>
       <link>https://devme4f.github.io/posts/2024/java-memshell-facing-tomcat-compatibility/</link>
       <pubDate>Tue, 31 Dec 2024 19:56:07 +0700</pubDate>
       
@@ -54,8 +54,8 @@ Muốn mở lòng hơn thì lại sợ bị phán xét.
       <pubDate>Thu, 17 Oct 2024 11:24:02 +0700</pubDate>
       
       <guid>https://devme4f.github.io/posts/2024/spring-boot-fat-jar-file-writing-rce/</guid>
-      <description>Lâu rồi mình cũng chưa viết bài blog nào mới, do là dạo gần đây khá tụt mood, cuộc sống cứ như vòng lặp vậy, thật nhàm chán, chẳng nghiên cứu được gì nhiều. Dù vậy mình vẫn có thói quen note lại những suy nghĩ - mấy cái học được, bài dưới đây mình cũng đã viết từ trước.
-Đây là đề mình ra trong đợt KMA-CTF 2024 ở trường, một trick khá hay trong java spring và vì muốn nó thực tế một tí nên không quá đánh đố, độ khó medium, hướng exploit cũng khá straight-forward.</description>
+      <description>Lâu rồi mình cũng chưa viết bài blog nào mới, dạo gần đây cuộc sống cứ như vòng lặp thật nhàm chán, chẳng nghiên cứu được gì nhiều. Dù vậy mình vẫn có thói quen viết lại những cái học được.
+Đây là đề mình ra trong đợt KMA-CTF 2024 ở trường, một trick khá hay trong java spring và vì muốn nó thực tế một tí nên không quá đánh đố, hướng exploit cũng khá straight-forward.</description>
     </item>
     
     <item>
@@ -64,8 +64,8 @@ Muốn mở lòng hơn thì lại sợ bị phán xét.
       <pubDate>Fri, 16 Aug 2024 20:01:01 +0700</pubDate>
       
       <guid>https://devme4f.github.io/posts/2024/analyzing-cve-2024-34750-tomcat-dos/</guid>
-      <description>Preface Bài viết sẽ phân tích lại CVE-2024-34750, CVE mà mình tìm được gần đây. Về web server Tomcat chắc cũng không còn phải giới thiệu nhiều, trong các ứng dụng java web servlet hay spring framework thì tomcat luôn là server được lựa chọn để deploy phổ biến nhất cho đến nay.
-Nói ngắn gọn, CVE-2024-34750 cho phép DoS sập HTTP/2 connector của tomcat bằng cách trigger lỗi StreamException làm giá trị activeRemoteStreamCount bị đếm sai dẫn đến connection timeout bị set vô thời hạn (connection không được đóng sau khi xử lý xong).</description>
+      <description>Preface Bài viết sẽ phân tích lại CVE-2024-34750, một bug mà mình tìm được gần đây trên Tomcat Web Server.
+Nói ngắn gọn, CVE-2024-34750 cho phép DoS sập HTTP/2 connector của tomcat bằng cách trigger lỗi StreamException làm giá trị activeRemoteStreamCount bị đếm sai dẫn đến connection timeout bị set vô thời hạn (connection không được đóng sau khi xử lý xong). Khi số lượng connection được mở đạt đến giới hạn, tomcat connector không thể handle thêm request dẫn đến DoS.</description>
     </item>
     
     <item>
@@ -75,7 +75,7 @@ Nói ngắn gọn, CVE-2024-34750 cho phép DoS sập HTTP/2 connector của tom
       
       <guid>https://devme4f.github.io/about/</guid>
       <description>hii&amp;#39;m devme4fcurrently interested in java security My CVEs:
-CVE-2024-34750 Apache Tomcat DoS CVE-2024-22271 Spring Cloud Function DoS CVE-2023-43798 Bigbluebutton SSRF CVE-2023-43797 Bigbluebutton XSS </description>
+Zimbra Mail Server RCE with admin access CVE-2025-8324 ManageEngine Analytics Plus Authentication Bypass SQL Injection CVE-2025-8309 ManageEngine AssetExplorer Privilege escalation to Account Takeover CVE-2024-34750 Apache Tomcat DoS CVE-2024-22271 Spring Cloud Function DoS CVE-2023-43798 Bigbluebutton SSRF CVE-2023-43797 Bigbluebutton XSS </description>
     </item>
     
     <item>
@@ -113,7 +113,7 @@ CAS ban đầu được phát triển với tên Jasig CAS có package name là 
       <pubDate>Fri, 22 Dec 2023 12:35:17 +0700</pubDate>
       
       <guid>https://devme4f.github.io/posts/2023/svattt-2023_new-waf-deser/</guid>
-      <description>Preface Gõ phím viết bài này thì cũng đã gần 2 tháng kể từ đợt final A&amp;amp;D SVATTT 2023 kết thúc. Năm nay mình may may mắn được vào chung khảo chơi A&amp;amp;D và với role là defense (cấu hình log, patch bug,..etc). Vào thi thì khá loạn + nhiều việc, và vì mình role defense nên cũng chỉ ngó qua bài này và thấy backend y chang bài waf-deser năm trước khác mỗi phần front-end, tưởng dễ nên mình vẫn chưa mò lại xem, nay đến deadline hoàn thành task ở clb mới lụi cụi làm, thấy hay nên write up lại luôn, coi như làm tài liệu tham khảo cho các năm sau :D</description>
+      <description>Preface Khi viết bài này thì cũng đã được 2 tháng kể từ đợt final A&amp;amp;D SVATTT 2023 kết thúc. Năm nay mình may may mắn được vào chung khảo chơi A&amp;amp;D và với role là defense (cấu hình log, patch bug,..etc). Vào thi thì khá loạn + nhiều việc, mình với role defense nên cũng chỉ ngó qua bài này, thấy backend y chang bài waf-deser năm trước và khác mỗi phần front-end, tưởng dễ nên mình vẫn chưa mò lại xem, nay làm lại thấy hay nên write up lại luôn, coi như làm tài liệu tham khảo cho các năm sau :D</description>
     </item>
     
     <item>

@@ -14,7 +14,7 @@
       
       <guid>https://devme4f.github.io/about/</guid>
       <description>hii&amp;#39;m devme4fcurrently interested in java security My CVEs:
-CVE-2024-34750 Apache Tomcat DoS CVE-2024-22271 Spring Cloud Function DoS CVE-2023-43798 Bigbluebutton SSRF CVE-2023-43797 Bigbluebutton XSS </description>
+Zimbra Mail Server RCE with admin access CVE-2025-8324 ManageEngine Analytics Plus Authentication Bypass SQL Injection CVE-2025-8309 ManageEngine AssetExplorer Privilege escalation to Account Takeover CVE-2024-34750 Apache Tomcat DoS CVE-2024-22271 Spring Cloud Function DoS CVE-2023-43798 Bigbluebutton SSRF CVE-2023-43797 Bigbluebutton XSS </description>
     </item>
     
   </channel>

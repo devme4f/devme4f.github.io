@@ -13,8 +13,8 @@
       <pubDate>Thu, 17 Oct 2024 11:24:02 +0700</pubDate>
       
       <guid>https://devme4f.github.io/posts/2024/spring-boot-fat-jar-file-writing-rce/</guid>
-      <description>Lâu rồi mình cũng chưa viết bài blog nào mới, do là dạo gần đây khá tụt mood, cuộc sống cứ như vòng lặp vậy, thật nhàm chán, chẳng nghiên cứu được gì nhiều. Dù vậy mình vẫn có thói quen note lại những suy nghĩ - mấy cái học được, bài dưới đây mình cũng đã viết từ trước.
-Đây là đề mình ra trong đợt KMA-CTF 2024 ở trường, một trick khá hay trong java spring và vì muốn nó thực tế một tí nên không quá đánh đố, độ khó medium, hướng exploit cũng khá straight-forward.</description>
+      <description>Lâu rồi mình cũng chưa viết bài blog nào mới, dạo gần đây cuộc sống cứ như vòng lặp thật nhàm chán, chẳng nghiên cứu được gì nhiều. Dù vậy mình vẫn có thói quen viết lại những cái học được.
+Đây là đề mình ra trong đợt KMA-CTF 2024 ở trường, một trick khá hay trong java spring và vì muốn nó thực tế một tí nên không quá đánh đố, hướng exploit cũng khá straight-forward.</description>
     </item>
     
     <item>
@@ -32,7 +32,7 @@
       <pubDate>Fri, 22 Dec 2023 12:35:17 +0700</pubDate>
       
       <guid>https://devme4f.github.io/posts/2023/svattt-2023_new-waf-deser/</guid>
-      <description>Preface Gõ phím viết bài này thì cũng đã gần 2 tháng kể từ đợt final A&amp;amp;D SVATTT 2023 kết thúc. Năm nay mình may may mắn được vào chung khảo chơi A&amp;amp;D và với role là defense (cấu hình log, patch bug,..etc). Vào thi thì khá loạn + nhiều việc, và vì mình role defense nên cũng chỉ ngó qua bài này và thấy backend y chang bài waf-deser năm trước khác mỗi phần front-end, tưởng dễ nên mình vẫn chưa mò lại xem, nay đến deadline hoàn thành task ở clb mới lụi cụi làm, thấy hay nên write up lại luôn, coi như làm tài liệu tham khảo cho các năm sau :D</description>
+      <description>Preface Khi viết bài này thì cũng đã được 2 tháng kể từ đợt final A&amp;amp;D SVATTT 2023 kết thúc. Năm nay mình may may mắn được vào chung khảo chơi A&amp;amp;D và với role là defense (cấu hình log, patch bug,..etc). Vào thi thì khá loạn + nhiều việc, mình với role defense nên cũng chỉ ngó qua bài này, thấy backend y chang bài waf-deser năm trước và khác mỗi phần front-end, tưởng dễ nên mình vẫn chưa mò lại xem, nay làm lại thấy hay nên write up lại luôn, coi như làm tài liệu tham khảo cho các năm sau :D</description>
     </item>
     
     <item>
