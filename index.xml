@@ -95,7 +95,7 @@ Câu trên dịch từ overview của project khá thô nhưng căn bản để 
       
       <guid>https://devme4f.github.io/posts/2024/jasig-cas-past-vulnerabilities/</guid>
       <description>Preface CAS là một ứng dụng Enterprise Single Sign-On open source khá phổ biến được sử dụng bởi nhiều doanh nghiệp lớn. CAS hỗ trợ nhiều giao thức xác thực như CAS (tương tự kerberos), SAML, Oauth, OpenID cũng như có tính tùy biến cao nên được nhiều bên lựa chọn.
-CAS ban đầu được phát triển với tên Jasig CAS có package name là org.jasig.cas nhưng từ 2012 thì Jasig hợp nhất với Sakai Foundation tạo nên Apereo Foundation.</description>
+Nói qua về lịch sử của product này thì CAS ban đầu được phát triển với tên Jasig CAS có package name là org.</description>
     </item>
     
     <item>
