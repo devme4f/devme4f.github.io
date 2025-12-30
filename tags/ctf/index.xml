@@ -8,7 +8,7 @@
     <language>vi-vn</language>
     <lastBuildDate>Thu, 17 Oct 2024 11:24:02 +0700</lastBuildDate><atom:link href="https://devme4f.github.io/tags/ctf/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Quick note Spring Boot Fat Jar file writing to RCE (writeup)</title>
+      <title>Quick note Spring Boot Fat Jar file writing to RCE</title>
       <link>https://devme4f.github.io/posts/2024/spring-boot-fat-jar-file-writing-rce/</link>
       <pubDate>Thu, 17 Oct 2024 11:24:02 +0700</pubDate>
       

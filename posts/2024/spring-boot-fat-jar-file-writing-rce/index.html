@@ -8,13 +8,13 @@
   
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title> Quick note Spring Boot Fat Jar file writing to RCE (writeup) | devme4f&#39;s blog</title>
+  <title> Quick note Spring Boot Fat Jar file writing to RCE | devme4f&#39;s blog</title>
   <link rel = 'canonical' href = 'https://devme4f.github.io/posts/2024/spring-boot-fat-jar-file-writing-rce/'>
   
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="all,follow">
   <meta name="googlebot" content="index,follow,snippet,archive">
-  <meta property="og:title" content="Quick note Spring Boot Fat Jar file writing to RCE (writeup)" />
+  <meta property="og:title" content="Quick note Spring Boot Fat Jar file writing to RCE" />
 <meta property="og:description" content="Lâu rồi mình cũng chưa viết bài blog nào mới, dạo gần đây cuộc sống cứ như vòng lặp thật nhàm chán, chẳng nghiên cứu được gì nhiều. Dù vậy mình vẫn có thói quen viết lại những cái học được.
 Đây là đề mình ra trong đợt KMA-CTF 2024 ở trường, một trick khá hay trong java spring và vì muốn nó thực tế một tí nên không quá đánh đố, hướng exploit cũng khá straight-forward." />
 <meta property="og:type" content="article" />
@@ -23,7 +23,7 @@
 <meta property="article:modified_time" content="2024-10-17T11:24:02+07:00" />
 
   <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Quick note Spring Boot Fat Jar file writing to RCE (writeup)"/>
+<meta name="twitter:title" content="Quick note Spring Boot Fat Jar file writing to RCE"/>
 <meta name="twitter:description" content="Lâu rồi mình cũng chưa viết bài blog nào mới, dạo gần đây cuộc sống cứ như vòng lặp thật nhàm chán, chẳng nghiên cứu được gì nhiều. Dù vậy mình vẫn có thói quen viết lại những cái học được.
 Đây là đề mình ra trong đợt KMA-CTF 2024 ở trường, một trick khá hay trong java spring và vì muốn nó thực tế một tí nên không quá đánh đố, hướng exploit cũng khá straight-forward."/>
 
@@ -119,42 +119,42 @@
     </a>
   </li>
   <li>
-    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&text=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE%20%28writeup%29" aria-label="Twitter">
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&text=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE" aria-label="Twitter">
       <i class="fab fa-twitter " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&title=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE%20%28writeup%29" aria-label="Linkedin">
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&title=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE" aria-label="Linkedin">
       <i class="fab fa-linkedin " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&is_video=false&description=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE%20%28writeup%29" aria-label="Pinterest">
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&is_video=false&description=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE" aria-label="Pinterest">
       <i class="fab fa-pinterest " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="mailto:?subject=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE%20%28writeup%29&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f" aria-label="Email">
+    <a class="icon" href="mailto:?subject=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f" aria-label="Email">
       <i class="fas fa-envelope " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&title=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE%20%28writeup%29" aria-label="Pocket">
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&title=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE" aria-label="Pocket">
       <i class="fab fa-get-pocket " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&title=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE%20%28writeup%29" aria-label="reddit">
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&title=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE" aria-label="reddit">
       <i class="fab fa-reddit " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&name=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE%20%28writeup%29&description=L%c3%a2u%20r%e1%bb%93i%20m%c3%acnh%20c%c5%a9ng%20ch%c6%b0a%20vi%e1%ba%bft%20b%c3%a0i%20blog%20n%c3%a0o%20m%e1%bb%9bi%2c%20d%e1%ba%a1o%20g%e1%ba%a7n%20%c4%91%c3%a2y%20cu%e1%bb%99c%20s%e1%bb%91ng%20c%e1%bb%a9%20nh%c6%b0%20v%c3%b2ng%20l%e1%ba%b7p%20th%e1%ba%adt%20nh%c3%a0m%20ch%c3%a1n%2c%20ch%e1%ba%b3ng%20nghi%c3%aan%20c%e1%bb%a9u%20%c4%91%c6%b0%e1%bb%a3c%20g%c3%ac%20nhi%e1%bb%81u.%20D%c3%b9%20v%e1%ba%ady%20m%c3%acnh%20v%e1%ba%abn%20c%c3%b3%20th%c3%b3i%20quen%20vi%e1%ba%bft%20l%e1%ba%a1i%20nh%e1%bb%afng%20c%c3%a1i%20h%e1%bb%8dc%20%c4%91%c6%b0%e1%bb%a3c.%0a%c4%90%c3%a2y%20l%c3%a0%20%c4%91%e1%bb%81%20m%c3%acnh%20ra%20trong%20%c4%91%e1%bb%a3t%20KMA-CTF%202024%20%e1%bb%9f%20tr%c6%b0%e1%bb%9dng%2c%20m%e1%bb%99t%20trick%20kh%c3%a1%20hay%20trong%20java%20spring%20v%c3%a0%20v%c3%ac%20mu%e1%bb%91n%20n%c3%b3%20th%e1%bb%b1c%20t%e1%ba%bf%20m%e1%bb%99t%20t%c3%ad%20n%c3%aan%20kh%c3%b4ng%20qu%c3%a1%20%c4%91%c3%a1nh%20%c4%91%e1%bb%91%2c%20h%c6%b0%e1%bb%9bng%20exploit%20c%c5%a9ng%20kh%c3%a1%20straight-forward." aria-label="Tumblr">
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&name=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE&description=L%c3%a2u%20r%e1%bb%93i%20m%c3%acnh%20c%c5%a9ng%20ch%c6%b0a%20vi%e1%ba%bft%20b%c3%a0i%20blog%20n%c3%a0o%20m%e1%bb%9bi%2c%20d%e1%ba%a1o%20g%e1%ba%a7n%20%c4%91%c3%a2y%20cu%e1%bb%99c%20s%e1%bb%91ng%20c%e1%bb%a9%20nh%c6%b0%20v%c3%b2ng%20l%e1%ba%b7p%20th%e1%ba%adt%20nh%c3%a0m%20ch%c3%a1n%2c%20ch%e1%ba%b3ng%20nghi%c3%aan%20c%e1%bb%a9u%20%c4%91%c6%b0%e1%bb%a3c%20g%c3%ac%20nhi%e1%bb%81u.%20D%c3%b9%20v%e1%ba%ady%20m%c3%acnh%20v%e1%ba%abn%20c%c3%b3%20th%c3%b3i%20quen%20vi%e1%ba%bft%20l%e1%ba%a1i%20nh%e1%bb%afng%20c%c3%a1i%20h%e1%bb%8dc%20%c4%91%c6%b0%e1%bb%a3c.%0a%c4%90%c3%a2y%20l%c3%a0%20%c4%91%e1%bb%81%20m%c3%acnh%20ra%20trong%20%c4%91%e1%bb%a3t%20KMA-CTF%202024%20%e1%bb%9f%20tr%c6%b0%e1%bb%9dng%2c%20m%e1%bb%99t%20trick%20kh%c3%a1%20hay%20trong%20java%20spring%20v%c3%a0%20v%c3%ac%20mu%e1%bb%91n%20n%c3%b3%20th%e1%bb%b1c%20t%e1%ba%bf%20m%e1%bb%99t%20t%c3%ad%20n%c3%aan%20kh%c3%b4ng%20qu%c3%a1%20%c4%91%c3%a1nh%20%c4%91%e1%bb%91%2c%20h%c6%b0%e1%bb%9bng%20exploit%20c%c5%a9ng%20kh%c3%a1%20straight-forward." aria-label="Tumblr">
       <i class="fab fa-tumblr " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&t=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE%20%28writeup%29" aria-label="Hacker News">
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&t=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE" aria-label="Hacker News">
       <i class="fab fa-hacker-news " aria-hidden="true"></i>
     </a>
   </li>
@@ -180,7 +180,7 @@
   <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
     <header>
       <h1 class="posttitle" itemprop="name headline">
-        Quick note Spring Boot Fat Jar file writing to RCE (writeup)
+        Quick note Spring Boot Fat Jar file writing to RCE
       </h1>
       <div class="meta">
         
@@ -326,42 +326,42 @@ Trong khi class instantiate xảy ra khi ta tạo object mới với keyword nh�
     </a>
   </li>
   <li>
-    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&text=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE%20%28writeup%29" aria-label="Twitter">
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&text=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE" aria-label="Twitter">
       <i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&title=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE%20%28writeup%29" aria-label="Linkedin">
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&title=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE" aria-label="Linkedin">
       <i class="fab fa-linkedin fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&is_video=false&description=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE%20%28writeup%29" aria-label="Pinterest">
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&is_video=false&description=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE" aria-label="Pinterest">
       <i class="fab fa-pinterest fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="mailto:?subject=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE%20%28writeup%29&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f" aria-label="Email">
+    <a class="icon" href="mailto:?subject=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f" aria-label="Email">
       <i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&title=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE%20%28writeup%29" aria-label="Pocket">
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&title=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE" aria-label="Pocket">
       <i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&title=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE%20%28writeup%29" aria-label="reddit">
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&title=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE" aria-label="reddit">
       <i class="fab fa-reddit fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&name=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE%20%28writeup%29&description=L%c3%a2u%20r%e1%bb%93i%20m%c3%acnh%20c%c5%a9ng%20ch%c6%b0a%20vi%e1%ba%bft%20b%c3%a0i%20blog%20n%c3%a0o%20m%e1%bb%9bi%2c%20d%e1%ba%a1o%20g%e1%ba%a7n%20%c4%91%c3%a2y%20cu%e1%bb%99c%20s%e1%bb%91ng%20c%e1%bb%a9%20nh%c6%b0%20v%c3%b2ng%20l%e1%ba%b7p%20th%e1%ba%adt%20nh%c3%a0m%20ch%c3%a1n%2c%20ch%e1%ba%b3ng%20nghi%c3%aan%20c%e1%bb%a9u%20%c4%91%c6%b0%e1%bb%a3c%20g%c3%ac%20nhi%e1%bb%81u.%20D%c3%b9%20v%e1%ba%ady%20m%c3%acnh%20v%e1%ba%abn%20c%c3%b3%20th%c3%b3i%20quen%20vi%e1%ba%bft%20l%e1%ba%a1i%20nh%e1%bb%afng%20c%c3%a1i%20h%e1%bb%8dc%20%c4%91%c6%b0%e1%bb%a3c.%0a%c4%90%c3%a2y%20l%c3%a0%20%c4%91%e1%bb%81%20m%c3%acnh%20ra%20trong%20%c4%91%e1%bb%a3t%20KMA-CTF%202024%20%e1%bb%9f%20tr%c6%b0%e1%bb%9dng%2c%20m%e1%bb%99t%20trick%20kh%c3%a1%20hay%20trong%20java%20spring%20v%c3%a0%20v%c3%ac%20mu%e1%bb%91n%20n%c3%b3%20th%e1%bb%b1c%20t%e1%ba%bf%20m%e1%bb%99t%20t%c3%ad%20n%c3%aan%20kh%c3%b4ng%20qu%c3%a1%20%c4%91%c3%a1nh%20%c4%91%e1%bb%91%2c%20h%c6%b0%e1%bb%9bng%20exploit%20c%c5%a9ng%20kh%c3%a1%20straight-forward." aria-label="Tumblr">
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&name=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE&description=L%c3%a2u%20r%e1%bb%93i%20m%c3%acnh%20c%c5%a9ng%20ch%c6%b0a%20vi%e1%ba%bft%20b%c3%a0i%20blog%20n%c3%a0o%20m%e1%bb%9bi%2c%20d%e1%ba%a1o%20g%e1%ba%a7n%20%c4%91%c3%a2y%20cu%e1%bb%99c%20s%e1%bb%91ng%20c%e1%bb%a9%20nh%c6%b0%20v%c3%b2ng%20l%e1%ba%b7p%20th%e1%ba%adt%20nh%c3%a0m%20ch%c3%a1n%2c%20ch%e1%ba%b3ng%20nghi%c3%aan%20c%e1%bb%a9u%20%c4%91%c6%b0%e1%bb%a3c%20g%c3%ac%20nhi%e1%bb%81u.%20D%c3%b9%20v%e1%ba%ady%20m%c3%acnh%20v%e1%ba%abn%20c%c3%b3%20th%c3%b3i%20quen%20vi%e1%ba%bft%20l%e1%ba%a1i%20nh%e1%bb%afng%20c%c3%a1i%20h%e1%bb%8dc%20%c4%91%c6%b0%e1%bb%a3c.%0a%c4%90%c3%a2y%20l%c3%a0%20%c4%91%e1%bb%81%20m%c3%acnh%20ra%20trong%20%c4%91%e1%bb%a3t%20KMA-CTF%202024%20%e1%bb%9f%20tr%c6%b0%e1%bb%9dng%2c%20m%e1%bb%99t%20trick%20kh%c3%a1%20hay%20trong%20java%20spring%20v%c3%a0%20v%c3%ac%20mu%e1%bb%91n%20n%c3%b3%20th%e1%bb%b1c%20t%e1%ba%bf%20m%e1%bb%99t%20t%c3%ad%20n%c3%aan%20kh%c3%b4ng%20qu%c3%a1%20%c4%91%c3%a1nh%20%c4%91%e1%bb%91%2c%20h%c6%b0%e1%bb%9bng%20exploit%20c%c5%a9ng%20kh%c3%a1%20straight-forward." aria-label="Tumblr">
       <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&t=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE%20%28writeup%29" aria-label="Hacker News">
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2024%2fspring-boot-fat-jar-file-writing-rce%2f&t=Quick%20note%20Spring%20Boot%20Fat%20Jar%20file%20writing%20to%20RCE" aria-label="Hacker News">
       <i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i>
     </a>
   </li>

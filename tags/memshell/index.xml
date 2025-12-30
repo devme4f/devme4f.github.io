@@ -8,13 +8,14 @@
     <language>vi-vn</language>
     <lastBuildDate>Tue, 31 Dec 2024 19:56:07 +0700</lastBuildDate><atom:link href="https://devme4f.github.io/tags/memshell/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Level-up Java Memshell - Tomcat Compatibility Problems</title>
-      <link>https://devme4f.github.io/posts/2024/java-memshell-facing-tomcat-compatibility/</link>
+      <title>Optimizing Tomcat MemShell compatibility</title>
+      <link>https://devme4f.github.io/posts/2024/optimizing-tomcat-memshell-compatibility/</link>
       <pubDate>Tue, 31 Dec 2024 19:56:07 +0700</pubDate>
       
-      <guid>https://devme4f.github.io/posts/2024/java-memshell-facing-tomcat-compatibility/</guid>
+      <guid>https://devme4f.github.io/posts/2024/optimizing-tomcat-memshell-compatibility/</guid>
       <description>The knowledge is endless, don&amp;rsquo;t just learn it, do it
-preface Trước đây mình đã viết một bài khá basic về 3 loại memshell trên tomcat, đây vẫn chưa phải tất cả các thành phần có thể lợi dụng, còn các loại khác như Valve, Executor, Poller, Http11NioProtocol,&amp;hellip; (chưa kể framework như spring hay các webserver servlet khác) nhưng để phân loại theo các cách inject vào memory từ exec code, ta có ba loại:</description>
+preface Trước đây mình đã có một bài giới thiệu khá basic về 3 loại memshell trên tomcat, đây chỉ là một trong nhiều thành phần có thể lợi dụng trong Tomcat (chưa kể nếu app dùng framework riêng như spring), nhưng để phân loại theo các cách chèn shell vào memory từ execute code, ta có ba loại:
+Loại thứ nhất khá căn bản, drop file jsp/jspx vào webroot để được execute Loại thứ hai là thông qua exploit các lỗ hổng như EL/JNDI Injection, Deserialization ngay trên app, nhờ đó có thể tạo expression hay modify lại deser gadget chain để chèn memshell.</description>
     </item>
     
     <item>

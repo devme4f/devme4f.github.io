@@ -26,13 +26,14 @@
     </item>
     
     <item>
-      <title>Level-up Java Memshell - Tomcat Compatibility Problems</title>
-      <link>https://devme4f.github.io/posts/2024/java-memshell-facing-tomcat-compatibility/</link>
+      <title>Optimizing Tomcat MemShell compatibility</title>
+      <link>https://devme4f.github.io/posts/2024/optimizing-tomcat-memshell-compatibility/</link>
       <pubDate>Tue, 31 Dec 2024 19:56:07 +0700</pubDate>
       
-      <guid>https://devme4f.github.io/posts/2024/java-memshell-facing-tomcat-compatibility/</guid>
+      <guid>https://devme4f.github.io/posts/2024/optimizing-tomcat-memshell-compatibility/</guid>
       <description>The knowledge is endless, don&amp;rsquo;t just learn it, do it
-preface Trước đây mình đã viết một bài khá basic về 3 loại memshell trên tomcat, đây vẫn chưa phải tất cả các thành phần có thể lợi dụng, còn các loại khác như Valve, Executor, Poller, Http11NioProtocol,&amp;hellip; (chưa kể framework như spring hay các webserver servlet khác) nhưng để phân loại theo các cách inject vào memory từ exec code, ta có ba loại:</description>
+preface Trước đây mình đã có một bài giới thiệu khá basic về 3 loại memshell trên tomcat, đây chỉ là một trong nhiều thành phần có thể lợi dụng trong Tomcat (chưa kể nếu app dùng framework riêng như spring), nhưng để phân loại theo các cách chèn shell vào memory từ execute code, ta có ba loại:
+Loại thứ nhất khá căn bản, drop file jsp/jspx vào webroot để được execute Loại thứ hai là thông qua exploit các lỗ hổng như EL/JNDI Injection, Deserialization ngay trên app, nhờ đó có thể tạo expression hay modify lại deser gadget chain để chèn memshell.</description>
     </item>
     
     <item>
@@ -49,7 +50,7 @@ Muốn mở lòng hơn thì lại sợ bị phán xét.
     </item>
     
     <item>
-      <title>Quick note Spring Boot Fat Jar file writing to RCE (writeup)</title>
+      <title>Quick note Spring Boot Fat Jar file writing to RCE</title>
       <link>https://devme4f.github.io/posts/2024/spring-boot-fat-jar-file-writing-rce/</link>
       <pubDate>Thu, 17 Oct 2024 11:24:02 +0700</pubDate>
       
@@ -75,7 +76,7 @@ Nói ngắn gọn, CVE-2024-34750 cho phép DoS sập HTTP/2 connector của tom
       
       <guid>https://devme4f.github.io/about/</guid>
       <description>hii&amp;#39;m devme4fcurrently interested in java security My CVEs:
-Zimbra Mail Server RCE with admin access CVE-2025-8324 ManageEngine Analytics Plus Authentication Bypass SQL Injection CVE-2025-8309 ManageEngine AssetExplorer Privilege escalation to Account Takeover CVE-2024-34750 Apache Tomcat DoS CVE-2024-22271 Spring Cloud Function DoS CVE-2023-43798 Bigbluebutton SSRF CVE-2023-43797 Bigbluebutton XSS </description>
+CVE-2025-68645 Zimbra Mail Server RCE with admin access CVE-2025-8324 ManageEngine Analytics Plus Authentication Bypass SQL Injection CVE-2025-8309 ManageEngine AssetExplorer Privilege escalation to Account Takeover CVE-2024-34750 Apache Tomcat DoS CVE-2024-22271 Spring Cloud Function DoS CVE-2023-43798 Bigbluebutton SSRF CVE-2023-43797 Bigbluebutton XSS </description>
     </item>
     
     <item>
@@ -95,7 +96,7 @@ Câu trên dịch từ overview của project khá thô nhưng căn bản để 
       
       <guid>https://devme4f.github.io/posts/2024/jasig-cas-past-vulnerabilities/</guid>
       <description>Preface CAS là một ứng dụng Enterprise Single Sign-On open source khá phổ biến được sử dụng bởi nhiều doanh nghiệp lớn. CAS hỗ trợ nhiều giao thức xác thực như CAS (tương tự kerberos), SAML, Oauth, OpenID cũng như có tính tùy biến cao nên được nhiều bên lựa chọn.
-Nói qua về lịch sử của product này thì CAS ban đầu được phát triển với tên Jasig CAS có package name là org.</description>
+Nói qua về lịch sử của product này, CAS ban đầu được phát triển với tên Jasig CAS có package name là org.</description>
     </item>
     
     <item>
