@@ -8,12 +8,13 @@
     <language>vi-vn</language>
     <lastBuildDate>Tue, 30 Jan 2024 15:05:59 +0700</lastBuildDate><atom:link href="https://devme4f.github.io/tags/el-inject/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>TetCTF-2024 Ctf Writeup - J4v4 Censored web challenge and unintended solution that break nginx rule</title>
+      <title>TetCTF-2024 Ctf Writeup - J4v4 Censored nginx unintended solution</title>
       <link>https://devme4f.github.io/posts/2024/tetctf-2024_j4v4-censored/</link>
       <pubDate>Tue, 30 Jan 2024 15:05:59 +0700</pubDate>
       
       <guid>https://devme4f.github.io/posts/2024/tetctf-2024_j4v4-censored/</guid>
-      <description>preface Hi! bài này mình sẽ writeup lại bài J4v4 Censored trong giải TetCTF-2024 mà team mình (KCSC) đã solve được. Đây là 1 bài java mình đánh giá không quá khó nhưng lại là half-black-box nên phải đoán, fuzzing khá nhiều nên khi làm mình khá nản nhưng cũng nhờ có teammates quyết tâm tìm ra được unintended solution nên may mắn (cũng chính là team duy nhất) solved được.</description>
+      <description>preface Writeup bài J4v4 Censored trong giải TetCTF-2024 mà team mình đã solve được. Mình thấy đây là 1 bài half-black-box nên phải đoán, fuzzing khá nhiều nên khi làm khá nản, nhưng cũng nhờ có teammates quyết tâm tìm ra được unintended solution nên may mắn cũng chính là team duy nhất solved được. Let&amp;rsquo;s start!
+exploring Đề cho url đến swagger endpoint nhưng khi truy cập thì không load được list các api: Nguyên nhân do /v2/api-docs?</description>
     </item>
     
     <item>

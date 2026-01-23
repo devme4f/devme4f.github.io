@@ -6,7 +6,16 @@
     <description>Recent content in cve on devme4f&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>vi-vn</language>
-    <lastBuildDate>Fri, 16 Aug 2024 20:01:01 +0700</lastBuildDate><atom:link href="https://devme4f.github.io/tags/cve/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 23 Jan 2026 09:21:59 +0700</lastBuildDate><atom:link href="https://devme4f.github.io/tags/cve/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>New Approach to RCE Zimbra Mail Server with admin access (CVE-2025-68645 Analysis)</title>
+      <link>https://devme4f.github.io/posts/2026/zimbra-rce-cve-2025-68645/</link>
+      <pubDate>Fri, 23 Jan 2026 09:21:59 +0700</pubDate>
+      
+      <guid>https://devme4f.github.io/posts/2026/zimbra-rce-cve-2025-68645/</guid>
+      <description>Khi đã có token admin, một attack chain phổ biến có lẽ đã khá quen thuộc là dùng extension ClientUploader ngay trong Zimbra để upload webshell và RCE được server. Tuy nhiên hướng này đã không còn có thể lợi dụng do từ năm 2022, Zimbra đã vá lỗ hổng cũng như extension trên không còn được cài đặt mặc định, lần lượt qua hai mã là CVE-2022-45912 và CVE-2023-34193.</description>
+    </item>
+    
     <item>
       <title>Analyzing CVE-2024-34750 Apache Tomcat DoS</title>
       <link>https://devme4f.github.io/posts/2024/analyzing-cve-2024-34750-tomcat-dos/</link>

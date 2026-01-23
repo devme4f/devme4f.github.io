@@ -2,8 +2,28 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://devme4f.github.io/tags/cve/</loc>
+    <lastmod>2026-01-23T09:21:59+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
     <loc>https://devme4f.github.io/</loc>
-    <lastmod>2025-05-01T16:32:33+07:00</lastmod>
+    <lastmod>2026-01-23T09:21:59+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://devme4f.github.io/posts/2026/zimbra-rce-cve-2025-68645/</loc>
+    <lastmod>2026-01-23T09:21:59+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://devme4f.github.io/posts/</loc>
+    <lastmod>2026-01-23T09:21:59+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://devme4f.github.io/tags/</loc>
+    <lastmod>2026-01-23T09:21:59+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
@@ -28,16 +48,6 @@
     <priority>0.5</priority>
   </url><url>
     <loc>https://devme4f.github.io/posts/2024/optimizing-tomcat-memshell-compatibility/</loc>
-    <lastmod>2024-12-31T19:56:07+07:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://devme4f.github.io/posts/</loc>
-    <lastmod>2024-12-31T19:56:07+07:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://devme4f.github.io/tags/</loc>
     <lastmod>2024-12-31T19:56:07+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -68,11 +78,6 @@
     <priority>0.5</priority>
   </url><url>
     <loc>https://devme4f.github.io/posts/2024/analyzing-cve-2024-34750-tomcat-dos/</loc>
-    <lastmod>2024-08-16T20:01:01+07:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://devme4f.github.io/tags/cve/</loc>
     <lastmod>2024-08-16T20:01:01+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
