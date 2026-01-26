@@ -8,7 +8,7 @@
     <language>vi-vn</language>
     <lastBuildDate>Fri, 23 Jan 2026 09:21:59 +0700</lastBuildDate><atom:link href="https://devme4f.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>New Approach to RCE Zimbra Mail Server with admin access (CVE-2025-68645 Analysis)</title>
+      <title>New Approach to RCE Zimbra Mail Server with admin access (CVE-2025-68645)</title>
       <link>https://devme4f.github.io/posts/2026/zimbra-rce-cve-2025-68645/</link>
       <pubDate>Fri, 23 Jan 2026 09:21:59 +0700</pubDate>
       
