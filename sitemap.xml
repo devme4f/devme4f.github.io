@@ -12,17 +12,17 @@
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
-    <loc>https://devme4f.github.io/posts/2026/zimbra-rce-cve-2025-68645/</loc>
-    <lastmod>2026-01-23T09:21:59+07:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
     <loc>https://devme4f.github.io/posts/</loc>
     <lastmod>2026-01-23T09:21:59+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
     <loc>https://devme4f.github.io/tags/</loc>
+    <lastmod>2026-01-23T09:21:59+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://devme4f.github.io/posts/2026/zimbra-rce-cve-2025-68645/</loc>
     <lastmod>2026-01-23T09:21:59+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
