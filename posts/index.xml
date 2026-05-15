@@ -6,7 +6,17 @@
     <description>Recent content in Posts on devme4f&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>vi-vn</language>
-    <lastBuildDate>Fri, 23 Jan 2026 09:21:59 +0700</lastBuildDate><atom:link href="https://devme4f.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 05 May 2026 13:45:16 +0700</lastBuildDate><atom:link href="https://devme4f.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Tales of Authentication Bypass Across ManageEngine Products</title>
+      <link>https://devme4f.github.io/posts/2026/auth-bypass-across-manageengine-products/</link>
+      <pubDate>Tue, 05 May 2026 13:45:16 +0700</pubDate>
+      
+      <guid>https://devme4f.github.io/posts/2026/auth-bypass-across-manageengine-products/</guid>
+      <description>Năm ngoái mình có dịp target và tìm ra một số lỗ hổng trên các sản phẩm của Zoho ManageEngine. Bài viết sẽ chia sẻ lại quá trình này.
+Để giới thiệu qua thì ManageEngine là bộ sản phẩm IT management được nhiều tổ chức doanh nghiệp tin dùng, trải dài từ IT helpdesk, AD management, cho đến network và security monitoring. Điểm đáng chú ý là do cùng chung một dòng sản phẩm nên codebase cũng có nhiều điểm tương đồng — nhiều thư viện dùng chung, pattern lặp lại.</description>
+    </item>
+    
     <item>
       <title>Zimbra Mail Server RCE with admin access (CVE-2025-68645)</title>
       <link>https://devme4f.github.io/posts/2026/zimbra-rce-cve-2025-68645/</link>
