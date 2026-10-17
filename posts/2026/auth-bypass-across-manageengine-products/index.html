@@ -161,7 +161,7 @@
   <ul>
     <li><a href="#securityfilter">SecurityFilter</a></li>
     <li><a href="#cve-2025-8324-analytics-plus-authentication-bypass--sql-injection">CVE-2025-8324: Analytics Plus Authentication Bypass &amp; SQL Injection</a></li>
-    <li><a href="#cve-2025-8309-assetexplorer-account-takeover">CVE-2025-8309: AssetExplorer Account Takeover</a>
+    <li><a href="#cve-2025-8309-assetexplorer-authentication-bypass--account-takeover">CVE-2025-8309: AssetExplorer Authentication Bypass &amp; Account Takeover</a>
       <ul>
         <li><a href="#case-1-bypass-using-other-mapping">Case 1: Bypass using other mapping</a></li>
         <li><a href="#case-2-bypass-via-url-forwarding">Case 2: Bypass via url forwarding</a></li>
@@ -379,7 +379,7 @@ Host: &lt;host&gt;
 <p><img src="/images/2026/Auth-Bypass-Across-ManageEngine-Products/sqli_success_update_password.png" alt="sqli_success_update_password"></p>
 <p>Đến đây có thể login admin account với password <code>Abcd@1231</code>.</p>
 <p>Với SQLi và quyền admin, việc leo lên Pre-auth RCE mình nghĩ chỉ là vấn đề thời gian. Tuy nhiên khi làm đến đây mình đã khá nản :(  bạn đọc có thể nghiên cứu thêm.</p>
-<h2 id="cve-2025-8309-assetexplorer-account-takeover">CVE-2025-8309: AssetExplorer Account Takeover</h2>
+<h2 id="cve-2025-8309-assetexplorer-authentication-bypass--account-takeover">CVE-2025-8309: AssetExplorer Authentication Bypass &amp; Account Takeover</h2>
 <p>Advisory: <a href="https://www.manageengine.com/products/service-desk/cve-2025-8309.html">https://www.manageengine.com/products/service-desk/cve-2025-8309.html</a></p>
 <p>Tại configuration file <code>security/security-publicaccess.xml</code>, có 2 ActionRule sau cho static files:</p>
 <pre tabindex="0"><code>&lt;url path=&#34;^(?!/api/v3/).*\.(js|css|ico|svg|png|html)&#34; user_type=&#34;all&#34; static_files=&#34;true&#34; remote_server=&#34;true&#34;&gt;
@@ -507,7 +507,10 @@ Cookie: &lt;truncated&gt;
 <pre tabindex="0"><code>GET /STATE_ID/1/api/v3/orgusers/2/reset_password/a.woff HTTP/1.1
 Host: &lt;host&gt;
 Cookie: STATE_COOKIE=&amp;_REQS/_TIME/1993/; &lt;truncated&gt;
-</code></pre><h2 id="others">Others</h2>
+</code></pre><p><em>Update 14/09/2026</em>: Lỗ hổng Preauth không cần xác thực (Auth bypass) bằng cách urlencode <code>/api/v3/</code> thành <code>/%61pi/v3/</code>, thanks to <code>@qquang01</code>:
+<img src="/images/2026/Auth-Bypass-Across-ManageEngine-Products/preauth_assetexplorer.jpg" alt="preauth_assetexplorer"></p>
+<p>=&gt; Người dùng không cần xác thực có thể chiếm quyền Asset Explorer!</p>
+<h2 id="others">Others</h2>
 <p>Một số products khác của ManageEngine cũng bị ảnh hưởng với root-cause tương tự khi tồn tại ActionRule có path regex không bị prefix.</p>
 <p>Với PAM360 - hay trước đây còn là Password Manager Pro:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;regexes&gt;</span>
@@ -554,7 +557,7 @@ Cookie: STATE_COOKIE=&amp;_REQS/_TIME/1993/; &lt;truncated&gt;
   <ul>
     <li><a href="#securityfilter">SecurityFilter</a></li>
     <li><a href="#cve-2025-8324-analytics-plus-authentication-bypass--sql-injection">CVE-2025-8324: Analytics Plus Authentication Bypass &amp; SQL Injection</a></li>
-    <li><a href="#cve-2025-8309-assetexplorer-account-takeover">CVE-2025-8309: AssetExplorer Account Takeover</a>
+    <li><a href="#cve-2025-8309-assetexplorer-authentication-bypass--account-takeover">CVE-2025-8309: AssetExplorer Authentication Bypass &amp; Account Takeover</a>
       <ul>
         <li><a href="#case-1-bypass-using-other-mapping">Case 1: Bypass using other mapping</a></li>
         <li><a href="#case-2-bypass-via-url-forwarding">Case 2: Bypass via url forwarding</a></li>
