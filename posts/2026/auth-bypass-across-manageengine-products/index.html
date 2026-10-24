@@ -519,7 +519,7 @@ Cookie: STATE_COOKIE=&amp;_REQS/_TIME/1993/; &lt;truncated&gt;
 </span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;url</span> <span style="color:#a6e22e">path=</span><span style="color:#e6db74">&#34;/${meagentacceptall}/me-agent/${meagentacceptall}&#34;</span> <span style="color:#a6e22e">method=</span><span style="color:#e6db74">&#34;get&#34;</span> <span style="color:#a6e22e">threshold=</span><span style="color:#e6db74">&#34;30&#34;</span> <span style="color:#a6e22e">duration=</span><span style="color:#e6db74">&#34;1&#34;</span> <span style="color:#a6e22e">lock-period=</span><span style="color:#e6db74">&#34;5&#34;</span> <span style="color:#f92672">&gt;</span>
 </span></span></code></pre></div><p>Tức path regex sẽ là:</p>
 <pre tabindex="0"><code>/.*/me-agent/.*
-</code></pre><p>Nhưng tương tự với AssetExplorer, rule này yêu cầu request phải được xác thực và không cho phép truyền param - khiến attack surface bị giới hạn. PAM360 có khá nhiều servlet với wildcard mapping, nhưng với giới hạn trên, PoC mình chỉ dừng lại ở info leaks, xóa 1 phần data hoặc DoS - vendor đã fix nhưng không đánh mã CVE.</p>
+</code></pre><p>Nhưng tương tự với AssetExplorer, rule này không cho phép truyền param - khiến attack surface bị giới hạn. PAM360 có khá nhiều servlet với wildcard mapping, nhưng với giới hạn trên, PoC mình chỉ dừng lại ở info leaks, xóa 1 phần data hoặc DoS - vendor đã fix nhưng không đánh mã CVE.</p>
 <p>Một số products khác thì mình chưa tìm ra được impact cụ thể vì các giới hạn cũng như trên.</p>
 <p>That&rsquo;s all for now. Hope to see you soon in the next one.</p>
 
